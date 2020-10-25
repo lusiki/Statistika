@@ -77,7 +77,7 @@ Koristiti ćemo tri knjige.
 <br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 5.</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Predavanja/04_GRAFIKONI_I_VIZUALIZACIJE_xar.html">Predavanje 04: Vizualizacija podataka</a>
+<a href="/Moduli/04_GRAFIKONI_I_VIZUALIZACIJE_xar.html">Predavanje 04: Vizualizacija podataka</a>
 
 <ul>
 <li> Vizualizacija, alati i podrška </li>

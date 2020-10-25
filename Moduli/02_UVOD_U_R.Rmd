@@ -1,0 +1,342 @@
+---
+title: "UVOD U R"
+author: "dr.sc. Luka Šikić"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  slidy_presentation: default
+  beamer_presentation:
+    theme: Szeged
+    colortheme: beaver
+    fonttheme: structurebold
+institute: Preddiplomski studij sociologije
+font: 5pt
+subtitle: Hrvatski studiji
+---
+
+## CILJEVI PREDAVANJA
+
+- Osnovne naredbe
+- Što su varijable
+- Što su funkcije
+- Kakve vrste podataka postoje
+- Što su vektori
+- Logički operatori
+
+
+## OSNOVNE RAČUNSKE OPERACIJE
+
+```{r aritmetika, echo=FALSE}
+knitr::kable(rbind(
+              c("zbrajanje", "`+`", "10 + 2", 12),
+              c("odzimanje", "`-`", "9 - 3", 6),
+              c("množenje", "`*`", "5 * 5", 25),
+              c("dijeljenje", "`/`", "10 / 3", 3),
+              c("eksponencija", "`^`", "5 ^ 2", 25)
+),
+caption = "Osnovne računske operacije u R-u. Ove naredbe ćemo koristiti kroz cijeli kolegij i korisno ih je zapamtiti.",
+col.names = c("Operacija", "Operator", " Input" , "Output"),
+align = "rccc",
+  booktabs = TRUE)
+```
+
+## PRIMJERI
+
+```{r eval=FALSE }
+# Zbrajanje
+> 20 + 30
+[1] 50
+```
+
+```{r eval=FALSE}
+# Oduzimanje
+> 20 - 30
+[1] -10
+```
+
+```{r eval=FALSE}
+# Množenje
+> 57 * 61
+[1] 3477
+```
+
+```{r eval=FALSE}
+# Eksponencije
+> 5 * 5 * 5 * 5 # 5^4
+[1] 625         # 625
+```
+
+## VARIJABLE
+
+```{r}
+# Pripisivanje vrijednosti varijabli
+placa <- 5500
+mjeseci <- 12
+# Pregled varijable
+placa
+# Kalukulacije sa varijablama
+placa*mjeseci # Jednako kao 5550*12!
+```
+
+## DODATNE MOGUĆNOSTI S VARIJABLAMA
+
+```{r}
+# Stvori novu varijablu pomoću postojećih
+godisnja_placa <- placa*mjeseci
+# Pregled varijable
+godisnja_placa
+# 13ta placa
+godisnja_zarada <- godisnja_placa + 5500
+# Pregled varijable
+godisnja_zarada
+```
+
+## KONVENCIJE ZA VARIJABLE
+
+- sva slova u nazivu varijable su *mala* ili *velika*
+- rijeci ne smiju sadržavati razmak
+- **godisnja_zarada** i **Godisnja_zarada** su različite varijable
+- naziv varijable može imati točku na početku ali (**.godisnja_zarada**) se ne preporuča   
+- naziv varijable ne može biti (REZERVIRANO!): `if`, `else`, `repeat`, `while`, `function`, `for`, `in`, `next`, `break`, `TRUE`, `FALSE`, `NULL`, `Inf`, `NaN`, `NA`, `NA_integer_`, `NA_real_`, `NA_complex_` niti `NA_character_`
+- naziv varijable treba biti informativan, kratak i prepoznatljiv
+- preporučene opcije za naziv varijable sa više riječi: **godisnja_zarada** ili **godisnja.zarada**
+
+## KORIŠTENJE FUNKCIJA ZA RAČUNSKE OPERACIJE I
+
+```{r}
+# Funkcija za korijen
+sqrt(25) 
+#Jednako kao:
+25^0.5 
+```
+
+## KORIŠTENJE FUNKCIJA ZA RAČUNSKE OPERACIJE II
+
+```{r}
+# Funkcija za uzimanje apsolutne vrijednosti
+abs(-10)
+# Korištenje dvije funkcije u jednoj naredbi
+sqrt(1 + abs(-8))
+```
+
+## FUNKCIJSKI ARGUMENTI
+
+```{r}
+# Zaokruži vrijednost;pi
+round(3.1415)
+# Dodatni funkcijski argumenti;broj decimala
+round(3.1415,2)#Jednako kao round(x = 3.1415, digits = 2)
+             
+
+```
+
+## VEKTORI 
+
+- vektor se sastoji od (jedng ili) više elemenata 
+- svi elementi vektora *imaju* istu klasu
+- klase mogu biti brojevi, riječi, logičke tvrdnje
+- za stvaranje vektora se koristi `combine()` funkcija;skraćeno `c()`
+```{r}
+# NUMERIČKI VEKTOR 
+# Stvori vektor mjesečnih plaća za prvi kvartal u godini
+kvartalna_placa <- c("5400", "5300", "5500")
+# Pregled varijable
+kvartalna_placa
+
+```
+
+## IZVLAČENJE INFORMACIJA IZ VEKTORA
+
+```{r}
+# Plaća u veljači
+kvartalna_placa[2]
+# Stvori varijablu iz (jednog elementa) vektora
+placa_u_sijecnju <- kvartalna_placa[2]
+
+
+```
+
+## PROMJENA ELEMENATA U VEKTORU
+
+```{r}
+# Plaća u veljači
+kvartalna_placa[2] <- "5500"
+# Preged varijable
+kvartalna_placa
+
+
+```
+
+## DODATNE MOGUĆNOSTI S VEKTORIMA I
+
+```{r}
+# Koliko ima elemenata u vektoru? length()
+length(kvartalna_placa)
+# Pomnoži sve elemente vektora brojem
+# konverzija iz "chr" u "numeric"
+as.numeric(kvartalna_placa) / 7.5
+
+```
+
+## DODATNE MOGUĆNOSTI S VEKTORIMA II
+
+```{r}
+# Definiraj tečaj
+eur <- 7.5
+# Plaća u eurima
+godisnja_placa_eur <- godisnja_placa / eur 
+#Pregled varijable
+godisnja_placa_eur
+
+```
+
+## VEKTORI S TEKSTUALNIM VARIJABLAMA
+
+```{r}
+# Stvori tekstualnu varijablu
+pozdrav <- "ciao"
+# Pregled varijable
+pozdrav
+# Stvori vektor tekstualnih elemenata 
+prvi_kvartal_mj <- c("sijecanj", "veljaca", "ozujak")
+# Pregled vektora
+prvi_kvartal_mj
+
+```
+
+## DODATNE MOGUĆNOSTI S VEKTORIMA III
+
+```{r}
+# Drugi mjesec 
+veljaca <- prvi_kvartal_mj[2]
+# Pregled varijable
+nchar(veljaca) # Jenako: nchar(x = prvi_kvartal[2])!
+# Pregled duljine elemenata(riječi) u vektoru
+nchar(prvi_kvartal_mj)
+```
+
+## LOGIČKE VARIJABLE 
+### (Osnove rada s logičkim varijablama)
+
+```{r}
+2 + 2
+```
+
+```{r}
+# Logička istina: TRUE
+2 + 2 == 4
+# Logička ne-istina: FALSE
+2 + 2 == 5
+```
+
+## LOGIČKI OPERATORI I
+### (Osnove rada s logičkim varijablama)
+
+```{r logicki_operatori, echo=FALSE}
+knitr::kable(rbind(
+                    c("manje", "<", "2 < 3", "`TRUE`"),
+                    c("manje ili jednako", "<=", "2 <= 2", "`TRUE`"),
+                    c("vece", ">", "2 > 3", "`FALSE`"),
+                    c("vece ili jednako", ">=", "2 >= 2" , "`TRUE`"), 
+                    c("jednako", "==", "2 == 3" , "`FALSE`"),
+                    c("nije jednako", "!=", "2 != 3" , "`TRUE`")),
+              caption = "Osnovni operatori",
+              col.names = c("Operacija", "Operator", "Input", "Odgovor"),
+            align = "rccc",
+  booktabs = TRUE)
+
+```
+
+## LOGIČKI OPERATORI II
+### (Osnove rada s logičkim varijablama)
+
+```{r}
+# Primjeri
+99 < 100
+100 <= 99
+2 + 2 != 5
+
+```
+
+## LOGIČKI OPERATORI III
+### (Osnove rada s logičkim varijablama)
+
+```{r logicals2, echo=FALSE}
+knitr::kable(rbind(
+                    c("ne", "!", "!(1==1)", "`FALSE`"),
+                    c("ili", "|", "(1==1) | (2==3)", "`TRUE`"),
+                    c("i", "&", "(1==1) & (2==3)", "`FALSE`")),
+              caption = 'Jos neki vazni logicki operatori.',
+              col.names = c("Operacija", "Operator", "Input", "Odgovor"),
+              align = c("c", "c", "c", "c"),
+              booktabs = TRUE)
+  
+```
+
+## LOGIČKI OPERATORI IV
+### (Osnove rada s logičkim varijablama)
+
+```{r}
+# Primjeri
+(2 + 2 == 4) | (2 + 2 == 5)
+(2 + 2 == 4) & (2 + 2 == 5)
+!(2 + 2 == 5)
+```
+
+## LOGIČKI OPERATORI V
+### (Stvori logičku varijablu)
+```{r}
+# Jedna mogucnost
+da_li_je_ovo_tocno <- 2 + 2 == 5
+da_li_je_ovo_tocno
+# Druga mogucnost
+ovo_nije_tocno <- FALSE # Jenako kao i F
+ovo_nije_tocno
+
+```
+
+## VEKTORI S LOGIČKIM VARIJABLAMA
+### (Stvori logički vektor)
+
+```{r}
+# Stvori logički vektor
+x <- c(TRUE, TRUE, FALSE)
+# Pregled vektora
+x
+```
+
+
+## VEKTORI S LOGIČKIM VARIJABLAMA
+### (Osnove rada s logičkim vektorima)
+
+```{r}
+# U kojim mjesecima je plaća bila veća od 5.200kn
+kvartalna_placa > 5200
+# Napravi logički vektor za mjesece sa visokom plaćom
+iznadprosjecna_placa <- kvartalna_placa > 5400
+# Pregled vektora
+iznadprosjecna_placa
+ 
+```
+
+
+## PRISTUPANJE ELEMENTIMA VEKTORA I
+
+```{r}
+# Izaberi 2. i 3. mjesec iz kvartala
+kvartalna_placa[ c(2,3) ]
+# Izaberi 1. i 3. mjesec iz kvartala
+kvartalna_placa[ c(1,3) ]
+# Dodatna mogućnost
+kvartalna_placa[ 1:3 ]
+```
+
+## PRISTUPANJE ELEMENTIMA VEKTORA II
+
+```{r}
+# Poveži tekstualni i logički vektor 
+prvi_kvartal_mj[kvartalna_placa > 5400]
+# Stvori novi tekstualni vektor;visina plaće
+visina_place <- c("niska", "visoka", "visoka")
+# U kojim mjesecima je bila visoka zarada?
+prvi_kvartal_mj[ visina_place == "visoka"]
+```

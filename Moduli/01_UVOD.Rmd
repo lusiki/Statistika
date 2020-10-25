@@ -1,0 +1,75 @@
+---
+title: "PRIMJENA STATISTKE U DRUŠTVENIM ISTRAŽIVANJIMA"
+subtitle: "Hrvatski studiji"
+institute: "Preddiplomski studij sociologije"
+author: "dr.sc. Luka Šikić"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+font: 10pt
+output: 
+  beamer_presentation:
+    theme: "Szeged"
+    colortheme: "beaver"
+    fonttheme: "structurebold"
+
+---
+
+## TEHNIČKI DETALJI
+
+- Nastava iz obveznog kolegija **Primjena statistike u društvenim istraživanjima** sastoji se od dva sata predavanja i dva sata seminara tjedno (7 ECTS). 
+- Predavanja se održavaju u blok satima (dva školska sata od 45 min) kao i seminar.
+- Pohađanje nastave (i predavanja i seminara) je obavezno i evidentira se. 
+- Predavanje se održava ponedjeljkom od 16:00 do 17:30 u a seminar odmah iza predavanja od 17:30 do 19:00 u dvorani xy. 
+- Tijekom nastave, molim studente da ne koriste mobitele i ne izlaze iz dvorane.
+
+
+## CILJEVI KOLEGIJA
+
+1. Upoznati vas sa osnovama programskog sučelja [**R**](https://rstudio.com/).
+2. Osposobiti vas za primjenu osnovnih statističkih koncepata u programu **R**. 
+3. Naučiti vas kako operacionalizirati osnovne statističke koncepte u empirijskoj analizi i interpretirati rezultate. 
+4. Upoznati vas sa važnostima, korisnostima i znanstvenom relevantnosti domaćih i stranih sekundarnih izvora podataka (npr. Iz [**DZS**](https://www.dzs.hr/), [**HGK**](https://www.hgk.hr/), [**EUROSTAT**](https://ec.europa.eu/eurostat/data/database) i sl.).
+
+
+## SADRŽAJ KOLEGIJA
+
+- Računalna podrška: **R** osnove, dodatni koncepti u **R**.
+- Pregled podataka: deskriptivna statistika, vizualizacija podataka.
+- Statistička teorija: vjerojatnost, distribucije, procjena parametara, testiranje hipoteza.
+- Statistički alati: kategorijalna analiza, usporedba dva prosjeka, usporedba više prosjeka, osnove regresijske analize.
+
+
+## STUDENTSKE OBVEZE (Predavanja)
+
+- Studentima se preporučuje da na predavanjima koriste svoje prijenosno računalo i zapisuju bilješke.
+- Predavanja će biti dostupna nakon svakog predavanja.
+- Predavanja su sastavni dio ispita.
+- Nije dopušteno snimanje predavanja.
+
+
+## STUDENTSKE OBVEZE (Prezentacija)
+
+- Svi studenti tijekom semestra moraju održati jednu prezentaciju prema zadanoj literaturi u .ppt formi.   
+- Izlagači  moraju pripremiti na kraju prezentacije i nekoliko (2-3) ključnih pitanja za raspravu koju imamo na kraju obrađene teme.
+- Prezentaciju studenti moraju poslati profesoru na e-mail najkasnije u petak, tjedan dana prije seminara. 
+- Seminari osim prezentacije uključuju: povezivanje teorijskih koncepata s praktičnom primjenom, zajednička empirijska analiza, rasprava o društvenim aspektima statističkih rezultata, aktivno sudjelovanje u raspravi na zadanu temu.
+
+
+## STUDENTSKE OBVEZE (Kolokvij i Ispit)
+
+- Studentima se preporuča i omogućuje da polože kolegij kroz prezentaciju i dva kolokvija. Sustav bodovanja za studente koji polažu kolegij preko kolokvija: moguće je skupiti 100 bodova, pri tome je na prezentaciji moguće ostvariti do 10 bodova, a na svakom kolokviju do 40 bodova. Pri tome je sustav bodovanja jednak kao kod ispita(vidi niže!).
+- U zimskom , ljetnom   i jesenskom  ispitnom roku studenti imaju završni pismeni ispit iz tema obrađenih na predavanjima i prema priloženoj literaturi. 
+- Ispit je položen ako student ostvari 60% od ukupno mogućih bodova: 60-64% = (2); 65-74% = (3); 75-84% = (4); 85% = (5)
+
+## KONZULTACIJE
+
+Konzultacije:  od 17:30 do 18:30 u sobi XXX (I.kat), ili prema dogovoru na mail: luka.sikic@hrstud.hr
+
+## LITERATURA ZA ISPIT
+
+- **Petz, B. (1997).** *Osnovne statističke metode za nematematičare*, III, Naklada  Slap, Jastrebarsko
+- [**Navarro, D. (2014)** *Learning statistics with R: A tutorial*](https://learningstatisticswithr.com/)
+- Predavanja
+- [**Materijali**](https://github.com/BrbanMiro/Statistika) koji će biti distribuirani u toku kolegija
+
+
+

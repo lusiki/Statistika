@@ -1,0 +1,217 @@
+---
+title: "DODATNI KONCEPTI R"
+author: "dr.sc. Luka Šikić"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  slidy_presentation: default
+  beamer_presentation:
+    theme: Szeged
+    colortheme: beaver
+    fonttheme: structurebold
+  ioslides_presentation: default
+institute: Preddiplomski studij sociologije
+font: 5pt
+subtitle: Hrvatski studiji
+---
+
+## CILJEVI PREDAVANJA
+
+- Što su paketi
+- Radni prostor
+- Učitavanje i spremanje podataka
+- Specijalne vrijednosti, nazivi i klase varijabli
+- Slozeniji tipovi varijabli: faktori,podatkovni okviri, liste
+
+
+## RAD SA PAKETIMA
+
+- paket(knjižnica) je skup funkcija(podataka i sl.) koje je netko napisao i ponudio  na korištenje
+- paketi su javno dostupni (Open Source)
+- paket je potrebno jednom instalirati, a učitati se mora pri svakom otvaranju sesije - u okviru kolegija ćemo uglavnom koristiti nekoliko paketa: [*base R*](https://stat.ethz.ch/R-manual/R-devel/library/base/html/00Index.html), [*lsr*](https://cran.r-project.org/web/packages/lsr/index.html), [*ggplot2*](https://www.statmethods.net/advgraphs/ggplot2.html), [*psych*](https://cran.r-project.org/web/packages/psych/psych.pdf), [*car*](https://cran.r-project.org/web/packages/car/index.html) i dr. 
+
+## INSTALACIJA PAKETA
+
+```{r eval=FALSE}
+# Instaliraj paket
+install.packages("lsr")
+# Učitaj paket
+library(lsr) # Također require()
+# Makni paket
+detach("package:lsr", unload=TRUE)
+
+```
+
+## RADNI PROSTOR
+
+```{r eval = FALSE}
+# Gdje se nalazi radni folder
+getwd()
+[1] "C:/Users/Dropbox/Kolegij_statistika"
+# Postavi radni folder
+setwd("C:/Users/Luka/Statistika/...")
+# Obrati pažnju na "/" vs "\\"
+
+```
+
+## UČITAVANJE U R I
+
+- *workspace files* imaju .Rdata ekstenziju i sadržavaju objekte iz radnog prostora
+- *.csv*, *.txt*, *.spss* sadržavaju podatke koje je potrebno učitati u radni prostor
+- *script files* sadržavaju napisani kod
+- postoje i brojni drugi objekti! (npr. RMarkdown)
+
+```{r eval = FALSE}
+# učitaj u radni prostor
+load( file = "~/datoteka.Rmd" )
+# ~ označava put do radnog direktorija
+```
+
+## UČITAVANJE U R II
+
+```{r eval=FALSE}
+# Učitaj podatke iz excela 
+podatci_statistika <- read.csv( file = "statistika.csv" )
+# U praksi je potrebno prilagoditi funkcijske argumente!
+```
+
+## SPREMANJE  
+
+- obično žellimo pohraniti: *radni prostor*, *output*, *skriptu*
+```{r eval=FALSE}
+# Pohrani radni prostor
+save.image("~/Desktop/radni_prostor.RData")
+# Pohrani podatke
+save(neki_podatci, file = "neki_podatci.Rdata")
+# Output je moguće pohraniti pomoću funkcije sink()
+```
+
+
+## SPECIJALNE VRIJEDNOSTI 
+
+```{r}
+# Beskonačno
+1 / 0
+```
+
+```{r}
+# Nije broj
+ 0 / 0
+```
+-  *nije dostupno* `NA`
+- *nema vrijednosti* `NULL` 
+
+
+## DAVANJE NAZIVA ELEMENTIMA VEKTORA I
+
+```{r}
+# Stvori numerički vektor
+ocjena <- c( 1, 2, 3 )
+ocjena # Pregledaj objekt
+# Pripiši nazive 
+names(ocjena) <- c("nedovoljan","dovoljan","dobar")
+ocjena # Pregledaj objekt
+```
+
+## DAVANJE NAZIVA ELEMENTIMA VEKTORA II
+```{r}
+# Stvori numerički vektor sa nazivima v2.0
+ocjena <- c("nedovoljan" = 1,"dovoljan" = 2,"dobar" = 3)
+ocjena # Pregledaj objekt
+# Indeksiranje pomoću naziva
+ocjena["dobar"] # Pregledaj objekt
+
+```
+
+## DAVANJE NAZIVA ELEMENTIMA VEKTORA III
+
+```{r}
+# Vidi nazive svih elemenata u vektoru
+names(ocjena) # Pregledaj objekt
+```
+
+## KLASE PODATAKA
+
+```{r}
+x <- "tekst"  # x je tekst
+class(x)      # Pregledaj klasu
+x <- TRUE     # x je logička klasa 
+class(x)      # Pregledaj klasu
+x <- 100      # x je broj
+class(x)      # Pregledaj klasu
+```
+
+## FAKTORI I
+```{r}
+# Stvori numerički vektor
+grupa <- c(1,1,1,2,2,3,3)
+grupa # Pogledaj objekt
+# Pretvori numerički vektor u faktor
+grupa <- as.factor(grupa)
+grupa # Pogledaj objekt
+``` 
+
+## FAKTORI II
+
+- računske operacije sa faktorima nisu iste kao sa numeričkim vektorima
+
+```{r}
+grupa + 2
+```
+
+## NAZIVI FAKTORA
+
+```{r}
+# Stvori faktoraku varijablu;spol ispitanika 
+spol <- as.factor(c(1,1,1,1,2,2,2))
+spol # Pogledaj objekt
+# Pripiši nazive faktorima
+levels(spol) <- c("muški", "ženski")
+print(spol) # Prikaži objekt
+```
+
+## PODATKOVNI OKVIRI (data frame)
+
+```{r}
+# Za stvaranje df-a ćemo koristiti varijable spol i grupa
+# Stvaranje dodatne dvije numeričke varijable
+starost <- c(17, 19, 21, 37, 18, 19, 47)
+bodovi <- c(12, 15, 16, 14, 25, 21, 29)
+# Stvori df
+df <- data.frame( grupa, spol, starost, bodovi ) 
+head(df, 5) # Pogledaj prvih 5 redova df-a
+```
+
+## IZVLAČENJE PODATAKA IZ DFa 
+
+```{r}
+# Pogledaj seriju bodova
+df$bodovi 
+# Pogledaj nazive varijabli (kolona)
+names(df)
+```
+
+## LISTE
+
+```{r}
+# Stvori listu
+ana <- list(godine = 26,
+            student = TRUE,
+            roditelji = c("Marko","Mia"))
+ana # Pogledaj objekt
+```
+
+## LISTE I
+ 
+```{r}
+# Pristupi elementima liste
+ana$student
+ana$roditelji
+```
+
+## LISTE II
+
+```{r}
+# Dodaj element u listu
+ana$mjesto_stanovanja <- "Zagreb"
+ana # Pogledaj objekt 
+```

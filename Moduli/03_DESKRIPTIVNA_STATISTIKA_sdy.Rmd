@@ -1,0 +1,648 @@
+---
+title: 'RAD SA PODATCIMA: DESKRIPTIVNA STATISTIKA'
+author: "dr.sc. Luka Šikić"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  slidy_presentation: default
+  ioslides_presentation: default
+  beamer_presentation:
+    colortheme: beaver
+    fonttheme: structurebold
+    theme: Szeged
+institute: Preddiplomski studij sociologije
+subtitle: Hrvatski studiji
+font: 3t
+---
+
+```{r, echo=FALSE, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(lsr)
+library(psych)
+
+```
+
+## CILJEVI PREDAVANJA
+
+- Podatci
+- Mjere centralne tendencije
+- Mjere varijabilnosti
+- Mjere asimetrije i zaobljenosti
+- Pregled varijabli i podatatkovnih okvira
+- Standardizirane vrijednosti
+- Korelacija
+
+
+## PODATCI
+
+```{r}
+# Učitaj paket
+library(lsr)
+# Definiraj put do podataka setwd()
+# Provjera getwd() 
+load("../Podatci/aflsmall.Rdata") # Učitaj podatke u radni prostor
+who() # Pregledaj učitane podatke
+
+# Pregledaj podatke
+print(afl.margins[1:11])
+print(afl.finalists[1:5])
+```
+
+```{r histogram1, fig.cap="Histogram pobjedničkih bodova(`afl.margins`) iz AFL 2010 lige američkog nogometa. Grafikon prikazuje da se broj pobjeda uz veću razliku rijeđe pojavljuje.", fig.height=4, echo=FALSE}
+# prikaži podatke
+	hist( afl.margins, breaks=  seq(0,120,10), border="white", col= "grey",
+		xlab = "Pobjednički bodovi", ylab = "Frekvencija", main = ""
+	)
+```
+
+## MJERE CENTRALNE TENDENCIJE
+
+- Aritmetička sredina
+- Medijan
+- Mod
+
+
+## ARITMETIČKA SREDINA
+- Definicija
+$$
+\bar{X} = \frac{X_1 + X_2 + ... + X_{N-1} + X_N}{N} 
+$$
+- Sumiranje
+$$
+\sum_{i=1}^5 X_i
+$$
+- Skraćeni zapis
+$$
+\bar{X} = \frac{1}{N} \sum_{i=1}^N X_i 
+$$
+
+- Izračun rukom
+$$
+\frac{56 + 31 + 56 + 8 + 32}{5} = \frac{183}{5} = 36.60
+$$
+- Kalkulator
+```{r}
+(56 + 31 + 56 + 8 + 32) / 5
+```
+
+- Funkcija
+```{r}
+sum( afl.margins[1:5]) / 5
+```
+
+## MEDIJAN
+- za neparni niz
+$$
+8, 31, \mathbf{32}, 56, 56
+$$
+- za parni niz
+$$
+8, 14, \mathbf{31}, \mathbf{32}, 56, 56
+$$
+
+```{r}
+#  Izračunaj median putem funkcije
+median( x = afl.margins ) # Cijeli podatkovni skup
+```
+
+## EKSTREMNE VRIJEDNOSTI 
+
+```{r}
+# Definiraj vektor od 10 brojeva
+vektor_10 <- c( -15,2,3,4,5,6,7,8,9,12 )
+mean( x = vektor_10 ) # Izračunaj AS
+median( x = vektor_10 ) # Izračunaj medijan
+# Ukloni 10% ekstremnih vrijednosti
+mean( x = vektor_10, trim = .1)
+# Ukloni 5% ekstremnih vrijednosti
+mean( x = afl.margins, trim = .05)  
+
+```
+
+## MOD 
+
+```{r, fig.width= 8}
+# Pogledaj frekvenciju podataka
+table(afl.finalists)
+# Izračunaj modalnu vrijednost
+modeOf( x = afl.finalists )
+# Izračunaj modalnu frekvenciju
+maxFreq(x = afl.finalists)
+# Izaračun za afl.margins podatke
+modeOf(afl.margins)  # Mod
+maxFreq(afl.margins) # Modalna frekvencija
+```
+
+## MJERE VARIJABILNOSTI
+
+- Raspon/Min-Max
+- Kvartili
+- Prosječno apsolutno odstupanje
+- Varijanca
+- Standardna devijacija 
+- Srednje apsolutno odstupanje
+
+## RASPON/MIN-MAX
+
+```{r}
+# Maksimalna vrijednost
+max(afl.margins)
+# Minimalna vrijednost
+min(afl.margins)
+# Raspon podataka
+range(afl.margins)
+```
+
+## KVARTILI 
+
+```{r}
+# Izračunaj pedeseti (50i) kvartil/percentil
+quantile(x = afl.margins, probs = .5)
+# Izračunaj 25i i 75i kvartil/percentil
+quantile(afl.margins, probs = c(.25,.75))
+# Izračunaj interkvartilni raspon
+IQR(x = afl.margins)
+
+```
+
+
+## PROSJEČNO APSOLUTNO ODSTUPANJE 
+
+- Formula
+$$
+\mbox{}(X) = \frac{1}{N} \sum_{i = 1}^N |X_i - \bar{X}|
+$$
+
+```{r echo=FALSE}
+knitr::kable(rbind(c(1 , 56 , 19.4  , 19.4),
+                   c(2 , 31 ,  -5.6 , 5.6),
+                   c(3 , 56 , 19.4  , 19.4),
+                   c(4 , 8 , -28.6  , 28.6),
+                   c(5 , 32 , -4.6  , 4.6)),
+caption = 'Tablica za ručni izračun prosječnog apsolutnog odstupanja.',
+col.names = c( "$i$",
+               "$X_i$", 
+               "$X_i - \\bar{X}$",
+               "$(X_i - \\bar{X})$"),
+  booktabs = TRUE)
+```
+- izračun rukom
+
+$$
+\frac{19.4 + 5.6 + 19.4 + 28.6 + 4.6}{5} = 15.52
+$$
+
+- Izračun pomoću funkcija
+
+```{r}
+X <- c(56, 31,56,8,32) # Napravi vektor
+X.bar <- mean( X )     # Korak 1. Izračunaj AS 
+AD <- abs( X - X.bar ) # Korak 2. Uzmi aps vrijednost 
+AAD <- mean( AD )      # Korak 3. Izračunaj AS devijacija
+print( AAD )           # Pogledaj rezultate
+```
+
+
+## VARIJANCA 
+
+$$
+\mbox{Var}(X) = \frac{1}{N} \sum_{i=1}^N \left( X_i - \bar{X} \right)^2
+$$
+
+$$\mbox{Var}(X) = \frac{\sum_{i=1}^N \left( X_i - \bar{X} \right)^2}{N}$$
+
+
+```{r echo=FALSE}
+knitr::kable(rbind(c(1 , 56 , 19.4  , 376.36),
+                   c(2 , 31 ,  -5.6 , 31.36),
+                   c(3 , 56 , 19.4  , 376.36),
+                   c(4 , 8 , -28.6  , 817.96),
+                   c(5 , 32 , -4.6  , 21.16)),
+caption = 'Tablica za ručni izračun varijance.',
+col.names = c( "$i$",
+               "$X_i$", 
+               "$X_i - \\bar{X}$",
+               "$(X_i - \\bar{X})^2$"),
+  booktabs = TRUE)
+```
+
+```{r}
+# Kalkulator
+(376.36 + 31.36 + 376.36 + 817.96 + 21.16 ) / 5
+```
+
+
+```{r}
+# Izračunaj varijancu pomoću funkcija
+mean( (X - mean(X) )^2)
+var(X) # Skrati postupak
+## Isti primjer sa svim podatcima
+# Izračunaj varijancu pomoću funkcija
+mean( (afl.margins - mean(afl.margins) )^2)
+var( afl.margins ) # Skrati postupak
+```
+
+## STANDARDNA DEVIJACIJA 
+
+$$
+s = \sqrt{ \frac{1}{N} \sum_{i=1}^N \left( X_i - \bar{X} \right)^2 }
+$$
+$$
+\hat\sigma = \sqrt{ \frac{1}{N-1} \sum_{i=1}^N \left( X_i - \bar{X} \right)^2 }
+$$
+
+```{r}
+# Izračunaj pomoću funkcije
+sd( afl.margins ) 
+```
+
+
+## APSOLUTNO ODSTUPANJE OD MEDIJANA 
+
+
+```{r}
+# Prosječno apsolutno odstupanje od prosjeka
+mean( abs(afl.margins - mean(afl.margins)) )
+# *Medijansko*  apsolutno odstupanje od *medijana*:
+median( abs(afl.margins - median(afl.margins)) )
+# Izračun putem funkcije
+mad( x = afl.margins, constant = 1 )
+```
+
+## KOEFICIJENT ASIMETRIJE 
+
+```{r skewness, fig.cap="Asimetričnost: na lijevoj strani (skew $= -.93$), u sredini nema zakrivljenosti ( skew $= -.006$), na desnoj strani (skew $= .93$).", echo=FALSE,warning=FALSE, fig.height=3}
+library(psych)
+	x1 <- rbeta(n = 100000, shape1= 10, shape2 = 2)
+	x2 <- rbeta(n = 100000, shape1= 10, shape2 = 10)
+	x3 <- rbeta(n = 100000, shape1= 2, shape2 = 10)
+	X <- list(x1,x2,x3)
+	plot.new()
+	old <- par(no.readonly = TRUE)
+	par(mfrow=c(1,3))
+	ttl = c("Negativna asimetričnost", "Bez asimetričnosti", "Pozitivna asimetričnost")
+	for (i in 1:3) {
+	  hist(x = X[[i]],
+	       breaks = seq(0,1,.05),
+	       xlab = "",
+	       ylab = "",
+	       main = ttl[i],
+	       axes = FALSE,
+	       col = "cornflowerblue",
+	       border = "white",
+			font.main = 1
+	       )
+#	  print(skew(X[[i]]))
+	}
+	par( old )
+```
+
+$$
+\mbox{skewness}(X) = \frac{1}{N \hat{\sigma}^3} \sum_{i=1}^N (X_i - \bar{X})^3
+$$
+
+```{r}
+# Izračunaj na stvarnim podatcima
+skew( x = afl.margins )
+```
+
+
+## KOEFICIJENT ZAOBLJENOSTI 
+
+```{r kurtosis, fig.cap="Zaobljenost: na lijevoj strani ravno (kurtosis = $-.95$),u sredini normalna zaobljenost (kurtosis ~ 0), na desnoj strani zaobljeno (kurtosis $= 2.12$). Zaobljenost se mjeri u odnosu na crnu liniju.", echo=FALSE, fig.height = 3}
+	#x1 <- c(rexp(n = 5000, rate =2), -rexp(n = 5000, rate =2) )
+	x3 <- c(rnorm(n = 50000, mean =0, sd = 1), (runif(n = 50000)-.5)+rnorm(50000,0,.1) )*1.6
+	x2 <- rnorm(n = 100000, mean = 0, sd = 1)*1.2
+	x1 <- (runif(n = 100000) + rnorm(100000, mean =0, sd = .1) -.5)*4
+	X <- list(x1,x2,x3)
+	plot.new()
+	old <- par(no.readonly = TRUE)
+	par(mfrow=c(1,3))
+	ttl = c( 'Ravno','Normalno', 'Zaobljeno')
+	for (i in 1:3) {
+		hist(x = X[[i]],
+			breaks = seq(-20.5,20.5,.5),
+			ylim =c(0,.45),
+			xlim = c(-5,5),
+			xlab = "",
+			ylab = "",
+			main = ttl[i],
+			axes = FALSE,
+			freq = FALSE,
+	    col = "cornflowerblue",
+			font.main=1,
+			border = "white"
+		)
+		lines(x <- seq(-4,4,.01), y = dnorm(x, mean(X[[i]]), sd(X[[i]])), 
+			lwd = 2, lty = 1, col = "black")
+#		print(kurtosi(X[[i]]))
+	}
+	par( old )
+```
+
+$$
+\mbox{kurtosis}(X) = \frac{1}{N \hat\sigma^4} \sum_{i=1}^N \left( X_i - \bar{X} \right)^4  - 3
+$$
+
+```{r}
+# Izračunaj na stvarnim podatcima
+kurtosi( x = afl.margins )
+```
+
+## DESKRIPTIVNA STATISTIKA NA VARIJABLI 
+
+```{r}
+# Pregled numeričke varijable
+summary( object = afl.margins ) # Deskriptivna stat 
+```
+
+```{r}
+# Pregled logičke varijable
+ekstremi <-  afl.margins > 50 # Stvori log varijablu
+head(ekstremi,5) # Pogledaj podatke
+summary(ekstremi) # Deskriptivna stat
+```
+
+```{r}
+# Pregled faktorske varijable
+summary(object = afl.finalists) # Deskriptivna stat
+
+# Pregled tekstualne varijable
+txt <- as.character( afl.finalists ) # Stvori txt var
+summary( object = txt ) # Deskriptivna stat
+```
+
+## NOVI PODATKOVNI SKUP 
+
+```{r}
+rm(list = ls()) # Očisti radni prostor
+load("../Podatci/clinicaltrial.Rdata") # Učitaj podatke
+who(TRUE) # Pregled podataka 
+
+```
+ 
+## DESKRIPTIVNA STATISTIKA NA PODATKOVNOM OKVIRU 
+
+```{r}
+# Deksriptivna statistika na podatkovnom okviru
+summary(clin.trial) # Desktiptivna stat
+# Deksriptivna statistika na podatkovnom okviru
+describe(clin.trial) # Desktiptivna stat/ druga funkcija
+```
+
+```{r}
+# Pregledaj grupirano prema terapiji
+by(data = clin.trial, # Izvor podataka
+   INDICES = clin.trial$therapy, # Odredi grupiranje
+   FUN = summary) # Odredi funkciju
+
+# Pregledaj grupirano prema razlici u raspoloženju
+aggregate(formula = mood.gain ~ drug + therapy, # Prikaz
+          data = clin.trial, # Podatci
+          FUN = mean) # AS
+
+```
+
+```{r}
+# Pregledaj grupirano prema razlici u raspoloženju
+aggregate(mood.gain ~ drug + therapy,  # Prikaz
+          clin.trial, # Podatci
+          sd) # Standardna devijacija
+
+```
+
+
+## STANDARDNE VRIJEDNOSTI 
+
+
+$$
+\mbox{standardna vrijednost} = \frac{\mbox{vrijednost opservacije} - \mbox{prosjek}}{\mbox{standardna devijacija}}
+$$ 
+
+$$
+z_i = \frac{X_i - \bar{X}}{\hat\sigma}
+$$
+
+$$
+z = \frac{35 - 17}{5} = 3.6
+$$
+```{r}
+# Vidi dio u distribuciji
+pnorm( 3.6 ) 
+```
+
+## NOVI PODATKOVNI SKUP
+
+```{r}
+rm(list = ls()) # Očisti radni prostor
+ # Učitaj podatke
+load("../Podatci/parenthood.Rdata")
+who(TRUE) # Pregled podataka 
+# Pregledaj podatke
+head(parenthood, 7) # Prvih 7 redova
+# Pogledaj deskriptivnu statistiku
+describe(parenthood)
+```
+
+```{r parenthood, fig.cap="Grafički prikaz varijabli u `parenthood` podatkovnom skupu.", echo=FALSE, fig.height =4}
+par(mfcol = c(1, 3)) # Create a 2 x 2 plotting matrix
+	plotOne <- function( x,... ) {
+	
+		hist( x, border="white",
+			col=("cornflowerblue"),
+			ylab="Frekvencija", main="",
+			...
+		)
+		
+	}
+	
+	plotOne( parenthood$dan.grump, xlab="Raspoloženje" )
+	plotOne( parenthood$dan.sleep, xlab="Sati spavanja/roditelj" )
+	plotOne( parenthood$baby.sleep, xlab="Sati spavanja/dijete" )	
+```
+
+
+## KORELACIJA 
+
+```{r scatterparent1a, fig.cap="Dijagram rasipanja za varijable `Sati spavanja/roditelj` i `Raspoloženje`.", echo=FALSE, fig.height=5}
+oneCorPlot <- function(x,y,...) {
+		
+		plot(x,y,pch=19,col=("black"),...)
+		
+	}
+	
+	oneCorPlot( parenthood$dan.sleep, parenthood$dan.grump, 
+		xlab="Sati spavanja/roditelj", ylab="Raspoloženje"
+	)
+```
+
+```{r scatterparent1b, fig.cap="Dijagram rasipanja za varijable `Sati spavanja/dijete` i `Raspoloženje`.", echo=FALSE,fig.height=5}
+oneCorPlot <- function(x,y,...) {
+		
+		plot(x,y,pch=19,col=("black"),...)
+		
+	}
+	
+	oneCorPlot( parenthood$baby.sleep, parenthood$dan.grump, 
+		xlab="Sati spavanja/dijete", ylab="Raspoloženje"
+	)
+```
+
+
+```{r scatterparent2, fig.cap="Dijagram rasipanja za varijable `Sati spavanja/dijete` i `Sati spavanja/roditelj`.", echo=FALSE, ,fig.height=5}
+oneCorPlot <- function(x,y,...) {
+		
+		plot(x,y,pch=19,col=("black"),...)
+		
+	}
+	
+	oneCorPlot( parenthood$baby.sleep, parenthood$dan.sleep, 
+		xlab="Sati spavanja/dijete", ylab="Sati spavanja/roditelj")
+``` 
+
+
+- Kovarijanca
+$$
+\mbox{Cov}(X,Y) = \frac{1}{N-1} \sum_{i=1}^N \left( X_i - \bar{X} \right) \left( Y_i - \bar{Y} \right)
+$$
+- Personov korelacijski koeficijent(standardizacija kovarijance)
+$$
+r_{XY}  = \frac{\mbox{Cov}(X,Y)}{ \hat{\sigma}_X \ \hat{\sigma}_Y}
+$$
+
+## SMJER I INTENZITET KORELACIJE 
+
+```{r corr, fig.height=8, echo=FALSE, fig.cap="Različiti smjer i intenzitet korelacije.", message=FALSE}
+library(MASS)
+par(mfcol = c(4, 2)) # Create a 2 x 2 plotting matrix
+# The next 4 plots created will be plotted next to each other
+d.cor <- 0.0
+out.0 <- as.data.frame(mvrnorm(100, mu = c(0,0), 
+                             Sigma = matrix(c(1,d.cor,d.cor,1), ncol = 2), 
+                             empirical = TRUE))
+plot(out.0,frame.plot=FALSE, axes=FALSE,xlab=paste("r = ",d.cor),ylab= "" )
+d.cor <- 0.33
+out.1 <- as.data.frame(mvrnorm(100, mu = c(0,0), 
+                             Sigma = matrix(c(1,d.cor,d.cor,1), ncol = 2), 
+                             empirical = TRUE))
+plot(out.1,frame.plot=FALSE, axes=FALSE,xlab=paste("r = ",d.cor),ylab= "" )
+d.cor <- 0.66
+out.2 <- as.data.frame(mvrnorm(100, mu = c(0,0), 
+                             Sigma = matrix(c(1,d.cor,d.cor,1), ncol = 2), 
+                             empirical = TRUE))
+plot(out.2,frame.plot=FALSE, axes=FALSE,xlab=paste("r = ",d.cor),ylab= "" )
+d.cor <- 1
+out.2 <- as.data.frame(mvrnorm(100, mu = c(0,0), 
+                             Sigma = matrix(c(1,d.cor,d.cor,1), ncol = 2), 
+                             empirical = TRUE))
+plot(out.2,frame.plot=FALSE, axes=FALSE,xlab=paste("r = ",d.cor),ylab= "" )
+d.cor <- 0.0
+out.0 <- as.data.frame(mvrnorm(100, mu = c(0,0), 
+                             Sigma = matrix(c(1,d.cor,d.cor,1), ncol = 2), 
+                             empirical = TRUE))
+plot(out.0,frame.plot=FALSE, axes=FALSE,xlab=paste("r = ",d.cor),ylab= "" )
+d.cor <- -0.33
+out.1 <- as.data.frame(mvrnorm(100, mu = c(0,0), 
+                             Sigma = matrix(c(1,d.cor,d.cor,1), ncol = 2), 
+                             empirical = TRUE))
+plot(out.1,frame.plot=FALSE, axes=FALSE,xlab=paste("r = ",d.cor),ylab= "" )
+d.cor <- -0.66
+out.2 <- as.data.frame(mvrnorm(100, mu = c(0,0), 
+                             Sigma = matrix(c(1,d.cor,d.cor,1), ncol = 2), 
+                             empirical = TRUE))
+plot(out.2,frame.plot=FALSE, axes=FALSE,xlab=paste("r = ",d.cor),ylab= "" )
+d.cor <- -1
+out.2 <- as.data.frame(mvrnorm(100, mu = c(0,0), 
+                             Sigma = matrix(c(1,d.cor,d.cor,1), ncol = 2), 
+                             empirical = TRUE))
+plot(out.2,frame.plot=FALSE, axes=FALSE,xlab=paste("r =",d.cor),ylab= "" )
+
+```
+
+## IZRAČUN KORELACIJE U R
+
+```{r}
+# Izračunaj korelaciju između spavanja i raspoloženja
+cor(x = parenthood$dan.sleep, y = parenthood$dan.grump)
+# Izračunaj korelacijsku tablicu
+cor(x = parenthood)
+```
+
+
+## INTERPRETACIJA KORELACIJE
+
+```{r interpretingcorrelations, echo=FALSE}
+knitr::kable(
+rbind(
+c("-1.0 to -0.9" ,"Izrazito jaka", "Negativna"),
+c("-0.9 to -0.7", "Jaka", "Negativna") ,
+c("-0.7 to -0.4", "Umjerena", "Negativna") ,
+c("-0.4 to -0.2", "Slaba", "Negativna"),
+c("-0.2 to 0","Zanemariva", "Negativna") ,
+c("0 to 0.2","Zanemariva", "Pozitivna"),
+c("0.2 to 0.4", "Slaba", "Pozitivna"), 
+c("0.4 to 0.7", "Umjerena", "Pozitivna"), 
+c("0.7 to 0.9", "Jaka", "Pozitivna"), 
+c("0.9 to 1.0", "Izrazito jaka", "Pozitivna")), col.names=c("Korelacija", "Snaga", "Smjer"),
+  booktabs = TRUE, caption = "Okvirne smjernice za interpretaciju korelacije.")
+```
+
+
+## NOVI PODATKOVNI SKUP
+
+```{r}
+rm(list=ls()) # Očisti radni prostor
+load("../Podatci/effort.Rdata") # Učitaj podatke
+who(TRUE) # Pregledaj podatke
+head(effort, 3) #Pregledaj podatke
+cor(effort$hours, effort$grade) # Izračunaj korelaciju
+```
+
+```{r rankcorrpic, fig.cap="Odnos između sati studiranja i ocjene (svaka točka predstavlja jednog studenta). Isprekidana linija prikazuje linearni odnos. Korelacija između ove dvije varijable je visoka $r = .91$. Valja primjetiti da više sati učenja uvijek dodnosi veću ocjenu što se odražava u visokom Spearman koeficijentu korelacije of $rho = 1$. ", echo=FALSE, fig.height=4}
+
+describeImg <- list()
+emphCol <- rgb(0,0,1)
+emphColLight <- rgb(.5,.5,1)
+emphGrey <- grey(.5)
+eps <- TRUE
+colour <- TRUE
+width <- 7
+	height <- 6
+	
+	# load data
+	load("../Podatci/effort.Rdata")
+	require(lsr)
+	effort <- sortFrame(effort,hours)
+	# draw the plot
+	plot(effort$hours,effort$grade,type="b",col=ifelse(colour,emphCol,"black"),
+		xlab="Sati studiranja",ylab="Ocjena",xlim=c(0,80),ylim=c(0,100),
+		pch=19,lwd=3)
+	abline(coef=lm(grade~hours,effort)$coef,lty=2)
+	
+```
+
+## SPEARMANOVA KORELACIJA 
+
+```{r}
+sati_studiranja <- rank( effort$hours ) # Rang sati
+ocjena <- rank( effort$grade ) # Rang ocjena
+```
+
+| | Rang sati rada | Rang visine ocjene |
+|-|---------------------|-----------------------|
+|student | 1 |   1 |   1 |
+|student | 2  | 10   |10 |
+|student | 3 |   6  |  6 |
+|student | 4 |   2 |   2 |
+|student | 5 |   3 |   3 |
+|student | 6  |  5  |  5 |
+|student | 7  |  4  |  4 |
+|student | 8  |  8  |  8 |
+|student | 9   | 7  |  7 |
+|student | 10 | 9| 9
+
+
+```{r}
+cor(sati_studiranja,ocjena) # Izračunaj korelaciju
+# Dodaj argument "spearman"
+cor(effort$hours, effort$grade, method = "spearman")
+```

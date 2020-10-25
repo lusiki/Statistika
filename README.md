@@ -38,10 +38,10 @@ Koristiti ćemo tri knjige.
 <i>Napomena:</i> Predavanja će biti dostupna kao .pdf,.html i .Rmd.
 
 
-<a href="/Predavanja/01_UVOD.pdf">Predavanje 01: Pregled kolegija i studentskih obveza</a>
+<a href="/Moduli/01_UVOD.pdf">Predavanje 01: Pregled kolegija i studentskih obveza</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Predavanja/02_UVOD_U_R.pdf">Predavanje 02: Uvod u R</a> (+ <a href="/Predavanja/02_DODATNI_KONCEPTI_R.pdf">Dodatni koncepti R</a>)
+<a href="/Moduli/02_UVOD_U_R.pdf">Predavanje 02: Uvod u R</a> (+ <a href="/Moduli/02_DODATNI_KONCEPTI_R.pdf">Dodatni koncepti R</a>)
 
 <ul>
 <li> Radni prostor</li>
@@ -53,7 +53,7 @@ Koristiti ćemo tri knjige.
 
 </div>
 
-<b>Format predavanja:</b> <a href="/Predavanja/02_UVOD_U_R.html">.html</a> | <a href="/Predavanja/02_UVOD_U_R.pdf">.pdf</a> | <a href="/Predavanja/02_UVOD_U_R.Rmd">.Rmd</a> (+ Dodatni koncepti R: <a href="/Predavanja/02_DODATNI_KONCEPTI_R.html">.html</a> | <a href="/Predavanja/02_DODATNI_KONCEPTI_R.pdf">.pdf</a> | <a href="/Predavanja/02_DODATNI_KONCEPTI_R.Rmd">.Rmd</a>)
+<b>Format predavanja:</b> <a href="/Moduli/02_UVOD_U_R.html">.html</a> | <a href="/Moduli/02_UVOD_U_R.pdf">.pdf</a> | <a href="/Predavanja/02_UVOD_U_R.Rmd">.Rmd</a> (+ Dodatni koncepti R: <a href="/Predavanja/02_DODATNI_KONCEPTI_R.html">.html</a> | <a href="/Moduli/02_DODATNI_KONCEPTI_R.pdf">.pdf</a> | <a href="/Moduli/02_DODATNI_KONCEPTI_R.Rmd">.Rmd</a>)
 <br><b>Čitanje: </b><a href="https://www.srce.unizg.hr/files/srce/docs/edu/R/s720_polaznik.pdf">Uvod u R - skripta I</a> + </b><a href="https://cran.r-project.org/doc/contrib/Kasum+Legovic-UvodUr.pdf">Uvod u R - skripta II</a> + </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR, poglavlja 3 i 4</a>
 
 
@@ -92,7 +92,7 @@ Koristiti ćemo tri knjige.
 </div>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Predavanja/05_.pdf">Predavanje 05: Teorija vjerojatnosti</a>
+<a href="/Moduli/05_.pdf">Predavanje 05: Teorija vjerojatnosti</a>
 
 <ul>
 <li> Deskriptivna vs. inferencijalna statistika</li>

@@ -269,7 +269,7 @@ Svi studenti tijekom semestra moraju održati jednu prezentaciju prema zadanoj l
 
 
 
-
+.ftnote[BGfix]
 
 
 

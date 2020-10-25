@@ -23,6 +23,9 @@ class: center, middle, inverse, title-slide
 
 
 
+
+
+
 class: inverse, middle
 
 
@@ -62,7 +65,7 @@ layout:true
 ---
 
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/snowmap1-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/snowmap1-1.svg" style="display: block; margin: auto;" /&gt;
 
 .footnote[[*]Prilagodba karte izbijanja kolere Johna Snow-a. Male točke označavaju incidenciju kolere, a velike lokaciju bundara. Najveći broj incidencija se dogodio na Broad St bunaru.  Prikaz koristi podatke iz paketa `HistData`.]
 
@@ -109,7 +112,7 @@ Fibonacci &lt;- c( 1,1,2,3,5,8,13 ) # Stvori fibonacijev niz
 plot( Fibonacci ) # Prikaži niz grafički
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-2-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -125,7 +128,7 @@ plot( x = Fibonacci,
              ylab = "Naziv y-osi" )
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/secondplot-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/secondplot-1.svg" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -144,7 +147,7 @@ plot( x = Fibonacci,                              # Podatkovni skup
  		  col.lab = "gray50" )
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/thirdplot-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/thirdplot-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -174,7 +177,7 @@ plot(Fibonacci, # Podatci
 
 .hi[Različite vrste (`type`) grafikona]
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-3-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -192,7 +195,7 @@ plot(x = Fibonacci, # Podatci
 	 lwd = 4  )     # Estetika
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/fifthplot-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/fifthplot-1.svg" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -207,7 +210,7 @@ plot(x = Fibonacci, # Podatci
 		 las = 1 )         # Okreni tekst
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/sixthplot-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/sixthplot-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 layout:false
@@ -230,7 +233,7 @@ load( "../Podatci/aflsmall.Rdata")
 hist(afl.margins) # Napravi histogram
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/hist1a-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/hist1a-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -242,7 +245,7 @@ hist(afl.margins) # Napravi histogram
 hist( x = afl.margins, breaks = 3 )
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/hist1b-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/hist1b-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -254,7 +257,7 @@ hist( x = afl.margins, breaks = 3 )
 hist( x = afl.margins, breaks = 0:116 )
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/hist1c-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/hist1c-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 &lt;br&gt;
@@ -281,7 +284,7 @@ hist( x = afl.margins,
 
 .hi[Uređeni histogram]
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/hist2d-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/hist2d-1.svg" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -307,8 +310,8 @@ summary( afl.margins )
 ```
 
 ```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##    0.00   12.75   30.50   35.30   50.50  116.00
+#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#&gt;    0.00   12.75   30.50   35.30   50.50  116.00
 ```
 
 ---
@@ -322,13 +325,13 @@ load( "../Podatci/aflsmall.Rdata") #U čitaj podatke
 boxplot( x = afl.margins )
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-5-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
 .hi[Označeni Box Plot]
 
-&lt;img src="../Foto/boxplot1_annotated.png" width="800" /&gt;
+&lt;img src="../Foto/boxplot1_annotated.png" width="800" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -355,7 +358,7 @@ boxplot( x = afl.margins,           # Podatci
 
 .hi[Prilagodbe na Box Plotu]
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/boxplot3b-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/boxplot3b-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -373,10 +376,10 @@ who( TRUE ) # Prvi pregled učitanih objekata
 ```
 
 ```
-##    -- Name --   -- Class --   -- Size --
-##    afl2         data.frame    4296 x 2  
-##     $margin     numeric       4296      
-##     $year       numeric       4296
+#&gt;    -- Name --   -- Class --   -- Size --
+#&gt;    afl2         data.frame    4296 x 2  
+#&gt;     $margin     numeric       4296      
+#&gt;     $year       numeric       4296
 ```
 
 
@@ -391,13 +394,13 @@ head( afl2 ) # Pogledaj podatke
 ```
 
 ```
-##   margin year
-## 1     33 1987
-## 2     59 1987
-## 3     45 1987
-## 4     91 1987
-## 5     39 1987
-## 6      1 1987
+#&gt;   margin year
+#&gt; 1     33 1987
+#&gt; 2     59 1987
+#&gt; 3     45 1987
+#&gt; 4     91 1987
+#&gt; 5     39 1987
+#&gt; 6      1 1987
 ```
 
 ---
@@ -410,7 +413,7 @@ boxplot(formula = margin ~ year,
          data = afl2)
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-8-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -418,10 +421,10 @@ boxplot(formula = margin ~ year,
 
 
 ```
-##    -- Name --   -- Class --   -- Size --
-##    afl2         data.frame    4296 x 2  
-##     $margin     numeric       4296      
-##     $year       numeric       4296
+#&gt;    -- Name --   -- Class --   -- Size --
+#&gt;    afl2         data.frame    4296 x 2  
+#&gt;     $margin     numeric       4296      
+#&gt;     $year       numeric       4296
 ```
 ---
 
@@ -431,20 +434,20 @@ boxplot(formula = margin ~ year,
 &lt;br&gt;
 
 ```
-##   margin year
-## 1     33 1987
-## 2     59 1987
-## 3     45 1987
-## 4     91 1987
-## 5     39 1987
-## 6      1 1987
+#&gt;   margin year
+#&gt; 1     33 1987
+#&gt; 2     59 1987
+#&gt; 3     45 1987
+#&gt; 4     91 1987
+#&gt; 5     39 1987
+#&gt; 6      1 1987
 ```
 
 ---
 
 .hi[Prikaži više Box Plotova]
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-11-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -477,7 +480,7 @@ boxplot( formula =  margin ~ year,   # the formula
 
 .hi[Prilagodi i uredi Box Plot]
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/multipleboxplots3-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/multipleboxplots3-1.svg" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -500,7 +503,7 @@ plot( x = parenthood$dan.sleep,     # Podatci za x-os
  )  
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/scattera-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/scattera-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -531,7 +534,7 @@ plot( x = parenthood$dan.sleep,         # Podatci za x-os
 
 .hi[Prilagodbe na dijagramu rasipanja]
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/scatterba-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/scatterba-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -539,13 +542,6 @@ plot( x = parenthood$dan.sleep,         # Podatci za x-os
 ```r
 # Koristi drugu funkciju za izradu dijagrama rasipanja.
 library(car) # Učitaj paket
-```
-
-```
-## Loading required package: carData
-```
-
-```r
 # Koristi funkciju `scatterplot()`
 scatterplot( dan.grump ~ dan.sleep, # Definiraj varijable
               data = parenthood,    # Podatci
@@ -553,7 +549,7 @@ scatterplot( dan.grump ~ dan.sleep, # Definiraj varijable
 )
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/scb-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/scb-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -566,11 +562,11 @@ cor( x = parenthood ) # Korelacijska matrica
 ```
 
 ```
-##              dan.sleep  baby.sleep   dan.grump         day
-## dan.sleep   1.00000000  0.62794934 -0.90338404 -0.09840768
-## baby.sleep  0.62794934  1.00000000 -0.56596373 -0.01043394
-## dan.grump  -0.90338404 -0.56596373  1.00000000  0.07647926
-## day        -0.09840768 -0.01043394  0.07647926  1.00000000
+#&gt;              dan.sleep  baby.sleep   dan.grump         day
+#&gt; dan.sleep   1.00000000  0.62794934 -0.90338404 -0.09840768
+#&gt; baby.sleep  0.62794934  1.00000000 -0.56596373 -0.01043394
+#&gt; dan.grump  -0.90338404 -0.56596373  1.00000000  0.07647926
+#&gt; day        -0.09840768 -0.01043394  0.07647926  1.00000000
 ```
 
 ---
@@ -584,7 +580,7 @@ pairs( formula = ~ dan.sleep + baby.sleep + dan.grump, # Definiraj varijable
 )
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-13-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 layout:false
@@ -606,7 +602,7 @@ print( freq )                       # Pregled podataka
 ```
 
 ```
-##  [1] 26 25 26 28 32  0  6 39 27 28 28 17  6 24 26 38 24
+#&gt;  [1] 26 25 26 28 32  0  6 39 27 28 28 17  6 24 26 38 24
 ```
 
 ---
@@ -621,11 +617,11 @@ print( teams )                      # Pregled podataka
 ```
 
 ```
-##  [1] "Adelaide"         "Brisbane"         "Carlton"          "Collingwood"     
-##  [5] "Essendon"         "Fitzroy"          "Fremantle"        "Geelong"         
-##  [9] "Hawthorn"         "Melbourne"        "North Melbourne"  "Port Adelaide"   
-## [13] "Richmond"         "St Kilda"         "Sydney"           "West Coast"      
-## [17] "Western Bulldogs"
+#&gt;  [1] "Adelaide"         "Brisbane"         "Carlton"          "Collingwood"     
+#&gt;  [5] "Essendon"         "Fitzroy"          "Fremantle"        "Geelong"         
+#&gt;  [9] "Hawthorn"         "Melbourne"        "North Melbourne"  "Port Adelaide"   
+#&gt; [13] "Richmond"         "St Kilda"         "Sydney"           "West Coast"      
+#&gt; [17] "Western Bulldogs"
 ```
 
 ---
@@ -637,7 +633,7 @@ print( teams )                      # Pregled podataka
 barplot( height = freq )  # Alternativno samo `barplot( freq )` 
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-16-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 .hi[Napravi stupčasti grafikon]
@@ -648,7 +644,7 @@ barplot( height = freq )  # Alternativno samo `barplot( freq )`
 barplot( height = freq, names.arg = teams ) # Dodatni argument
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-17-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -662,7 +658,7 @@ barplot(height = freq,    # Izaberi podatke
 			las = 2)            # Zakreni nazive
 ```
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-18-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -687,7 +683,7 @@ barplot( height = freq,      # Izaberi podatke
 
 .hi[Napravi stupčasti grafikon]
 
-![](04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_xar_files/figure-html/unnamed-chunk-20-1.svg" style="display: block; margin: auto;" /&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

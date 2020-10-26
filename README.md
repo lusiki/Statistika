@@ -58,7 +58,7 @@ Koristiti ćemo tri knjige.
 
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="https://raw.githack.com/BrbanMiro/Statistika/main/Predavanja/03_DESKRIPTIVNA_STATISTIKA_sdy.html">Predavanje 03: Deskriptivna statistika</a>
+<a href="/Moduli/03_DESKRIPTIVNA_STATISTIKA_xar.html">Predavanje 03: Deskriptivna statistika</a>
 
 
 <ul>
@@ -73,7 +73,7 @@ Koristiti ćemo tri knjige.
 
 </div>
 
-<b>Format predavanja:</b>  <a href="https://raw.githack.com/BrbanMiro/Statistika/main/Predavanja/03_DESKRIPTIVNA_STATISTIKA_sdy.pdf">.pdf</a> | <a href="/Predavanja/03_DESKRIPTIVNA_STATISTIKA_sdy.Rmd">.Rmd</a>| <a href="https://raw.githack.com/BrbanMiro/Statistika/main/Predavanja/03_DESKRIPTIVNA_STATISTIKA_xar.html">.xar</a>
+<b>Format predavanja:</b>  <a href="/Moduli/03_DESKRIPTIVNA_STATISTIKA_xar.html">.pdf</a> | <a href="/Predavanja/03_DESKRIPTIVNA_STATISTIKA_sdy.Rmd">.Rmd</a>
 <br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 5.</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">

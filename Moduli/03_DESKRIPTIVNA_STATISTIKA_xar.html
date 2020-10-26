@@ -35,6 +35,10 @@ layout: true
 ---
 
 ## Ciljevi
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
 
 - Upoznavanje sa podatcima
 - Mjere centralne tendencije
@@ -59,33 +63,20 @@ library(lsr)
 # Definiraj put do podataka setwd()
 # Provjera getwd() 
 load("../Podatci/aflsmall.Rdata") # Učitaj podatke u radni prostor
-who() # Pregledaj učitane podatke
+#who() # Pregledaj učitane podatke
+str(afl.finalists) # Struktura podataka
 ```
 
 ```
-#&gt;    -- Name --         -- Class --   -- Size --
-#&gt;    afl.finalists      factor        400       
-#&gt;    afl.margins        numeric       176       
-#&gt;    blue               character     1         
-#&gt;    format_pv          function                
-#&gt;    format_pvi         function                
-#&gt;    green              character     1         
-#&gt;    grey_dark          character     1         
-#&gt;    grey_light         character     1         
-#&gt;    grey_mid           character     1         
-#&gt;    orange             character     1         
-#&gt;    purple             character     1         
-#&gt;    red                character     1         
-#&gt;    red_pink           character     1         
-#&gt;    reg_columns        character     5         
-#&gt;    slate              character     1         
-#&gt;    theme_axes         theme         92        
-#&gt;    theme_axes_math    theme         92        
-#&gt;    theme_axes_serif   theme         92        
-#&gt;    theme_empty        theme         93        
-#&gt;    theme_simple       theme         93        
-#&gt;    tidy_table         function                
-#&gt;    turquoise          character     1
+#&gt;  Factor w/ 17 levels "Adelaide","Brisbane",..: 9 10 3 10 9 3 10 3 9 10 ...
+```
+
+```r
+str(afl.margins)   # Struktura podataka
+```
+
+```
+#&gt;  num [1:176] 56 31 56 8 32 14 36 56 19 1 ...
 ```
 ---
 layout: true
@@ -93,6 +84,10 @@ layout: true
 ---
 
 .hi[Pregledaj podatke]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
 
 ```r
 # Pregledaj podatke
@@ -118,11 +113,9 @@ print(afl.finalists[1:5])
 ---
 
 .hi[Vizualizacija]
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/histogram1-1.svg" alt="Histogram pobjedničkih bodova(`afl.margins`) iz AFL 2010 lige američkog nogometa. Grafikon prikazuje da se broj pobjeda uz veću razliku rijeđe pojavljuje."  /&gt;
-&lt;p class="caption"&gt;Histogram pobjedničkih bodova(`afl.margins`) iz AFL 2010 lige američkog nogometa. Grafikon prikazuje da se broj pobjeda uz veću razliku rijeđe pojavljuje.&lt;/p&gt;
-&lt;/div&gt;
+&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/histogram1-1.svg" style="display: block; margin: auto;" /&gt;
 
+.footnote[[*]Histogram pobjedničkih bodova(`afl.margins`) iz AFL 2010 lige američkog nogometa. Grafikon prikazuje da se broj pobjeda uz veću razliku rijeđe pojavljuje.]
 ---
 layout: false
 class: middle, inverse
@@ -132,7 +125,10 @@ class: middle, inverse
 layout: true
 # MJERE CENTRALNE TENDENCIJE
 ---
-
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
 - Aritmetička sredina
 - Medijan
 - Mod
@@ -140,14 +136,18 @@ layout: true
 ---
 layout: true
 #ARITMETIČKA SREDINA
+
 ---
 
 .hi[Definicija]
 
+
 $$
-\bar{X}=\frac{X_1+X_2+...+X_{N-1}+X_N}{N}
+\bar{X} = \frac{X_1+X_2 +...+ X_{N-1}+X_N} {N}
 $$
+
 --
+
 
 .hi[Sumiranje]
 
@@ -349,7 +349,10 @@ class: middle, inverse
 layout: true
 # MJERE VARIJABILNOSTI
 ---
-
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
 - Raspon/Min-Max
 - Kvartili
 - Prosječno apsolutno odstupanje
@@ -517,12 +520,14 @@ print( AAD )           # Pogledaj rezultate
 layout:true
 # VARIJANCA 
 ---
-
+&lt;br&gt;
+&lt;br&gt;
 .hi[Formula 1]
 $$
 \mbox{Var}(X) = \frac{1}{N} \sum_{i=1}^N \left( X_i - \bar{X} \right)^2
 $$
-
+&lt;br&gt;
+&lt;br&gt;
 .hi[Formula 2]
 
 `$$\mbox{Var}(X) = \frac{\sum_{i=1}^N \left( X_i - \bar{X} \right)^2}{N}$$`
@@ -636,11 +641,14 @@ var( afl.margins ) # Skrati postupak
 layout:true
 # STANDARDNA DEVIJACIJA 
 ---
-
+&lt;br&gt;
+&lt;br&gt;
 .hi[Formula 1]
 $$
 s = \sqrt{ \frac{1}{N} \sum_{i=1}^N \left( X_i - \bar{X} \right)^2 }
 $$
+&lt;br&gt;
+&lt;br&gt;
 .hi[Formula 2]
 
 $$
@@ -695,7 +703,8 @@ mad( x = afl.margins, constant = 1 )
 layout:true
 # KOEFICIJENT ASIMETRIJE 
 ---
-
+&lt;br&gt;
+&lt;br&gt;
 &lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/skewness-1.svg" style="display: block; margin: auto;" /&gt;
 ---
 
@@ -719,17 +728,22 @@ skew( x = afl.margins )
 layout:true
 # KOEFICIJENT ZAOBLJENOSTI 
 ---
-
+&lt;br&gt;
+&lt;br&gt;
 &lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/kurtosis-1.svg" style="display: block; margin: auto;" /&gt;
 ---
 
 .hi[Formula]
+&lt;br&gt;
+&lt;br&gt;
+
 
 $$
 \mbox{kurtosis}(X) = \frac{1}{N \hat\sigma^4} \sum_{i=1}^N \left( X_i - \bar{X} \right)^4  - 3
 $$
 --
-
+&lt;br&gt;
+&lt;br&gt;
 .hi[Funkcijski izračun]
 
 
@@ -881,6 +895,7 @@ describe(clin.trial) # Desktiptivna stat/ druga funkcija
 ---
 
 .hi[Grupirani pregled]
+&lt;br&gt;
 
 
 ```r
@@ -912,6 +927,8 @@ by(data = clin.trial, # Izvor podataka
 ---
 
 .hi[Grupirani pregled]
+&lt;br&gt;
+&lt;br&gt;
 
 
 ```r
@@ -1027,6 +1044,8 @@ head(parenthood, 7) # Prvih 7 redova
 #&gt; 7      8.19      10.45        53   7
 ```
 ---
+&lt;br&gt;
+&lt;br&gt;
 
 ```r
 # Pogledaj deskriptivnu statistiku
@@ -1049,11 +1068,10 @@ describe(parenthood)
 
 .hi[Vizualizacija]
 
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/parenthood-1.svg" alt="Grafički prikaz varijabli u `parenthood` podatkovnom skupu."  /&gt;
-&lt;p class="caption"&gt;Grafički prikaz varijabli u `parenthood` podatkovnom skupu.&lt;/p&gt;
-&lt;/div&gt;
+&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/parenthood-1.svg" style="display: block; margin: auto;" /&gt;
 
+
+.footnote[[*]Grafički prikaz varijabli u `parenthood` podatkovnom skupu.]
 ---
 
 layout:true
@@ -1061,29 +1079,29 @@ layout:true
 ---
 .hi[Grafički prikaz korelacije]
 
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/scatterparent1a-1.svg" alt="Dijagram rasipanja za varijable `Sati spavanja/roditelj` i `Raspoloženje`."  /&gt;
-&lt;p class="caption"&gt;Dijagram rasipanja za varijable `Sati spavanja/roditelj` i `Raspoloženje`.&lt;/p&gt;
-&lt;/div&gt;
+&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/scatterparent1a-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Dijagram rasipanja za varijable `Sati spavanja/roditelj` i `Raspoloženje`.]
 
 ---
 
 .hi[Grafički prikaz korelacije]
 
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/scatterparent2-1.svg" alt="Dijagram rasipanja za varijable `Sati spavanja/dijete` i `Sati spavanja/roditelj`."  /&gt;
-&lt;p class="caption"&gt;Dijagram rasipanja za varijable `Sati spavanja/dijete` i `Sati spavanja/roditelj`.&lt;/p&gt;
-&lt;/div&gt;
+&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/scatterparent2-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Dijagram rasipanja za varijable `Sati spavanja/dijete` i `Sati spavanja/roditelj`.]
 
 ---
-
+&lt;br
+&lt;br&gt;
 .hi[Kovarijanca]
 
 $$
 \mbox{Cov}(X,Y) = \frac{1}{N-1} \sum_{i=1}^N \left( X_i - \bar{X} \right) \left( Y_i - \bar{Y} \right)
 $$
 --
-
+&lt;br
+&lt;br&gt;
 .hi[Personov korelacijski koeficijent;standardizacija kovarijance]
 
 $$
@@ -1095,10 +1113,9 @@ layout:true
 # SMJER I INTENZITET KORELACIJE 
 ---
 
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/corr-1.svg" alt="Različiti smjer i intenzitet korelacije."  /&gt;
-&lt;p class="caption"&gt;Različiti smjer i intenzitet korelacije.&lt;/p&gt;
-&lt;/div&gt;
+&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/corr-1.svg" style="display: block; margin: auto;" /&gt;
+
+
 ---
 layout:true
 # IZRAČUN KORELACIJE U R
@@ -1246,10 +1263,10 @@ cor(effort$hours, effort$grade) # Izračunaj korelaciju
 
 .hi[Vizualizacija]
 
-&lt;div class="figure" style="text-align: center"&gt;
-&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/rankcorrpic-1.svg" alt="Odnos između sati studiranja i ocjene (svaka točka predstavlja jednog studenta). Isprekidana linija prikazuje linearni odnos. Korelacija između ove dvije varijable je visoka `\(r = .91\)`. Valja primjetiti da više sati učenja uvijek dodnosi veću ocjenu što se odražava u visokom Spearman koeficijentu korelacije of `\(rho = 1\)`. "  /&gt;
-&lt;p class="caption"&gt;Odnos između sati studiranja i ocjene (svaka točka predstavlja jednog studenta). Isprekidana linija prikazuje linearni odnos. Korelacija između ove dvije varijable je visoka `\(r = .91\)`. Valja primjetiti da više sati učenja uvijek dodnosi veću ocjenu što se odražava u visokom Spearman koeficijentu korelacije of `\(rho = 1\)`. &lt;/p&gt;
-&lt;/div&gt;
+&lt;img src="03_DESKRIPTIVNA_STATISTIKA_xar_files/figure-html/rankcorrpic-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Odnos između sati studiranja i ocjene (svaka točka predstavlja jednog studenta). Isprekidana linija prikazuje linearni odnos. Korelacija između ove dvije varijable je visoka `\(r = .91\)`. Valja primjetiti da više sati učenja uvijek dodnosi veću ocjenu što se odražava u visokom Spearman koeficijentu korelacije of `\(rho = 1\)`.]
+
 ---
 layout:true
 # SPEARMANOVA KORELACIJA 

@@ -477,7 +477,7 @@ boxplot( x = afl.margins )
 
 .hi[Označeni Box Plot]
 
-```{r boxplot1b,echo=F, fig.cap="", fig.height=4, fig.width=6}
+```{r boxplot1b,echo=F, fig.cap="", fig.height=3, fig.width=5}
 knitr::include_graphics("../Foto/boxplot1_annotated.png")
 ```
 

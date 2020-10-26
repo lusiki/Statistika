@@ -41,7 +41,7 @@ Koristiti ćemo tri knjige.
 <a href="/Moduli/01_UVOD.pdf">Predavanje 01: Pregled kolegija i studentskih obveza</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Moduli/02_UVOD_U_R.pdf">Predavanje 02: Uvod u R</a> (+ <a href="/Moduli/02_DODATNI_KONCEPTI_R.pdf">Dodatni koncepti R</a>)
+<a href="https://raw.githack.com/BrbanMiro/Statistika/main/Moduli/02_UVOD_U_R.pdf">Predavanje 02: Uvod u R</a> (+ <a href="https://raw.githack.com/BrbanMiro/Statistika/main/Moduli/02_DODATNI_KONCEPTI_R.pdf">Dodatni koncepti R</a>)
 
 <ul>
 <li> Radni prostor</li>

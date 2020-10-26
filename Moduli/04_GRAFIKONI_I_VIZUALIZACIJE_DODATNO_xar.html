@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Primjena statistike</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Luka Šikić, PhD" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css/metropolis-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Primjena statistike
+## Predavanje 4: Dodatni koncepti u vizualizaciji podataka
+### Luka Šikić, PhD
+### Fakultet hrvatskih studija | <a href="https://github.com/BrbanMiro/Obrada-podataka">OP</a>
+
+---
+
+
+
+
+# PREGLED PREDAVANJA
+
+1. [Instalacija](#instalacija)
+
+2. [Zašto R?](#zakaj)
+
+3. [ggplot2](#ggplot2)
+
+
+
+
+
+
+---
+class: inverse, center, middle
+name: instalacija
+
+# Instalacija
+
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+
+---
+
+# Instalacija software-a i registracija
+
+1. Preuzmi [R](https://www.r-project.org/).
+
+2. Preuzmi [RStudio](https://www.rstudio.com/products/rstudio/download/preview/).
+
+3. Preuzmi [Git](https://git-scm.com/downloads).
+
+4. Napravi račun na [GitHub](https://github.com/) 
+
+--
+
+- U slučaju problema sa instalacijom Git-a pogledaj http://happygitwithr.com.
+
+---
+
+# Detalji
+
+Za bolje snalaženje:
+
+- **Windows:** Instaliraj [Rtools](https://cran.r-project.org/bin/windows/Rtools/). Također korisno [Chocolately](https://chocolatey.org/).
+- **Mac:** Instaliraj [Homebrew](https://brew.sh/). Potrebno konfigurirati C++ toolchain (pogledaj [ovdje](https://github.com/stan-dev/rstan/wiki/Installing-RStan-from-source-on-a-Mac#prerequisite--c-toolchain-and-configuration).)
+- **Linux:** Već znate što radite!
+
+---
+
+# Checklist
+
+☑ Da li imate najnoviju verziju R?
+  
+  ```r
+  version$version.string
+  ```
+  
+  ```
+  ## [1] "R version 4.0.2 (2020-06-22)"
+  ```
+
+
+☑ Da li imate najnoviju verziju RStudio-a? (Pogledaj [verziju](https://www.rstudio.com/products/rstudio/download/preview/) )
+  
+  ```r
+  RStudio.Version()$version
+  ## Requires an interactive session but should return something like "[1] ‘1.2.5001’"
+  ```
+
+☑ Da li su svi R paket osvježeni? 
+  
+  ```r
+  update.packages(ask = FALSE, checkBuilt = TRUE)
+  ```
+  
+---
+
+# Checklist (dalje)
+
+Otvorite [shell](http://happygitwithr.com/shell.html#shell).Ako ste instalirali [Git for Windows](https://gitforwindows.org), sve je u redu.
+
+☑ Koju verziju Git-a ste instalirali?
+  ```
+  git --version
+  ```
+
+☑ Da li ste se upoznali sa Git-om? (Upiši svoje podatke.)
+  ```
+  git config --global user.name 'Luka Sikic'
+  git config --global user.email 'lsikic.gmail@gmail.com'
+  git config --global --list
+  ```
+
+☑  Da li ste napravili račun na GitHub-u? 
+
+
+---
+class: inverse, center, middle
+name: zakaj
+
+# Zašto R?
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+
+---
+
+# Zašto R i RStudio? 
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/indeeddotcom-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Zašto R i RStudio? 
+
+### Data science pozitivizam
+
+- Uz Python, R je postao *de facto* jezik za data science.
+  - Pogledaj: [*The Impressive Growth of R*](https://stackoverflow.blog/2017/10/10/impressive-growth-r/), [*The Popularity of Data Science Software*](http://r4stats.com/articles/popularity/)
+- Open-source (besplatno!) sa ogromnom bazom korisnika u akademiji i biznisu.
+ 
+
+### Alat za primjenjene društvene znanosti
+
+- Puna podrška za statistiku i ekonometriju sa visokom primjenjivosti u drugim jezicima i API-jima
+
+- RStudio IDE i ekosustav omogućuju jednostavno skaliranje.
+
+### Path dependency
+
+- Jezik sa kojim imam najviše iskustva.
+--
+
+- (Učenje više jezika je preporučljivo, nužno štoviše!)
+
+---
+
+# R osnove
+
+1. Sve je objekt.
+
+2. Sve ima naziv.
+
+3. Stvari se rade preko funkcija.
+
+4. Funkcije dolaze u paketima (i.e. "libraries"), a moguće je i napraviti vlastite funkcije.
+
+--
+
+&lt;/br&gt;
+
+Točke 1. and 2. se odnose na [object-orientated programming](https://en.wikipedia.org/wiki/Object-oriented_programming) (OOP) pristup.
+  - Iako ovo sada možda djeluje apstraktno, stvari će postati jasnije kroz kolegij.
+
+---
+
+# R primjer (linearna regresija)
+
+
+```r
+fit = lm(mpg ~ wt, data = mtcars)
+summary(fit)
+```
+
+```
+## 
+## Call:
+## lm(formula = mpg ~ wt, data = mtcars)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.5432 -2.3647 -0.1252  1.4096  6.8727 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  37.2851     1.8776  19.858  &lt; 2e-16 ***
+## wt           -5.3445     0.5591  -9.559 1.29e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 3.046 on 30 degrees of freedom
+## Multiple R-squared:  0.7528,	Adjusted R-squared:  0.7446 
+## F-statistic: 91.38 on 1 and 30 DF,  p-value: 1.294e-10
+```
+
+---
+
+# Osnovni R grafikon
+
+
+```r
+par(mar = c(4, 4, 1, .1)) ## Ljepše margine
+plot(mtcars$wt, mtcars$mpg)
+abline(fit, col = "red")
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/mtcars_baseplot-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+# ggplot2 (micro primjer)
+
+
+```r
+library(ggplot2)
+ggplot(data = mtcars, aes(x = wt, y = mpg)) + 
+  geom_smooth(method = "lm", col = "red") + 
+  geom_point() 
+```
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/mtcars_ggplot-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+class: inverse, center, middle
+name: ggplot2
+
+# ggplot2
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+
+---
+
+# Instaliraj i učitaj
+
+Isprobajte [ggplot2](https://ggplot2.tidyverse.org/) (i.e. livecoding).
+
+Ako već niste, instalirajte `ggplot2` i `gapminder` pakete via:
+- **Konzola:** Unesite `install.packages(c("ggplot2", "gapminder"), dependencies=T)`.
+- **RStudio:** Kliknite"Packages" tab u donjem desnom prozoru. Potom kliknite "Install" i potražite ova dva paketa.
+  
+![](pics/install.gif)
+
+---
+
+# Instaliraj i učitaj (dalje)
+
+Kada su paketi instalirani, učitajte ih u  R sesiju sa `library()` funkcijom
+
+```r
+library(ggplot2)
+library(gapminder) ## Za gapminder podatke
+```
+
+```
+## Warning: package 'gapminder' was built under R version 4.0.3
+```
+
+Nisu potrebni navodnici za učitavanje. Razlpog: R sada prepoznaje ove pakete kao definirane objekte sa danim imenima. ("Sve je objekt i sve ima naziv!")
+
+--
+
+PS — Prigodno je moguće instalirati pakete sa [pacman](https://github.com/trinker/pacman) `p_load()` funkcijom. Ako izvršite `pacman::p_load(ggplot, gapminder)` funkcija će prvo pogledati da li paketi postoje i da li ih treba instalirati prije učitavanja. Pametno!.
+- Također je moguće koristiti paket bez učitavanja kroz naredbu `PACKAGE::package_function()`.
+
+---
+
+# Gapminder podatci
+
+Koristiti ćemo [gapminder](https://github.com/jennybc/gapminder) podatkovni skup. Ovi podatci su strukturirani kao panel podatci o očekivanoj dugovječnosti, veličini populacije, i BDP-u za 142 
+zemlje od 1950-ih.
+
+
+```r
+gapminder
+```
+
+```
+## # A tibble: 1,704 x 6
+##    country     continent  year lifeExp      pop gdpPercap
+##    &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+##  1 Afghanistan Asia       1952    28.8  8425333      779.
+##  2 Afghanistan Asia       1957    30.3  9240934      821.
+##  3 Afghanistan Asia       1962    32.0 10267083      853.
+##  4 Afghanistan Asia       1967    34.0 11537966      836.
+##  5 Afghanistan Asia       1972    36.1 13079460      740.
+##  6 Afghanistan Asia       1977    38.4 14880372      786.
+##  7 Afghanistan Asia       1982    39.9 12881816      978.
+##  8 Afghanistan Asia       1987    40.8 13867957      852.
+##  9 Afghanistan Asia       1992    41.7 16317921      649.
+## 10 Afghanistan Asia       1997    41.8 22227415      635.
+## # ... with 1,694 more rows
+```
+
+
+---
+
+# Elementi ggplot2
+
+[Hadley Wickham-ov](http://hadley.nz/) ggplot2 je vjerojatno najpoznatiji R paket. 
+- Paket je napravljen na vizualizacijskoj teoriji: i.e. Leland Wilkinson [*The Grammar of Graphics*](https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448).
+
+Ključni elementi ggplot2 pristupa su:
+
+1. Grafikon ("vizualizacija") je vezana uz varijable ("podatke") kroz **aesthetic mappings**.
+
+2. Kada se definiraju estetska mapiranja, podatci se mogu prikazati preko **geoms** (i.e. "geometrijskih objekata" kao što su točke, linije, stupci).
+
+3. Grafikon se izrađuje kroz **layers** ("slojeve").
+
+--
+
+&lt;/br&gt;
+
+Ovo sve djeluje apstraktno u teoriji. Pogledajmo kako to izgledaja u praksi.
+
+---
+
+# 1. Estetska mapiranja
+
+
+```r
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point()
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/aesthetics0-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+# 1. Estetska mapiranja (dalje)
+
+
+```r
+ggplot(data = gapminder, mapping = aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point()
+```
+
+Pogledajte gornji red koji sadrži `ggplot()` funkcijski poziv. Ova funkcija prihvaća različite argumente, uključujući:
+- Odakle dolaze podatci (i.e. `data = gapminder`).
+- Koja su estetska mapiranja(i.e. `mapping = aes(x = gdpPercap, y = lifeExp)`).
+
+--
+
+Estetska mapiranja su ovdje jednostavna: ona samo definiraju x-os (GDP per capita) i a y-os (life expecancy).
+- Za stjecanje osjeća moći i fleksibilnosti kod ovog pristupa, razmislite samo što je moguće vizualizirati kada se dodaju dodatna estetska mapiranja...
+
+---
+
+# 1. Estetska mapiranja (dalje)
+
+
+```r
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp, size = pop, col = continent)) + 
+  geom_point(alpha = 0.3) ## "alpha" kontrolira transparentnost. Vrijednost izmedju 0 i 1.
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/aesthetics2-1.svg" style="display: block; margin: auto;" /&gt;
+
+--
+
+.footnote[[*]Primjetite da smo maknuli "mapping =" dio. Najčešće se koristi "aes(...)" jer `ggplot2` zna redosljed funkcijskih argumenata.]
+
+---
+
+# 1. Estetska mapiranja (dalje)
+
+Estetska mapiranja se mogu specificirati u u `geom layer-u` također.
+
+```r
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) + ## Primjenjivo za sve geom-e
+  geom_point(aes(size = pop, col = continent), alpha = 0.3) ## Primjenjivo samo za ovaj geom 
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/aesthetics3-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1. Estetska mapiranja (dalje)
+
+Oops. Što se dogodilo?
+
+```r
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp)) + 
+  geom_point(aes(size = "big", col="black"), alpha = 0.3)
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/aesthetics_mistake-1.svg" style="display: block; margin: auto;" /&gt;
+
+--
+
+**Odgovor:**Estetike moraju biti mapirane na varijablem, ne na opise!
+
+---
+
+# 1. Estetska mapiranja (dalje)
+
+Umjesto ponavljanja iste ggplot2 funkcije, moguće je stvriti objekt za recikliranje (čuvajmo okoliš!).
+
+
+```r
+p = ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp))
+p
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/p-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 2. Geomi
+
+Kada su odonosi varijabli definirani kroz estetska mapiranja, moguće je pozivati i kombinbirati različite geome u cilju stvaranja različitih vizualizacija.
+
+
+```r
+p + 
+  geom_point(alpha = 0.3)  +
+  geom_smooth(method = "loess") 
+```
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/geoms1-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 2. Geomi (dalje)
+
+Estetike mogu biti primjenjene u različitim geomima.
+
+
+```r
+p + 
+  geom_point(aes(size = pop, col = continent), alpha = 0.3)  +
+  geom_smooth(method = "loess") 
+```
+
+```
+## `geom_smooth()` using formula 'y ~ x'
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/geoms2-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+# 2. Geomi (dalje)
+
+Prethodni primjer dobro prikazuje potencijal pripisivanja estetskih mapiranja "globalno" vs u individualnim geom layer-ima ("slojevi").
+- Usporedi: Izvrši donji kod?
+
+
+```r
+ggplot(data = gapminder, aes(x = gdpPercap, y = lifeExp, size = pop, col = continent)) +
+  geom_point(alpha = 0.3)  +
+  geom_smooth(method = "loess") 
+```
+
+---
+
+# 2.Geomi (dalje)
+
+Slično tome, neki geomi prihvaćaju samo podskup estetskih mapiranja. E.g. `geom_density()` ne zna što napraviti sa "y" estetskim mapiranjem.
+
+
+```r
+p + geom_density()
+```
+
+```
+## Error: geom_density requires the following missing aesthetics: y
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/geoms4-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+#  2.Geomi (dalje)
+
+Ovo je moguće popraviti uz malo opreza.
+
+
+```r
+ggplot(data = gapminder) + ## i.e. No "global" aesthetic mappings"
+  geom_density(aes(x = gdpPercap, fill = continent), alpha=0.3)
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/geoms5-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3. Napravi grafikon u slojevima
+
+Već smo vidjeli kao se mogu lančano ("u slojevima") kombinirati elementi grafikona koristeći `+` spojnicu.
+- Recikliranje grafikona stvorenih u međukoracima je dokaz tome.
+
+Na osnovi ovog principa je moguće napraviti uistinu fascinantne vizualizacije! 
+- Nije potrebno transformirati početne podatke; ggplot2 to radi sam.
+- Pogledajte primjere na sljedećim slajdovima.
+
+
+```r
+p2 =
+  p + 
+  geom_point(aes(size = pop, col = continent), alpha = 0.3) +
+  scale_color_brewer(name = "Kontinent", palette = "Set1") + ## Skala boja
+  scale_size(name = "Br. stanovnika", labels = scales::comma) + ## Skala legende
+  scale_x_log10(labels = scales::dollar) + ## Prebaci na logaritamsku skalu i koristi dolarski znak
+  labs(x = "Log (GDP per capita)", y = "Očekivana životna dob") + ## Ljepši nazivi osi
+  theme_minimal() ## Minimalistička tema
+```
+
+---
+
+# 3. Napravi grafikon u slojevima (dalje)
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/layers2-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Kako dalje
+
+Prethodni primjeri su samo uvod u punu funkcionalnost ggplot2...nismo ni spomenuli druge pakete koji omogućavaju različite ekstenzije.
+- Nekoliko dodantih primjera...
+
+--
+
+Za sljedeće grafikone je potrebno instalirati neke dodatne pakete. To možete napraviti na ovaj način:
+
+
+```r
+if (!require("pacman")) install.packages("pacman")
+```
+
+```
+## Loading required package: pacman
+```
+
+```
+## Warning: package 'pacman' was built under R version 4.0.3
+```
+
+```r
+pacman::p_load(hrbrthemes, gganimate)
+```
+
+---
+
+# Kako dalje? (cont.)
+
+Jednostavno poboljšanje: eksterna tema
+
+```r
+# library(hrbrthemes)
+p2 + theme_modern_rc() + geom_point(aes(size = pop, col = continent), alpha = 0.2)
+```
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/modern_rc_theme-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Kako dalje? (cont.)
+
+Napredno poboljšanje: Animacija! (Vidi naredni slide!)
+
+```r
+library(gganimate)
+library(gifski)
+anim &lt;- ggplot(gapminder, aes(gdpPercap, lifeExp, size = pop, colour = country)) +
+  geom_point(alpha = 0.7, show.legend = FALSE) +
+  scale_colour_manual(values = country_colors) +
+  scale_size(range = c(2, 12)) +
+  scale_x_log10() +
+  facet_wrap(~continent) +
+  # neki detalji iz paketa gganimate
+  labs(title = 'Godina: {frame_time}', x = 'GDP per capita', y = 'Očekivana životna dob') +
+  transition_time(year) +
+  ease_aes('linear')
+```
+
+--
+
+Animirani grafikon je izvrstan za intuitivno razumijevanje podataka. Baš kao što je to i [Hans Rosling](https://www.ted.com/talks/hans_rosling_the_best_stats_you_ve_ever_seen) zamislio.
+
+---
+
+# Kako dalje? (cont.)
+
+&lt;img src="04_GRAFIKONI_I_VIZUALIZACIJE_DODATNO_xar_files/figure-html/ggamin2-1.gif" style="display: block; margin: auto;" /&gt;
+
+
+---
+# Kako dalje? (cont.)
+
+Za kraj važno spomenuti da je ggplot2' u odnosu sa "tidy" data principom.
+  - Riječ je o nizu paketa pod nazivom [tidyverse](https://www.tidyverse.org/). 
+
+Korisni resursi vezani uz današnje predavanje:
+- [Poglavlje 3](https://r4ds.had.co.nz/data-visualisation.html) knjige *R for Data Science* od Hadley Wickham i Garett Grolemund.
+- [*Data Visualization: A Practical Guide*](https://socviz.co/makeplot.html) od Kieran Healy.
+- [Designing ggplots](https://designing-ggplots.netlify.com) od Malcom Barrett.
+
+
+---
+class: inverse, center, middle
+
+
+# HVALA NA PAŽNJI!
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+
+---
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

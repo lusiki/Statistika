@@ -774,7 +774,7 @@ barplot( height = freq )  # Alternativno samo `barplot( freq )`
 ```
 
 ---
-
+ 
 .hi[Napravi stupčasti grafikon]
 
 ```{r echo=T,eval=T, fig.cap="", fig.height=4, fig.width=6}

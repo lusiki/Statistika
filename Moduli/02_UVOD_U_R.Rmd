@@ -3,11 +3,11 @@ title: "UVOD U R"
 author: "dr.sc. Luka Šikić"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-  slidy_presentation: default
   beamer_presentation:
     theme: Szeged
     colortheme: beaver
     fonttheme: structurebold
+  slidy_presentation: default
 institute: Preddiplomski studij sociologije
 font: 5pt
 subtitle: Hrvatski studiji

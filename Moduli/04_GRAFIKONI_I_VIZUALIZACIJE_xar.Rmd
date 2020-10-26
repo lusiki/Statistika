@@ -754,7 +754,7 @@ freq <- tabulate( afl.finalists )   # Tabuliraj podatke
 print( freq )                       # Pregled podataka
 
 ```
-
+ 
 ---
 
 .hi[Pregled podataka za izradu stupčastog grafikona]

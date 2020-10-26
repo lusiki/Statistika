@@ -73,7 +73,7 @@ Koristiti ćemo tri knjige.
 
 </div>
 
-<b>Format predavanja:</b>  <a href="/Moduli/03_DESKRIPTIVNA_STATISTIKA_xar.html">.pdf</a> | <a href="/Predavanja/03_DESKRIPTIVNA_STATISTIKA_sdy.Rmd">.Rmd</a>
+<b>Format predavanja:</b>  <a href="/Moduli/03_DESKRIPTIVNA_STATISTIKA_xar.html">.html</a> | <a href="/Moduli/03_DESKRIPTIVNA_STATISTIKA_xar.Rmd">.Rmd</a>
 <br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 5.</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">

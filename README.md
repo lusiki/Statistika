@@ -78,7 +78,7 @@ Koristiti ćemo tri knjige.
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
 <a href="https://raw.githack.com/BrbanMiro/Statistika/main/Moduli/04_GRAFIKONI_I_VIZUALIZACIJE_xar.html">Predavanje 04: Vizualizacija podataka</a>
- 
+
 <ul>
 <li> Vizualizacija, alati i podrška </li>
 <li> Izrada jednostavnog grafikona</li>

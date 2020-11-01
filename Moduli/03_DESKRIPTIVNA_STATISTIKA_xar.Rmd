@@ -1,10 +1,13 @@
 ---
-title: 'RAD SA PODATCIMA: DESKRIPTIVNA STATISTIKA'
-author: "Luka Šikić, PhD"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
+title: "PRIMJENJENA STATISTIKA"
+# subtitle: "<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>"
+subtitle: "Predavanje 3: Deskriptivna statistika"
+author: "Luka Sikic, PhD"
+date: "Fakultet hrvatskih studija | [Github PS](https://github.com/BrbanMiro/Statistika)" #"`r format(Sys.time(), '%d %B %Y')`"
 output:
   xaringan::moon_reader:
-    css: ['default', 'metropolis', 'metropolis-fonts', 'my-css.css']
+    css: [default, metropolis, metropolis-fonts] 
+    lib_dir: libs
     nature:
       highlightStyle: github
       highlightLines: true

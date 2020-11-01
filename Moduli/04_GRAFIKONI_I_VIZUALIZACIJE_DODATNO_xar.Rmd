@@ -1,9 +1,9 @@
 ---
-title: "Primjena statistike"
-author: "Luka Šikić, PhD"
-date: "Fakultet hrvatskih studija | [OP](https://github.com/BrbanMiro/Obrada-podataka)"
+title: "PRIMJENJENA STATISTIKA"
 # subtitle: "<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>"
-subtitle: "Predavanje 4: Dodatni koncepti u vizualizaciji podataka"
+subtitle: "Predavanje 3 (dodatno): Vizualizacija podataka"
+author: "Luka Sikic, PhD"
+date: "Fakultet hrvatskih studija | [Github PS](https://github.com/BrbanMiro/Statistika)" #"`r format(Sys.time(), '%d %B %Y')`"
 output:
   xaringan::moon_reader:
     css: [default, metropolis, metropolis-fonts] 

@@ -1,7 +1,7 @@
 ---
 title: "PRIMJENJENA STATISTIKA"
 # subtitle: "<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>"
-subtitle: "Predavanje 5: Statisticka teorija - vjerojatnost"
+subtitle: "Predavanje 5: Statisticka teorija - distribucije"
 author: "Luka Sikic, PhD"
 date: "Fakultet hrvatskih studija | [Github PS](https://github.com/BrbanMiro/Statistika)" #"`r format(Sys.time(), '%d %B %Y')`"
 output:
@@ -161,31 +161,24 @@ tidy_table <- function(x, terms, highlight_row = 1, highlight_color = "black", h
 
 
 class: inverse, middle
-
-
-
-
 # PREGLED PREDAVANJA
 
 ---
-
 layout: true
 # PREGLED PREDAVANJA
-
 ---
-
+<br>
+<br>
 
 ## CILJEVI 
 <br>
 <br>
-<br>
-<br>
+
 
 - Deskriptivna vs. inferencijalna statistika
 - Binomna distribucija
 - Standardna distribucija
 - Druge često korištene distribucije
-- Tradicionalni vs. Bayesov pristup vjerojatnosti
 
 ---
 

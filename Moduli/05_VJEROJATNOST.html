@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>PRIMJENJENA STATISTIKA</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Luka Sikic, PhD" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# PRIMJENJENA STATISTIKA
+## Predavanje 5: Statisticka teorija - vjerojatnost
+### Luka Sikic, PhD
+### Fakultet hrvatskih studija | <a href="https://github.com/BrbanMiro/Statistika">Github PS</a>
+
+---
+
+
+
+
+
+
+
+
+class: inverse, middle
+
+
+
+
+# PREGLED PREDAVANJA
+
+---
+
+layout: true
+# PREGLED PREDAVANJA
+
+---
+
+
+## CILJEVI 
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+- Deskriptivna vs. inferencijalna statistika
+- Binomna distribucija
+- Standardna distribucija
+- Druge često korištene distribucije
+- Tradicionalni vs. Bayesov pristup vjerojatnosti
+
+---
+
+layout:false
+class: middle, inverse
+# DESKRIPTIVNA I INFERENCIJALNA STATISTIKA 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+
+---
+
+layout:true
+# DESKRIPTIVNA I INFERENCIJALNA STATISTIKA 
+
+
+---
+&lt;br&gt;
+&lt;br&gt;
+
+.pull-left[
+**Deskriptivna statistika**
+ 1. Numerički opis podataka
+ 2. Vizualizacije
+ 3. Nema mnogo teoretske pozadine
+]
+
+.pull-right[
+**Inferencijalna statistika**
+ 1. Osnova je teorija vjerojatnosti
+ 2. Razrađeni modeli za analizu strukture i odnosa među varijablama
+ 3. Moćniji analitički alat
+]
+
+
+---
+layout:false
+class: middle, inverse
+# OSNOVE TEORIJE VJEROJATNOSTI 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+---
+
+layout:true
+# OSNOVE TEORIJE VJEROJATNOSTI 
+
+---
+
+.hi[**Eksperiment bacanja novčića**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+- Vjerojatnost da će pasti jedna strana ("pismo")
+&lt;br&gt;
+
+$$
+P(\mbox{pismo}) = 0.5
+$$
+&lt;br&gt;
+&lt;br&gt;
+- Statistički problem
+&lt;br&gt;
+&lt;br&gt;
+```
+P P H P P H H H H H
+```
+---
+
+## Vjerojatnost modnog odabira
+&lt;br&gt;
+&lt;br&gt;
+
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Vrsta.odjeće &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Plave.hlace &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Sive.hlace &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Crne.hlace &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Crno.odijelo &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Kostim &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Naziv &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(X_1\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(X_2\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(X_3\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(X_4\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(X_5\)` &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Vjerojatnost &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P(X_1) = .5\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P(X_2) = .3\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P(X_3) = .1\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P(X_4) = 0\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P(X_5) = .1\)` &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+
+.hi[Grafički prikaz distribucije]
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/problem-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Prikaz distribucije vjerojatnosti modnog odabira. Postoji pet mogućih ishoda vezanih uz pet mogućih modnih odabira. Svaki odabir (ishod) ima jednaku vjerojatnost; vjerojatnost je u rasponu od 0 do 1.]
+
+---
+
+.hi[**Formalni zapis**]
+&lt;br&gt;
+&lt;br&gt;
+$$
+P(E) = P(X_1) + P(X_2) + P(X_3) + P(X_4) + P(X_5)
+$$ 
+&lt;br&gt;
+&lt;br&gt;
+.hi[Osnovna pravila vjerojatnosti]
+&lt;br&gt;
+&lt;br&gt;
+&lt;table&gt;
+&lt;caption&gt;&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Jezik &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Zapis &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Znak &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Formula &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Nije `\(A\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P(\neg A)\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; = &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(1-P(A)\)` &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(A\)` ili `\(B\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P(A \cup B)\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; = &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P(A) + P(B) - P(A \cap B)\)` &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(A\)` i `\(B\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P(A \cap B)\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; = &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P(A|B) P(B)\)` &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+layout:false
+class: middle, inverse
+# BINOMNA DISTRIBUCIJA 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+---
+
+layout:true
+# BINOMNA DISTRIBUCIJA
+
+---
+
+.hi[**Eksperiment bacanje novčića ili kocke**]
+&lt;br&gt;
+&lt;br&gt;
+1. Eksperiment uključuje 20 šestostranih kocki gdje je jedna strana označena, ostale su prazne.
+2. Kolika je vjerojatnost ishoda četiri označene strane u 20 bacanja?
+3. Znamo da je vjerojatnost jedne označene kocke jedna šestina, odnosno .167!
+&lt;br&gt;
+&lt;br&gt;
+
+.hi[**Formalni zapis**]
+&lt;br&gt;
+&lt;br&gt;
+$$
+P(X \ | \ \theta, N)
+$$
+$$
+X \sim \mbox{Binomial}(\theta, N)
+$$ 
+
+
+
+
+---
+
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/binomial1-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+.footnote[[*]Binomna distribucija za `\(N=20\)` opservacija i vjerojatnost ishoda `\(theta = 1/6\)`. Svaki stupac prikazuje vjerojatnost jednog ishoda (i.e., jedna moguća vrijednost `\(X\)`). Pošto je riječ o distribuciji vjerojatnosti, svaka od pojedinačnih vijednosti mora biti broj od 0 do 1 dok zbroj svih stupaca mora biti jednak 1.]
+---
+
+
+
+.hi[**Binomna distribucija u R**]
+
+
+```r
+# x označava očekivani broj ishoda
+# size je broj ponavljanja u eksperimentu
+# prob je vjerojatnost željenog ishoda
+dbinom( x = 4, size = 20, prob = 1/6 )
+```
+
+```
+#&gt; [1] 0.2022036
+```
+&lt;br&gt;
+&lt;br&gt;
+
+
+```r
+# q označava očekivanu vjerojatnost ishoda
+# size je broj ponavljanja u eksperimentu
+# prob je vjerojatnost željenog ishoda
+pbinom( q = 4, size = 20, prob = 1/6)
+```
+
+```
+#&gt; [1] 0.7687492
+```
+
+---
+
+.hi[**Binomna distribucija u R**]
+
+
+```r
+# p označava očekivani broj ishoda
+# size je broj ponavljanja u eksperimentu
+# prob je vjerojatnost željenog ishoda
+qbinom( p = 0.75, size = 20, prob = 1/6)
+```
+
+```
+#&gt; [1] 4
+```
+&lt;br&gt;
+&lt;br&gt;
+
+```{recho=T}
+# n označava broj ponavljanja u eksperimentu
+# size je veličina uzorka 
+# prob je vjerojatnost željenog ishoda
+rbinom( n = 100, size = 20, prob = 1/6 )
+```
+
+---
+
+.hi[Grafički prikaz distribucije za eksperimente različite veličine]
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/binomial2a-1.svg" style="display: block; margin: auto;" /&gt;&lt;img src="05_VJEROJATNOST_files/figure-html/binomial2a-2.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Distribucija vjerojatnosti bacanja novčića 20 puta `\(N=20\)` i 100 puta `\(N=100\)`; vjerojatnost jednog ishoda je `\(theta = 1/2\)`.]
+
+---
+
+.hi[**Distribucijske funkcije u R**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;table&gt;
+&lt;caption&gt;&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Funkcija &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Prefiks &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; NormalnaDistribcija &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; BinomnaDistribucija &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Vjerojatnost &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; d &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; dnorm() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; dbinom() &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kumulativna vjerojatnost &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; p &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; dnorm() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pbinom() &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Generiraj slučajni uzorak &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; rnorm() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; rbinom() &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kvartili distribucije &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; q &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; qnorm() &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; qbinom() &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+.footnote[[*]Nazivi funkcija distribucije u R. Svaka distribucijska funkcija je povezana sa četiri druge funkcije (vidi prefiks).]
+
+
+---
+layout:false
+class: middle, inverse
+# STANDARDNA DISTRIBUCIJA 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+
+---
+
+layout:true
+# STANDARDNA DISTRIBUCIJA
+
+---
+
+.hi[Formalni zapis]
+
+$$
+X \sim \mbox{Normal}(\mu,\sigma)
+$$
+
+--
+
+.hi[**Grafički prikaz standardne distribucije**]
+
+
+```r
+# Generiraj standardnu distribuciju 
+	
+	# parametri za plot
+	width &lt;- 8
+	height &lt;- 6
+	fileName &lt;- "standardNormal.eps"	
+	
+	# vizualizacija
+	xval &lt;- seq(-3,3,.01)
+	yval &lt;- dnorm( xval, 0, 1)
+	plot( 	xval, yval, lwd = 3,
+	        ylab = "Gustoća vjerojatnosti",
+	        xlab = "Ishod",
+	    		frame.plot = FALSE, type = "l"	)
+```
+
+---
+
+
+.hi[**Grafički prikaz standardne distribucije**]
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/unnamed-chunk-6-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+.footnote[[*]Standardna distribucija sa prosjekom `\(mu = 0\)` i standardnom devijacijom `\(sigma = 1\)`. `\(x\)`-os se odnosi na vrijednost ishoda dok `\(y\)`-os govori kolika je vjerojatnost ishoda. `\(y\)`-os je nazvana \"Gustoća vjerojatnosti\" , a ne \"Vjerojatnost\"(kao kod npr. binomne distribucije). Razlika se odnosi na to da je standardna distribucija kontinuirana (za razliku od npr. binomne koja je diskretna). Visina krivulje ne govori točno koja je vjerojatnost ishoda nego koje vrijednosti ishoda su vjerojatnije od drugih!]
+
+---
+
+.hi[**Standardna distribucija sa različitim prosjekom**]
+
+
+```r
+	# Postupak izrade standardne distribucije sa različitim prosjecima
+	xval &lt;- seq(0,11,.01)
+	yval.1 &lt;- dnorm( xval, 4, 1)
+	yval.2 &lt;- dnorm( xval, 7, 1)
+	plot(  xval, yval.1,
+	       lwd = 3,
+	       ylab = "Gustoća vjerojatnosti",
+	       xlab = "Ishod",
+	       frame.plot = FALSE, type = "l"
+	)
+	lines(	xval, yval.2,
+	        lwd = 3,
+	        lty = 2 )
+```
+
+---
+
+.hi[**Standardna distribucija sa različitim prosjekom**]
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/normmean-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Standardna distribucija sa drugim prosjekom. Puna linija prikazuje stdandardnu distribuciju sa prosjekom `\(mu=4\)`.  Isprekidana linija prikazuje sdandardnu distribuciju sa prosjekom `\(mu=7\)`. Standardna devijacija u oba slučaja iznosi `\(sigma=1\)`.]
+
+
+---
+
+
+.hi[**Standardna distribucija sa različitom standardnom devijacjom**]
+
+
+
+```r
+# Standardna distribucija sa drugom standardnom devijacijom
+	xval &lt;- seq(0,10,.01)
+	yval.1 &lt;- dnorm( xval, 5, 1)
+	yval.2 &lt;- dnorm( xval, 5, 2)
+	plot(  xval, yval.1,
+	       lwd = 3,
+	       ylab = "Gustoća vjerojatnosti",
+	       xlab = "Ishod",
+	       frame.plot = FALSE,
+	       type = "l"
+	)
+	lines(	xval, yval.2,
+	        lwd  = 3,
+	        lty = 2 )
+```
+
+---
+
+
+
+.hi[**Standardna distribucija sa različitom standardnom devijacjom**]
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/normsd-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+.footnote[[*]Standardna distribucija sa drugom standardnom devijacijom. Obje distribucije imaju isti prosjek `\(mu = 5\)`, ali različite standardne devijacije. Puna linija prikazuje standardnu distribuciju sa sa standardnom devijacijom `\(sigma=1\)`, a isprekidana linija sa std. distribuciju sa standardnom devijacijom `\(sigma = 2\)`]
+
+---
+
+.hi[Gustoća vjerojatnosti]
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="05_VJEROJATNOST_files/figure-html/sdnorm1-1.svg" alt=" "  /&gt;
+&lt;p class="caption"&gt; &lt;/p&gt;
+&lt;/div&gt;
+
+.footnote[[*]Područje ispod krivulje pokazuje vjerojatnost da opservacija pada u određeni raspon. Puna crta pokazuje standardnu distribuciju sa prosjekom `\(mu=0\)` i standardnom devijacijom `\(sigma=1\)`. Osjenčana područja prikazuju \"površinu ispod krivulje\". Na lijevoj strani vidimo da postoji 68.3% šansa da opservacija pada unutar jedne standardne devijacije od prosjeka. Na desnoj strani vidimo da postoji 95.4% šanse da će opservacija pasti unutar dvije standardne devijacije od prosjeka.]
+
+
+---
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/sdnorm2-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Dva dodatna primjera koncepta \"površine ispod krivulje\". Postoji 15.9%  šansa da je opservacija jednu standardnu devijaciju ispod prosjeka ili manje (desno) i 34.1% šansa da je opservacija veća od jedne standardne devijacije ispod prosjeka ali i dalje ispod prosjeka. Valja primijetiti da je 15.9% + 34.1% = 50%. Za standardnu distribuciju postoji 50% šansa da opservacija pada ispod prosjeka i 50% da pada iznad prosjeka.]
+
+
+
+---
+layout:false
+class: middle, inverse
+# DRUGE DISTRIBUCIJE 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+---
+
+layout:true
+# DRUGE DISTRIBUCIJE
+
+---
+
+.hi[**t distribucija**]
+
+
+```r
+	# Prikaži t distribuciju
+  xval &lt;- seq(-5,5,.01)
+	yval &lt;- dt( xval, df = 3)
+	plot( 	xval, yval,
+	        lwd = 3,
+	        ylab = "Gustoća vjerojatnosti",
+	        xlab = "Ishod",
+		    	frame.plot = FALSE,
+		    	type = "l",
+		    	ylim = c(0,.4)
+	)
+	lines( xval, dnorm(xval,0,1),
+	       lty = 2)
+```
+
+---
+
+.hi[**t distribucija**]
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/unnamed-chunk-9-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+.footnote[[*]"t distribucija sa 3 stupnja slobode (puna linija). Distribucija je slična normalnoj distribuciji ali je ipak različita. Zbog usporedbe je prikazana i standardna distribucija na isprekidanoj liniji. "Repovi" t distribucije su "teži" nego "Repovi" standardne distribucije.]
+
+
+---
+
+.hi[**Chi-sq distribucija**]
+
+
+```r
+	# Prikaži ChiSq distribuciju
+	xval &lt;- seq(0,10,.01)
+	yval &lt;- dchisq( xval, df = 3)
+	plot( 	xval, yval, lwd = 3,
+	        ylab = "Probability Density",
+	        xlab = "Ishod",
+	  	   	frame.plot = FALSE, 
+	        type = "l"
+	) 
+```
+---
+
+
+.hi[**Chi-sq distribucija**]
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/unnamed-chunk-10-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]chi2 distribucija sa tri stupnja slobode. Valja primijetiti da ishodi moraju biti veći od nule i da je distribucija priličo zakrivljena. To su karakteristike chi-square distribucije.]
+
+---
+
+.hi[**F distribucija**]
+ 
+
+```r
+	# Prikaži F distribuciju
+	xval &lt;- seq(0,10,.01)
+	yval &lt;- df( xval, df1 = 3, df2 = 5)
+	plot( 	xval, yval,
+	        lwd = 3, 
+	        ylab = "Gustoća vjerojatnosti",
+	        xlab = "Ishod",
+		    	frame.plot = FALSE,
+		    	type = "l"
+	)
+```
+---
+
+.hi[**F distribucija**]
+ 
+&lt;img src="05_VJEROJATNOST_files/figure-html/unnamed-chunk-11-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+.footnote[[*]F distribucija sa 3 i 5 stupnjeva slobode. Općenito je moguće primijetiti da F distribucija sliči chi-sqare distribuciji, no među njima ipak postoje značajne razlike.]
+
+---
+
+.hi[Generiraj standardnu distribuciju]
+
+
+```r
+# Stvori 1000 ishoda normalne distribuciju sa prosjekom 0 i stdev 1
+normal.a &lt;- rnorm( n = 1000, mean = 0, sd = 1 )  
+print(head(normal.a)) # Prikaži
+# Napravi histogram podataka
+hist(  normal.a,
+       breaks = 70,
+       freq = FALSE,
+       xlim = c(-4,4),
+       border = "red",
+       ylim = c(0,.45),
+       axes = FALSE,
+       xlab = "",
+       ylab = "",
+       main = "Simulirana standardna distribucija",
+       font.main = 1
+)
+lines( x &lt;- seq(-4,4,.1),
+       dnorm(x),
+       lwd = 2,
+       col = "black"  )
+axis(1)
+```
+
+---
+
+.hi[**Generiraj standardnu distribuciju**]
+
+
+```
+#&gt; [1] -0.09277541 -1.05225158  2.07464635 -0.83165353 -0.20634106 -1.14545997
+```
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/unnamed-chunk-13-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+.hi[**Generiraj chi-squared distribuciju**]  
+
+
+```r
+# Elementi za stvaranje Chi-sq distribucije
+n &lt;- 1000 # Stvori niz od tisuću brojeva
+normal.a &lt;- rnorm( n ) # Stvori standardnu distribuciju
+normal.b &lt;- rnorm( n ) # Stvori standardnu distribuciju
+normal.c &lt;- rnorm( n ) # Stvori standardnu distribuciju
+normal.d &lt;- rnorm( n ) # Stvori standardnu distribuciju
+# Stvori Chi-sq distribuciju:
+# kao sumu kvadriranih normalnih distribucija
+chi.sq.3 &lt;- (normal.a)^2 + (normal.b)^2 + (normal.c)^2	
+# Putem funkcije
+chi.sq.20 &lt;- rchisq( n, 20)  #chi.sq sa 20 stupnjeva slobode
+# Prikaži Chi-sq distribuciju na histogramu
+hist(  chi.sq.3,
+       breaks = 70,
+       freq = FALSE, 
+       xlim = c(0,16),
+       border = "red",
+       axes = FALSE,
+       ylim = c(0,.25),
+       xlab = "",
+       ylab = "", 
+       main = "",
+       font.main = 1
+)
+lines( x &lt;- seq(0,16,.1),
+       dchisq(x,3),
+       lwd = 2,
+       col = "black"  )	
+axis(1)
+```
+
+---
+
+.hi[**Generiraj chi-squared distribuciju**]  
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/unnamed-chunk-15-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+.hi[**Stvori t distribuciju**]
+
+
+```r
+# Prvi korak
+skalirano.chi &lt;- chi.sq.3 / 3 # Podijeli chi.sq sa 3
+# Drugi korak
+# t distribucija kao omjer normalne i drugog korijena skalirane chi.sq distribucije
+t.3 &lt;- normal.d / sqrt( skalirano.chi )
+# Napravi histogram
+hist(  t.3,
+       breaks = 70,
+       freq = FALSE,
+       xlim = c(-5,5),
+       border = "red",
+       axes = FALSE, ylim = c(0,.4),
+       xlab = "",ylab = "",
+       main = "",
+       font.main = 1
+)
+lines( x &lt;- seq(-4,4,.1),
+       dt(x,3),
+       lwd = 2,
+       col = "black"  )
+axis(1)	
+```
+---
+
+.hi[**Stvori t distribuciju**]
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/unnamed-chunk-17-1.svg" style="display: block; margin: auto;" /&gt;
+---
+
+.hi[**Stvori F distribuciju**]
+
+
+```r
+# F distribucija kao omjer dviju skaliranih chi.sq distribucija
+F.3.20 &lt;- (chi.sq.3 / 3) / (chi.sq.20 / 20)
+# Napravi histogram
+hist(  F.3.20,
+       breaks = 70,
+       freq = FALSE,
+       xlim = c(0,6),
+       border = "red",
+       axes = FALSE, ylim=c(0,.7),
+       xlab = "",
+       ylab = "",
+       main = "Simulirana F distribucija",
+       font.main = 1
+)
+lines( x &lt;- seq(0,6,.01),
+       df(x,3,20),
+       lwd = 2,
+       col = "black"  )	
+axis(1)
+```
+
+---
+
+.hi[**Stvori F distribuciju**]
+
+&lt;img src="05_VJEROJATNOST_files/figure-html/unnamed-chunk-19-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+layout:false
+class: middle, inverse
+# HVALA NA PAŽNJI! 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Sljedeće predavanje: Statistički uzorak i populacija)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

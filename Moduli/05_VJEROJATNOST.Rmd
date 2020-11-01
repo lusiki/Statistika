@@ -1,0 +1,1070 @@
+---
+title: "PRIMJENJENA STATISTIKA"
+# subtitle: "<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>"
+subtitle: "Predavanje 5: Statisticka teorija - vjerojatnost"
+author: "Luka Sikic, PhD"
+date: "Fakultet hrvatskih studija | [Github PS](https://github.com/BrbanMiro/Statistika)" #"`r format(Sys.time(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+
+```{R, setup, include = F}
+# devtools::install_github("dill/emoGG")
+library(pacman)
+p_load(
+  broom, tidyverse,
+  latex2exp, ggplot2, ggthemes, ggforce, viridis, extrafont, gridExtra,
+  kableExtra, snakecase, janitor,
+  data.table, dplyr, estimatr,
+  lubridate, knitr, parallel,
+  lfe,
+  here, magrittr
+)
+# Define pink color
+red_pink <- "#e64173"
+turquoise <- "#20B2AA"
+orange <- "#FFA500"
+red <- "#fb6107"
+blue <- "#2b59c3"
+green <- "#8bb174"
+grey_light <- "grey70"
+grey_mid <- "grey50"
+grey_dark <- "grey20"
+purple <- "#6A5ACD"
+slate <- "#314f4f"
+# Dark slate grey: #314f4f
+# Knitr options
+opts_chunk$set(
+  comment = "#>",
+  fig.align = "center",
+  fig.height = 7,
+  fig.width = 10.5,
+  warning = F,
+  message = F
+)
+opts_chunk$set(dev = "svg")
+options(device = function(file, width, height) {
+  svg(tempfile(), width = width, height = height)
+})
+options(crayon.enabled = F)
+options(knitr.table.format = "html")
+# A blank theme for ggplot
+theme_empty <- theme_bw() + theme(
+  line = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  plot.margin = structure(c(0, 0, -0.5, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_simple <- theme_bw() + theme(
+  line = element_blank(),
+  panel.grid = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text.x = element_text(size = 18, family = "STIXGeneral"),
+  axis.text.y = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  # plot.margin = structure(c(0, 0, -1, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_math <- theme_void() + theme(
+  text = element_text(family = "MathJax_Math"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_serif <- theme_void() + theme(
+  text = element_text(family = "MathJax_Main"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes <- theme_void() + theme(
+  text = element_text(family = "Fira Sans Book"),
+  axis.title = element_text(size = 18),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = grey_light,
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_set(theme_gray(base_size = 20))
+# Column names for regression results
+reg_columns <- c("Term", "Est.", "S.E.", "t stat.", "p-Value")
+# Function for formatting p values
+format_pvi <- function(pv) {
+  return(ifelse(
+    pv < 0.0001,
+    "<0.0001",
+    round(pv, 4) %>% format(scientific = F)
+  ))
+}
+format_pv <- function(pvs) lapply(X = pvs, FUN = format_pvi) %>% unlist()
+# Tidy regression results table
+tidy_table <- function(x, terms, highlight_row = 1, highlight_color = "black", highlight_bold = T, digits = c(NA, 3, 3, 2, 5), title = NULL) {
+  x %>%
+    tidy() %>%
+    select(1:5) %>%
+    mutate(
+      term = terms,
+      p.value = p.value %>% format_pv()
+    ) %>%
+    kable(
+      col.names = reg_columns,
+      escape = F,
+      digits = digits,
+      caption = title
+    ) %>%
+    kable_styling(font_size = 20) %>%
+    row_spec(1:nrow(tidy(x)), background = "white") %>%
+    row_spec(highlight_row, bold = highlight_bold, color = highlight_color)
+}
+```
+
+```{css, echo = F, eval = F}
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+```
+
+
+class: inverse, middle
+
+
+
+
+# PREGLED PREDAVANJA
+
+---
+
+layout: true
+# PREGLED PREDAVANJA
+
+---
+
+
+## CILJEVI 
+<br>
+<br>
+<br>
+<br>
+
+- Deskriptivna vs. inferencijalna statistika
+- Binomna distribucija
+- Standardna distribucija
+- Druge često korištene distribucije
+- Tradicionalni vs. Bayesov pristup vjerojatnosti
+
+---
+
+layout:false
+class: middle, inverse
+# DESKRIPTIVNA I INFERENCIJALNA STATISTIKA 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+
+---
+
+layout:true
+# DESKRIPTIVNA I INFERENCIJALNA STATISTIKA 
+
+
+---
+<br>
+<br>
+
+.pull-left[
+**Deskriptivna statistika**
+ 1. Numerički opis podataka
+ 2. Vizualizacije
+ 3. Nema mnogo teoretske pozadine
+]
+
+.pull-right[
+**Inferencijalna statistika**
+ 1. Osnova je teorija vjerojatnosti
+ 2. Razrađeni modeli za analizu strukture i odnosa među varijablama
+ 3. Moćniji analitički alat
+]
+
+
+---
+layout:false
+class: middle, inverse
+# OSNOVE TEORIJE VJEROJATNOSTI 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+---
+
+layout:true
+# OSNOVE TEORIJE VJEROJATNOSTI 
+
+---
+
+.hi[**Eksperiment bacanja novčića**]
+<br>
+<br>
+<br>
+<br>
+- Vjerojatnost da će pasti jedna strana ("pismo")
+<br>
+
+$$
+P(\mbox{pismo}) = 0.5
+$$
+<br>
+<br>
+- Statistički problem
+<br>
+<br>
+```
+P P H P P H H H H H
+```
+---
+
+## Vjerojatnost modnog odabira
+<br>
+<br>
+
+
+```{r echo=FALSE}
+
+knitr::kable(data.frame(stringsAsFactors=FALSE,
+`Vrsta odjeće` = c(  "Naziv" , "Vjerojatnost" ), 
+`Plave hlace` = c(  "$X_1$" , "$P(X_1) = .5$" ),
+`Sive hlace` = c(  "$X_2$ ", "$P(X_2) = .3$ "),
+`Crne hlace` = c(  "$X_3$ ", "$P(X_3) = .1$" ),
+`Crno odijelo` = c(  "$X_4$" , "$P(X_4) = 0$ "),
+`Kostim` = c(  "$X_5$ ", "$P(X_5) = .1$")))
+
+```
+
+
+---
+
+.hi[Grafički prikaz distribucije]
+
+```{r problem, fig.cap="", fig.height=5, echo=FALSE}
+
+vjerojatnost <- c( 0.5, 0.3, 0.1, 0, 0.1)
+ishod <- c( "Plave hlace", "Sive hlace", "Crne hlace", 
+					 "Crno odijelo", "Kostim" )
+	
+	# draw the plot
+	barplot( 
+		height= vjerojatnost, 
+		xlab = "Ishod",
+		ylab = "Vjerojatnost ishoda",
+		names.arg = ishod,
+		density = 10
+	)
+	
+```
+
+.footnote[[*]Prikaz distribucije vjerojatnosti modnog odabira. Postoji pet mogućih ishoda vezanih uz pet mogućih modnih odabira. Svaki odabir (ishod) ima jednaku vjerojatnost; vjerojatnost je u rasponu od 0 do 1.]
+
+---
+
+.hi[**Formalni zapis**]
+<br>
+<br>
+$$
+P(E) = P(X_1) + P(X_2) + P(X_3) + P(X_4) + P(X_5)
+$$ 
+<br>
+<br>
+.hi[Osnovna pravila vjerojatnosti]
+<br>
+<br>
+```{r probrules, echo=FALSE}
+knitr::kable(data.frame(stringsAsFactors=FALSE,
+Jezik = c("Nije $A$", "$A$ ili $B$", "$A$ i $B$"),
+Zapis = c("$P(\\neg A)$", "$P(A \\cup B)$", "$P(A \\cap B)$"),
+Znak = c("=", "=", "="),
+Formula = c("$1-P(A)$", "$P(A) + P(B) - P(A \\cap B)$", "$P(A|B) P(B)$")), caption = "")
+```
+
+
+---
+layout:false
+class: middle, inverse
+# BINOMNA DISTRIBUCIJA 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+---
+
+layout:true
+# BINOMNA DISTRIBUCIJA
+
+---
+
+.hi[**Eksperiment bacanje novčića ili kocke**]
+<br>
+<br>
+1. Eksperiment uključuje 20 šestostranih kocki gdje je jedna strana označena, ostale su prazne.
+2. Kolika je vjerojatnost ishoda četiri označene strane u 20 bacanja?
+3. Znamo da je vjerojatnost jedne označene kocke jedna šestina, odnosno .167!
+<br>
+<br>
+
+.hi[**Formalni zapis**]
+<br>
+<br>
+$$
+P(X \ | \ \theta, N)
+$$
+$$
+X \sim \mbox{Binomial}(\theta, N)
+$$ 
+
+
+```{r distformulas, eval=FALSE, echo=FALSE}
+knitr::kable(data.frame(stringsAsFactors=FALSE, Binomial = c("$P(X | \\theta, N) = \\displaystyle\\frac{N!}{X! (N-X)!}  \\theta^X (1-\\theta)^{N-X}$"), 
+Normal = c("$p(X | \\mu, \\sigma) = \\displaystyle\\frac{1}{\\sqrt{2\\pi}\\sigma} \\exp \\left( -\\frac{(X - \\mu)^2}{2\\sigma^2} \\right)$ ")), caption = "Formulas for the binomial and normal distributions. We don't really use these formulas for anything in this book, but they're pretty important for more advanced work, so I thought it might be best to put them here in a table, where they can't get in the way of the text. In the equation for the binomial, $X!$ is the factorial function (i.e., multiply all whole numbers from 1 to $X$), and for the normal distribution \"exp\" refers to the exponential function, which we discussed in the Chapter on Data Handling. If these equations don't make a lot of sense to you, don't worry too much about them.") 
+```
+
+---
+
+
+```{r binomial1, fig.cap="", fig.height=5 ,echo=FALSE}
+# plots the three examples of a binomial distribution
+	
+	# needed for printing
+	width <- 8
+	height <- 6
+	
+	# function to produce a styled binomial plot
+	binomPlot <- function( n,p ) {
+		
+		# probabilities of each outcome
+		Uspjesni_ishodi <- 0:n
+		prob <- dbinom( x=Uspjesni_ishodi, size=n, prob=p )
+		
+		# plot
+		plot( 
+			Uspjesni_ishodi, prob, type="h", lwd=3, ylab="Vjerojatnost", 
+			frame.plot=FALSE)
+		
+		
+	}
+# skulls image...
+	binomPlot( n=20, p=1/6 #,
+	#           xlab="Broj označenih bridova",
+	#           ylab = "Vjerojatnost"
+	           )
+
+
+```
+
+
+.footnote[[*]Binomna distribucija za $N=20$ opservacija i vjerojatnost ishoda $theta = 1/6$. Svaki stupac prikazuje vjerojatnost jednog ishoda (i.e., jedna moguća vrijednost $X$). Pošto je riječ o distribuciji vjerojatnosti, svaka od pojedinačnih vijednosti mora biti broj od 0 do 1 dok zbroj svih stupaca mora biti jednak 1.]
+---
+
+
+
+.hi[**Binomna distribucija u R**]
+
+```{r echo=T}
+# x označava očekivani broj ishoda
+# size je broj ponavljanja u eksperimentu
+# prob je vjerojatnost željenog ishoda
+dbinom( x = 4, size = 20, prob = 1/6 )
+``` 
+<br>
+<br>
+
+```{r echo=T}
+# q označava očekivanu vjerojatnost ishoda
+# size je broj ponavljanja u eksperimentu
+# prob je vjerojatnost željenog ishoda
+pbinom( q = 4, size = 20, prob = 1/6)
+```
+
+---
+
+.hi[**Binomna distribucija u R**]
+
+```{r echo=T}
+# p označava očekivani broj ishoda
+# size je broj ponavljanja u eksperimentu
+# prob je vjerojatnost željenog ishoda
+qbinom( p = 0.75, size = 20, prob = 1/6)
+```
+<br>
+<br>
+
+```{recho=T}
+# n označava broj ponavljanja u eksperimentu
+# size je veličina uzorka 
+# prob je vjerojatnost željenog ishoda
+rbinom( n = 100, size = 20, prob = 1/6 )
+```
+
+---
+
+.hi[Grafički prikaz distribucije za eksperimente različite veličine]
+
+```{r binomial2a, fig.cap="", fig.height=5, echo=FALSE}
+# plots the three examples of a binomial distribution
+	
+	# needed for printing
+	width <- 8
+	height <- 6
+	
+	# function to produce a styled binomial plot
+	binomPlot <- function( n, p ) {
+		
+		# probabilities of each outcome
+		Uspjesni_ishodi <- 0:n
+		prob <- dbinom( x = Uspjesni_ishodi, size = n, prob = p )
+		
+		# plot
+		plot( 
+			Uspjesni_ishodi, prob, type = "h", lwd = 3, ylab = "Vjerojatnost", 
+			frame.plot = FALSE)
+		
+	}
+	# coins image #1...
+	binomPlot( n = 20, p = 1/2 )
+	
+	binomPlot( n = 100, p = 1/2 )
+	
+```
+
+.footnote[[*]Distribucija vjerojatnosti bacanja novčića 20 puta $N=20$ i 100 puta $N=100$; vjerojatnost jednog ishoda je $theta = 1/2$.]
+
+---
+
+.hi[**Distribucijske funkcije u R**]
+<br>
+<br>
+<br>
+<br>
+```{r pdistnames, echo=FALSE}
+knitr::kable(data.frame(stringsAsFactors=FALSE,
+            Funkcija = c("Vjerojatnost",
+                             "Kumulativna vjerojatnost",
+                             "Generiraj slučajni uzorak", "Kvartili distribucije"),
+                  Prefiks = c("d", "p", "r", "q"),
+     NormalnaDistribcija = c("dnorm()", "dnorm()", "rnorm()", "qnorm()"),
+   BinomnaDistribucija = c("dbinom()", "pbinom()", "rbinom()", "qbinom()")
+), caption= "")
+```
+
+.footnote[[*]Nazivi funkcija distribucije u R. Svaka distribucijska funkcija je povezana sa četiri druge funkcije (vidi prefiks).]
+
+
+---
+layout:false
+class: middle, inverse
+# STANDARDNA DISTRIBUCIJA 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+
+---
+
+layout:true
+# STANDARDNA DISTRIBUCIJA
+
+---
+
+.hi[Formalni zapis]
+
+$$
+X \sim \mbox{Normal}(\mu,\sigma)
+$$
+
+--
+
+.hi[**Grafički prikaz standardne distribucije**]
+
+```{r normdist, fig.cap="", echo=T, eval=F}
+# Generiraj standardnu distribuciju 
+	
+	# parametri za plot
+	width <- 8
+	height <- 6
+	fileName <- "standardNormal.eps"	
+	
+	# vizualizacija
+	xval <- seq(-3,3,.01)
+	yval <- dnorm( xval, 0, 1)
+	plot( 	xval, yval, lwd = 3,
+	        ylab = "Gustoća vjerojatnosti",
+	        xlab = "Ishod",
+	    		frame.plot = FALSE, type = "l"	)
+```
+
+---
+
+
+.hi[**Grafički prikaz standardne distribucije**]
+
+```{r  fig.cap="", fig.size= 3,echo=F, eval=T}
+# Generiraj standardnu distribuciju 
+	
+	# parametri za plot
+	width <- 8
+	height <- 6
+	fileName <- "standardNormal.eps"	
+	
+	# vizualizacija
+	xval <- seq(-3,3,.01)
+	yval <- dnorm( xval, 0, 1)
+	plot( 	xval, yval, lwd = 3,
+	        ylab = "Gustoća vjerojatnosti",
+	        xlab = "Ishod",
+	    		frame.plot = FALSE, type = "l"	)
+```
+
+
+.footnote[[*]Standardna distribucija sa prosjekom $mu = 0$ i standardnom devijacijom $sigma = 1$. $x$-os se odnosi na vrijednost ishoda dok $y$-os govori kolika je vjerojatnost ishoda. $y$-os je nazvana \"Gustoća vjerojatnosti\" , a ne \"Vjerojatnost\"(kao kod npr. binomne distribucije). Razlika se odnosi na to da je standardna distribucija kontinuirana (za razliku od npr. binomne koja je diskretna). Visina krivulje ne govori točno koja je vjerojatnost ishoda nego koje vrijednosti ishoda su vjerojatnije od drugih!]
+
+---
+
+.hi[**Standardna distribucija sa različitim prosjekom**]
+
+```{r  fig.cap="", echo=T,eval=F}
+	# Postupak izrade standardne distribucije sa različitim prosjecima
+	xval <- seq(0,11,.01)
+	yval.1 <- dnorm( xval, 4, 1)
+	yval.2 <- dnorm( xval, 7, 1)
+	plot(  xval, yval.1,
+	       lwd = 3,
+	       ylab = "Gustoća vjerojatnosti",
+	       xlab = "Ishod",
+	       frame.plot = FALSE, type = "l"
+	)
+	lines(	xval, yval.2,
+	        lwd = 3,
+	        lty = 2 )
+```
+
+---
+
+.hi[**Standardna distribucija sa različitim prosjekom**]
+
+```{r normmean, fig.cap="", echo=F,eval=T, fig.height=5}
+	# Standardna distribucija sa drugim prosjekom
+	xval <- seq(0,11,.01)
+	yval.1 <- dnorm( xval, 4, 1)
+	yval.2 <- dnorm( xval, 7, 1)
+	plot(  xval, yval.1,
+	       lwd = 3,
+	       ylab = "Gustoća vjerojatnosti",
+	       xlab = "Ishod",
+	       frame.plot = FALSE, type = "l"
+	)
+	lines(	xval, yval.2,
+	        lwd = 3,
+	        lty = 2 )
+```
+
+.footnote[[*]Standardna distribucija sa drugim prosjekom. Puna linija prikazuje stdandardnu distribuciju sa prosjekom $mu=4$.  Isprekidana linija prikazuje sdandardnu distribuciju sa prosjekom $mu=7$. Standardna devijacija u oba slučaja iznosi $sigma=1$.]
+
+
+---
+
+
+.hi[**Standardna distribucija sa različitom standardnom devijacjom**]
+
+
+```{r  fig.cap="", echo=TRUE, eval=FALSE}
+# Standardna distribucija sa drugom standardnom devijacijom
+	xval <- seq(0,10,.01)
+	yval.1 <- dnorm( xval, 5, 1)
+	yval.2 <- dnorm( xval, 5, 2)
+	plot(  xval, yval.1,
+	       lwd = 3,
+	       ylab = "Gustoća vjerojatnosti",
+	       xlab = "Ishod",
+	       frame.plot = FALSE,
+	       type = "l"
+	)
+	lines(	xval, yval.2,
+	        lwd  = 3,
+	        lty = 2 )
+```
+
+---
+
+
+
+.hi[**Standardna distribucija sa različitom standardnom devijacjom**]
+
+```{r normsd, fig.cap="", echo=F, eval=T,fig.height=5}
+# Standardna distribucija sa drugom standardnom devijacijom
+	xval <- seq(0,10,.01)
+	yval.1 <- dnorm( xval, 5, 1)
+	yval.2 <- dnorm( xval, 5, 2)
+	plot(  xval, yval.1,
+	       lwd = 3,
+	       ylab = "Gustoća vjerojatnosti",
+	       xlab = "Ishod",
+	       frame.plot = FALSE,
+	       type = "l"
+	)
+	lines(	xval, yval.2,
+	        lwd  = 3,
+	        lty = 2 )
+```
+
+
+.footnote[[*]Standardna distribucija sa drugom standardnom devijacijom. Obje distribucije imaju isti prosjek $mu = 5$, ali različite standardne devijacije. Puna linija prikazuje standardnu distribuciju sa sa standardnom devijacijom $sigma=1$, a isprekidana linija sa std. distribuciju sa standardnom devijacijom $sigma = 2$]
+
+---
+
+.hi[Gustoća vjerojatnosti]
+
+```{r sdnorm1, fig.cap=" ", echo=FALSE,fig.height=4}
+par(mfrow=c(1,2))
+	plotOne <- function( a,b ) {
+		plot.new()
+		w <- 4
+		plot.window( xlim = c(-w,w), ylim = c(0,.4))
+		xval <- seq( max(a,-w),min(b,w),.01)
+		yval <- dnorm(xval,0,1)
+		end <- length(xval)
+		polygon( c(xval[1],xval,xval[end]), 
+				 c(0,yval,0),
+				 density = 10 
+				)
+		xval <- seq(-w,w,.01)
+		yval <- dnorm( xval, 0, 1)				
+		lines( xval,yval, lwd=2, col="black" )
+		axis( side=1, at=-w:w )
+		area <- abs(pnorm(b,0,1)-pnorm(a,0,1))
+		title( main= paste("Osjenčani dio = ",round(area*100,1),"%", sep=""), font.main=1 )
+		
+	}
+	
+plotOne(-1,1)
+plotOne(-2,2)
+par(mfrow=c(1,1))
+```
+
+.footnote[[*]Područje ispod krivulje pokazuje vjerojatnost da opservacija pada u određeni raspon. Puna crta pokazuje standardnu distribuciju sa prosjekom $mu=0$ i standardnom devijacijom $sigma=1$. Osjenčana područja prikazuju \"površinu ispod krivulje\". Na lijevoj strani vidimo da postoji 68.3% šansa da opservacija pada unutar jedne standardne devijacije od prosjeka. Na desnoj strani vidimo da postoji 95.4% šanse da će opservacija pasti unutar dvije standardne devijacije od prosjeka.]
+
+
+---
+
+```{r sdnorm2, fig.cap="", echo=FALSE,fig.height=5}
+par(mfrow=c(1,2))
+plotOne(-1,0)
+plotOne(-50,-1)
+par(mfrow=c(1,1))
+```
+
+.footnote[[*]Dva dodatna primjera koncepta \"površine ispod krivulje\". Postoji 15.9%  šansa da je opservacija jednu standardnu devijaciju ispod prosjeka ili manje (desno) i 34.1% šansa da je opservacija veća od jedne standardne devijacije ispod prosjeka ali i dalje ispod prosjeka. Valja primijetiti da je 15.9% + 34.1% = 50%. Za standardnu distribuciju postoji 50% šansa da opservacija pada ispod prosjeka i 50% da pada iznad prosjeka.]
+
+
+
+---
+layout:false
+class: middle, inverse
+# DRUGE DISTRIBUCIJE 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+---
+
+layout:true
+# DRUGE DISTRIBUCIJE
+
+---
+
+.hi[**t distribucija**]
+
+```{r tdist, fig.cap="", echo=T,eval=F}
+	# Prikaži t distribuciju
+  xval <- seq(-5,5,.01)
+	yval <- dt( xval, df = 3)
+	plot( 	xval, yval,
+	        lwd = 3,
+	        ylab = "Gustoća vjerojatnosti",
+	        xlab = "Ishod",
+		    	frame.plot = FALSE,
+		    	type = "l",
+		    	ylim = c(0,.4)
+	)
+	lines( xval, dnorm(xval,0,1),
+	       lty = 2)
+```
+
+---
+
+.hi[**t distribucija**]
+
+```{r fig.cap="", echo=F,eval=T,fig.height=5}
+xval <- seq(-5,5,.01)
+	yval <- dt( xval, df = 3)
+	plot( 	xval, yval,
+	        lwd = 3,
+	        ylab = "Gustoća vjerojatnosti",
+	        xlab = "Ishod",
+		    	frame.plot = FALSE,
+		    	type = "l",
+		    	ylim = c(0,.4)
+	)
+	lines( xval, dnorm(xval,0,1),
+	       lty = 2)
+```
+
+
+.footnote[[*]"t distribucija sa 3 stupnja slobode (puna linija). Distribucija je slična normalnoj distribuciji ali je ipak različita. Zbog usporedbe je prikazana i standardna distribucija na isprekidanoj liniji. "Repovi" t distribucije su "teži" nego "Repovi" standardne distribucije.]
+
+
+---
+
+.hi[**Chi-sq distribucija**]
+
+```{r chisqdist, fig.cap="", echo=T, eval=F}
+	# Prikaži ChiSq distribuciju
+	xval <- seq(0,10,.01)
+	yval <- dchisq( xval, df = 3)
+	plot( 	xval, yval, lwd = 3,
+	        ylab = "Probability Density",
+	        xlab = "Ishod",
+	  	   	frame.plot = FALSE, 
+	        type = "l"
+	) 
+```
+---
+
+
+.hi[**Chi-sq distribucija**]
+
+```{r  fig.cap="", echo=F, eval=T,fig.height=5}
+	# Prikaži ChiSq distribuciju
+	xval <- seq(0,10,.01)
+	yval <- dchisq( xval, df = 3)
+	plot( 	xval, yval, lwd = 3,
+	        ylab = "Probability Density",
+	        xlab = "Ishod",
+	  	   	frame.plot = FALSE, 
+	        type = "l"
+	) 
+```
+
+.footnote[[*]chi2 distribucija sa tri stupnja slobode. Valja primijetiti da ishodi moraju biti veći od nule i da je distribucija priličo zakrivljena. To su karakteristike chi-square distribucije.]
+
+---
+
+.hi[**F distribucija**]
+ 
+```{r Fdist, fig.cap="", echo=T,eval=F}
+	# Prikaži F distribuciju
+	xval <- seq(0,10,.01)
+	yval <- df( xval, df1 = 3, df2 = 5)
+	plot( 	xval, yval,
+	        lwd = 3, 
+	        ylab = "Gustoća vjerojatnosti",
+	        xlab = "Ishod",
+		    	frame.plot = FALSE,
+		    	type = "l"
+	)
+```
+---
+
+.hi[**F distribucija**]
+ 
+```{r  fig.cap="", echo=F,eval=T, fig.height=5}
+	xval <- seq(0,10,.01)
+	yval <- df( xval, df1 = 3, df2 = 5)
+	plot( 	xval, yval,
+	        lwd = 3, 
+	        ylab = "Gustoća vjerojatnosti",
+	        xlab = "Ishod",
+		    	frame.plot = FALSE,
+		    	type = "l"
+	)
+```
+
+
+.footnote[[*]F distribucija sa 3 i 5 stupnjeva slobode. Općenito je moguće primijetiti da F distribucija sliči chi-sqare distribuciji, no među njima ipak postoje značajne razlike.]
+
+---
+
+.hi[Generiraj standardnu distribuciju]
+
+```{r eval=F,echo=T}
+# Stvori 1000 ishoda normalne distribuciju sa prosjekom 0 i stdev 1
+normal.a <- rnorm( n = 1000, mean = 0, sd = 1 )  
+print(head(normal.a)) # Prikaži
+# Napravi histogram podataka
+hist(  normal.a,
+       breaks = 70,
+       freq = FALSE,
+       xlim = c(-4,4),
+       border = "red",
+       ylim = c(0,.45),
+       axes = FALSE,
+       xlab = "",
+       ylab = "",
+       main = "Simulirana standardna distribucija",
+       font.main = 1
+)
+lines( x <- seq(-4,4,.1),
+       dnorm(x),
+       lwd = 2,
+       col = "black"  )
+axis(1)
+
+```
+
+---
+
+.hi[**Generiraj standardnu distribuciju**]
+
+```{r eval=T,echo=F,fig.height=6}
+# Stvori 1000 ishoda normalne distribuciju sa prosjekom 0 i stdev 1
+normal.a <- rnorm( n = 1000, mean = 0, sd = 1 )  
+print(head(normal.a)) # Prikaži
+# Napravi histogram podataka
+hist(  normal.a,
+       breaks = 70,
+       freq = FALSE,
+       xlim = c(-4,4),
+       border = "red",
+       ylim = c(0,.45),
+       axes = FALSE,
+       xlab = "",
+       ylab = "",
+       main = "Simulirana standardna distribucija",
+       font.main = 1
+)
+lines( x <- seq(-4,4,.1),
+       dnorm(x),
+       lwd = 2,
+       col = "black"  )
+axis(1)
+
+```
+
+
+---
+
+.hi[**Generiraj chi-squared distribuciju**]  
+
+```{r eval=F,echo=T}
+# Elementi za stvaranje Chi-sq distribucije
+n <- 1000 # Stvori niz od tisuću brojeva
+normal.a <- rnorm( n ) # Stvori standardnu distribuciju
+normal.b <- rnorm( n ) # Stvori standardnu distribuciju
+normal.c <- rnorm( n ) # Stvori standardnu distribuciju
+normal.d <- rnorm( n ) # Stvori standardnu distribuciju
+# Stvori Chi-sq distribuciju:
+# kao sumu kvadriranih normalnih distribucija
+chi.sq.3 <- (normal.a)^2 + (normal.b)^2 + (normal.c)^2	
+# Putem funkcije
+chi.sq.20 <- rchisq( n, 20)  #chi.sq sa 20 stupnjeva slobode
+# Prikaži Chi-sq distribuciju na histogramu
+hist(  chi.sq.3,
+       breaks = 70,
+       freq = FALSE, 
+       xlim = c(0,16),
+       border = "red",
+       axes = FALSE,
+       ylim = c(0,.25),
+       xlab = "",
+       ylab = "", 
+       main = "",
+       font.main = 1
+)
+lines( x <- seq(0,16,.1),
+       dchisq(x,3),
+       lwd = 2,
+       col = "black"  )	
+axis(1)
+
+```
+
+---
+
+.hi[**Generiraj chi-squared distribuciju**]  
+
+```{r eval=T,echo=F,fig.height=6}
+
+# Elementi za stvaranje Chi-sq distribucije
+
+n <- 1000 # Stvori niz od tisuću brojeva
+
+normal.a <- rnorm( n ) # Stvori standardnu distribuciju
+normal.b <- rnorm( n ) # Stvori standardnu distribuciju
+normal.c <- rnorm( n ) # Stvori standardnu distribuciju
+normal.d <- rnorm( n ) # Stvori standardnu distribuciju
+
+# Stvori Chi-sq distribuciju:
+
+# kao sumu kvadriranih normalnih distribucija
+chi.sq.3 <- (normal.a)^2 + (normal.b)^2 + (normal.c)^2	
+
+# Putem funkcije
+chi.sq.20 <- rchisq( n, 20)  #chi.sq sa 20 stupnjeva slobode
+
+# Prikaži Chi-sq distribuciju na histogramu
+
+hist(  chi.sq.3,
+       breaks = 70,
+       freq = FALSE, 
+       xlim = c(0,16),
+       border = "red",
+       axes = FALSE,
+       ylim = c(0,.25),
+       xlab = "",
+       ylab = "", 
+       main = "",
+       font.main = 1
+)
+lines( x <- seq(0,16,.1),
+       dchisq(x,3),
+       lwd = 2,
+       col = "black"  )	
+axis(1)
+
+```
+
+
+
+---
+
+.hi[**Stvori t distribuciju**]
+
+```{r echo=T,eval=F}
+# Prvi korak
+skalirano.chi <- chi.sq.3 / 3 # Podijeli chi.sq sa 3
+# Drugi korak
+# t distribucija kao omjer normalne i drugog korijena skalirane chi.sq distribucije
+t.3 <- normal.d / sqrt( skalirano.chi )
+# Napravi histogram
+hist(  t.3,
+       breaks = 70,
+       freq = FALSE,
+       xlim = c(-5,5),
+       border = "red",
+       axes = FALSE, ylim = c(0,.4),
+       xlab = "",ylab = "",
+       main = "",
+       font.main = 1
+)
+lines( x <- seq(-4,4,.1),
+       dt(x,3),
+       lwd = 2,
+       col = "black"  )
+axis(1)	
+```
+---
+
+.hi[**Stvori t distribuciju**]
+
+```{r echo=F,eval=T, fig.height=5}
+# Prvi korak
+skalirano.chi <- chi.sq.3 / 3 # Podijeli chi.sq sa 3
+# Drugi korak
+# t distribucija kao omjer normalne i drugog korijena skalirane chi.sq distribucije
+t.3 <- normal.d / sqrt( skalirano.chi )
+# Napravi histogram
+hist(  t.3,
+       breaks = 70,
+       freq = FALSE,
+       xlim = c(-5,5),
+       border = "red",
+       axes = FALSE, ylim = c(0,.4),
+       xlab = "",ylab = "",
+       main = "",
+       font.main = 1
+)
+lines( x <- seq(-4,4,.1),
+       dt(x,3),
+       lwd = 2,
+       col = "black"  )
+axis(1)	
+```
+---
+
+.hi[**Stvori F distribuciju**]
+
+```{r eval=F,echo=T}
+# F distribucija kao omjer dviju skaliranih chi.sq distribucija
+F.3.20 <- (chi.sq.3 / 3) / (chi.sq.20 / 20)
+# Napravi histogram
+hist(  F.3.20,
+       breaks = 70,
+       freq = FALSE,
+       xlim = c(0,6),
+       border = "red",
+       axes = FALSE, ylim=c(0,.7),
+       xlab = "",
+       ylab = "",
+       main = "Simulirana F distribucija",
+       font.main = 1
+)
+lines( x <- seq(0,6,.01),
+       df(x,3,20),
+       lwd = 2,
+       col = "black"  )	
+axis(1)
+```
+
+---
+
+.hi[**Stvori F distribuciju**]
+
+```{r eval=T,echo=F,fig.height=5}
+# F distribucija kao omjer dviju skaliranih chi.sq distribucija
+F.3.20 <- (chi.sq.3 / 3) / (chi.sq.20 / 20)
+# Napravi histogram
+hist(  F.3.20,
+       breaks = 70,
+       freq = FALSE,
+       xlim = c(0,6),
+       border = "red",
+       axes = FALSE, ylim=c(0,.7),
+       xlab = "",
+       ylab = "",
+       main = "Simulirana F distribucija",
+       font.main = 1
+)
+lines( x <- seq(0,6,.01),
+       df(x,3,20),
+       lwd = 2,
+       col = "black"  )	
+axis(1)
+
+```
+
+
+---
+
+layout:false
+class: middle, inverse
+# HVALA NA PAŽNJI! 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Sljedeće predavanje: Statistički uzorak i populacija)
+

@@ -97,18 +97,19 @@ Koristiti ćemo tri knjige.
 
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Moduli/05_.pdf">Predavanje 05: Teorija vjerojatnosti</a>
+<a href="/Moduli/05_.pdf">Predavanje 05: Distribucije</a>
 
 <ul>
 <li> Deskriptivna vs. inferencijalna statistika</li>
-<li> Osnovni postulati teorije vjerojatnosti</li>
 <li> Binomna distribucija</li>
 <li> Standardna distribucija</li>
 <li> Druge često korištene distribucije</li>
-<li> Tradicionalni vs. Bayesov pristup vjerojatnosti</li>
 <ul>
 
 </div>
+
+<b>Format predavanja:</b> <a href="/Moduli/05_VJEROJATNOST.html">.html</a> | <a href="/Moduli/05_VJEROJATNOST..Rmd">.Rmd</a>
+<br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 9.</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
 <a href="/Predavanja/06_.pdf">Predavanje 06: Procjena parametara populacije</a>

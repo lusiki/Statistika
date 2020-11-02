@@ -97,7 +97,7 @@ Koristiti ćemo tri knjige.
 
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Moduli/05_.pdf">Predavanje 05: Distribucije</a>
+<a href="https://raw.githack.com/BrbanMiro/Statistika/main/Moduli/05_VJEROJATNOST.html">Predavanje 05: Distribucije</a>
 
 <ul>
 <li> Deskriptivna vs. inferencijalna statistika</li>

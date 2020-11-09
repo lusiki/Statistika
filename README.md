@@ -112,7 +112,7 @@ Koristiti ćemo tri knjige.
 <br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 9.</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Predavanja/06_.pdf">Predavanje 06: Procjena parametara populacije</a>
+<a href="/Predavanja/06_.pdf">Predavanje 06: Uzorak i populacija</a>
 
 <ul>
 <li> Uzorak i populacija</li>
@@ -123,6 +123,9 @@ Koristiti ćemo tri knjige.
 <ul>
 
 </div>
+
+<b>Format predavanja:</b> <a href="/Moduli/06_UZORAK_POPULACIJA.html">.html</a> | <a href="/Moduli/06_UZORAK_POPULACIJA.Rmd">.Rmd</a>
+<br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 10.</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
 <a href="/Predavanja/07_.pdf">Predavanje 07: Testiranje hipoteza</a>

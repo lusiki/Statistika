@@ -112,7 +112,7 @@ Koristiti ćemo tri knjige.
 <br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 9.</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Predavanja/06_.pdf">Predavanje 06: Uzorak i populacija</a>
+<a href="https://raw.githack.com/BrbanMiro/Statistika/main/Moduli/06_UZORAK_POPULACIJA.html">Predavanje 06: Uzorak i populacija</a>
 
 <ul>
 <li> Uzorak i populacija</li>

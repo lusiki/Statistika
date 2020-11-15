@@ -1,0 +1,637 @@
+---
+title: "PRIMJENJENA STATISTIKA"
+# subtitle: "<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>"
+subtitle: "Predavanje 7: Statistička teorija - testiranje hipoteza"
+author: "Luka Sikic, PhD"
+date: "Fakultet hrvatskih studija | [Github PS](https://github.com/BrbanMiro/Statistika)" #"`r format(Sys.time(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      beforeInit: "macros.js"
+---
+
+
+```{R, setup, include = F}
+# devtools::install_github("dill/emoGG")
+library(pacman)
+p_load(
+  broom, tidyverse,
+  latex2exp, ggplot2, ggthemes, ggforce, viridis, extrafont, gridExtra,
+  kableExtra, snakecase, janitor,
+  data.table, dplyr, estimatr,
+  lubridate, knitr, parallel,
+  lfe,
+  here, magrittr
+)
+# Define pink color
+red_pink <- "#e64173"
+turquoise <- "#20B2AA"
+orange <- "#FFA500"
+red <- "#fb6107"
+blue <- "#2b59c3"
+green <- "#8bb174"
+grey_light <- "grey70"
+grey_mid <- "grey50"
+grey_dark <- "grey20"
+purple <- "#6A5ACD"
+slate <- "#314f4f"
+# Dark slate grey: #314f4f
+# Knitr options
+opts_chunk$set(
+  comment = "#>",
+  fig.align = "center",
+  fig.height = 7,
+  fig.width = 10.5,
+  warning = F,
+  message = F
+)
+opts_chunk$set(dev = "svg")
+options(device = function(file, width, height) {
+  svg(tempfile(), width = width, height = height)
+})
+options(crayon.enabled = F)
+options(knitr.table.format = "html")
+# A blank theme for ggplot
+theme_empty <- theme_bw() + theme(
+  line = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  plot.margin = structure(c(0, 0, -0.5, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_simple <- theme_bw() + theme(
+  line = element_blank(),
+  panel.grid = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text.x = element_text(size = 18, family = "STIXGeneral"),
+  axis.text.y = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  # plot.margin = structure(c(0, 0, -1, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_math <- theme_void() + theme(
+  text = element_text(family = "MathJax_Math"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_serif <- theme_void() + theme(
+  text = element_text(family = "MathJax_Main"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes <- theme_void() + theme(
+  text = element_text(family = "Fira Sans Book"),
+  axis.title = element_text(size = 18),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = grey_light,
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_set(theme_gray(base_size = 20))
+# Column names for regression results
+reg_columns <- c("Term", "Est.", "S.E.", "t stat.", "p-Value")
+# Function for formatting p values
+format_pvi <- function(pv) {
+  return(ifelse(
+    pv < 0.0001,
+    "<0.0001",
+    round(pv, 4) %>% format(scientific = F)
+  ))
+}
+format_pv <- function(pvs) lapply(X = pvs, FUN = format_pvi) %>% unlist()
+# Tidy regression results table
+tidy_table <- function(x, terms, highlight_row = 1, highlight_color = "black", highlight_bold = T, digits = c(NA, 3, 3, 2, 5), title = NULL) {
+  x %>%
+    tidy() %>%
+    select(1:5) %>%
+    mutate(
+      term = terms,
+      p.value = p.value %>% format_pv()
+    ) %>%
+    kable(
+      col.names = reg_columns,
+      escape = F,
+      digits = digits,
+      caption = title
+    ) %>%
+    kable_styling(font_size = 20) %>%
+    row_spec(1:nrow(tidy(x)), background = "white") %>%
+    row_spec(highlight_row, bold = highlight_bold, color = highlight_color)
+}
+```
+
+```{css, echo = F, eval = F}
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+```
+
+
+class: inverse, middle
+# PREGLED PREDAVANJA
+
+---
+layout: true
+# PREGLED PREDAVANJA
+---
+<br>
+
+## CILJEVI 
+
+
+- Ključni koncepti
+- Vrste pogrešaka
+- Testna statistika i sampling distribucija
+- Kritičke vrijednosti i granice
+- p-vrijednosti
+- Interpretacija rezultata
+- Testiranje hipoteza u R
+- Efekt veličine, i snaga testa
+- Dodatni koncepti
+- Intervali pouzdanosti
+
+---
+
+layout:false
+class: middle, inverse
+# KLJUČNI KONCEPTI 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Terminologija!)
+---
+
+layout:true
+# KLJUČNI KONCEPTI
+
+---
+<br>
+<br>
+
+- Istraživačke hipoteze
+- Statističke hipoteze
+- Nulta i alternativna hipoteza
+
+---
+
+layout:false
+class: middle, inverse
+# VRSTE POGREŠAKA KOD TESTIRANJA HIPOTEZA
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Error I vs Error II)
+---
+
+layout:true
+# VRSTE POGREŠAKA KOD TESTIRANJA HIPOTEZA
+---
+
+.hi[Pogreške kod testiranja hipoteza] 
+
+```{r echo=FALSE}
+knitr::kable(data.frame(stringsAsFactors = FALSE,
+NANA = c("$H_0$ je točna:", "$H_0$ nije točna:"),
+`retain.$H_0$` = c("ispravna odluka", "greška (tip II)"),
+`retain.$H_0$` = c("greška (tip I)", "ispravna odluka")),
+col.names = c("", "zadrži $H_0$", "odbaci $H_0$"))
+```
+
+.hi[Razine signifikantnosti]
+
+```{r echo=FALSE}
+knitr::kable(data.frame(stringsAsFactors = FALSE,
+NANA = c("$H_0$ je točna:", "$H_0$ nije točna:"),
+retain = c("$1-\\alpha$ (vjerojatnost zadržavanja točne hipoteze)",
+                   "$\\beta$ (tip II pogreške)"),
+reject = c("$\\alpha$ (tip I pogreške)",
+                   "$1-\\beta$  (snaga testa)")),
+col.names=c("", "zadrži $H_0$", "odbaci $H_0$"))
+
+```
+
+
+---
+
+layout:false
+class: middle, inverse
+# TESTNA STATISTIKA I SAMPLING DISTRIBUCIJA
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Osnova za odluku.)
+---
+
+layout:true
+# TESTNA STATISTIKA I SAMPLING DISTRIBUCIJA
+---
+
+
+.hi[Testna statistika]
+
+$$
+X \sim \mbox{Binomial}(\theta,N)
+$$
+
+.hi[Sampling distribucija testne statistike]
+
+```{r samplingdist, fig.cap="", echo= 9:19, eval=F}
+nhstImg <- list()
+emphCol <- rgb(0,0,1)
+emphColLight <- rgb(.5,.5,1)
+emphGrey <- grey(.5)
+eps <- TRUE
+colour <- TRUE
+width <- 8
+height <- 5.5
+	
+	# Distribucija
+	x <- 0:100
+	y <- dbinom(x,100,.5)
+	
+	# Vizualizacija
+	plot(x,y,type="h",lwd=3, col=ifelse(colour,emphCol,"black"),
+		xlab="Broj točnih odgovora (X)", ylab="Vjerojatnost",
+		main="Sampling distribucija za X kada je nulta hipoteza točna",
+		font.main=1, frame.plot=FALSE
+	)
+```
+
+---
+
+.hi[Sampling distribucija testne statistike]
+
+```{r samplingdist1, fig.cap="", echo= F, eval=T, fig.height=3}
+nhstImg <- list()
+emphCol <- rgb(0,0,1)
+emphColLight <- rgb(.5,.5,1)
+emphGrey <- grey(.5)
+eps <- TRUE
+colour <- TRUE
+width <- 8
+height <- 5.5
+	
+	# Distribucija
+	x <- 0:100
+	y <- dbinom(x,100,.5)
+	
+	# Vizualizacija
+	plot(x,y,type="h",lwd=3, col=ifelse(colour,emphCol,"black"),
+		xlab="Broj točnih odgovora (X)", ylab="Vjerojatnost",
+		main="Sampling distribucija za X kada je nulta hipoteza točna",
+		font.main=1, frame.plot=FALSE
+	)
+```
+
+.footnote[[*] Sampling distribucija testne statistike $X$ kad je nulta hipoteza istinita. U našem prmjeru je riječ o binomnoj distribuciji. Pod nultom hipotezom je vjerojatnost $\\theta = .5$, pa sampling distribucija implicira vrijednost 50 (od 100) točnih odgovora. Većina mase vjerojatnosti se nalazi izmedju vrijednopsti 40 i 60.]
+
+---
+
+layout:false
+class: middle, inverse
+# KRITIČKE VRIJEDNOSTI I GRANICE
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Kriterij za odluku.)
+---
+
+layout:true
+# KRITIČKE VRIJEDNOSTI I GRANICE
+
+---
+
+
+.hi[Kritičke vrijednosti za dvostrani test]
+
+$$
+\begin{array}{cc}
+H_0 : & \theta = .5 \\
+H_1 : & \theta \neq .5 
+\end{array}
+$$
+
+```{r crit2, fig.cap="", fig.height=4, echo=FALSE}
+	# needed for printing
+	width <- 8
+	height <- 5.5
+	
+	setUpPlot <- function() {
+		
+		plot.new()
+		plot.window(xlim=c(0,100),ylim=c(0,.08))
+		axis(1)
+		title(xlab="Broj točnih odgovora (X)")
+		
+	}
+	
+	addDistPlot <- function(x,y,z) {
+		
+		# colour key
+		col.key <- c(
+			 grey(.9),
+			 ifelse(colour,emphCol,"black")
+		)
+		
+		# plot
+		lines(x,y,col=col.key[as.numeric(z)+1],type="h",lwd=3)
+		
+	}
+	
+	addArrow <- function(x,h, text) {
+		
+		arrows(x0 = x[1], y0 = h, x1 = x[2], y1 = h, length = .1)
+		lines(c(x[1],x[1]),c(h-.002,h+.002),'type'="l")
+		
+	}
+	
+	# distribution
+	x <- 0:100
+	y <- dbinom(x,100,.5)
+	
+	# plot 1
+	setUpPlot()
+	z <- x<=40 | x>=60
+	addDistPlot(x,y,z)
+	h <- .03
+	addArrow(c(40,20),h)
+	addArrow(c(60,80),h)	
+	text(22,h+.013,"donja kritička regija")
+	text(22,h+.007,"(2.5% distribucije)")
+	text(75,h+.013,"gornja kritička regija")
+	text(75,h+.007,"(2.5% distribucije)")
+	title(main="",font.main=1)
+```
+
+.footnote[[*] Kritičke vrijednosti vezane uz hipotezu testa ESP istraživanja, za test sa razinama signifikantnosti $\\alpha = .05$. Grafikon prikazuje sampling distribuciju $X$ pod nultom hipotezom: prostor u sredini odgovara vrijednostima sampling distribucije za $X$ za koje bismo zadržali nultu hipotezu. Stupci se odnose na kritičke vrijednosti: vrijednosti $X$ za koje bismo odbacili nultu hipotezu. Obzirom da je test dvostrani (i.e., omogućuje $\\theta <.5$ i $\\theta >.5$), kritičke granice pokrivaju oba repa distribucije. Razine $\\alpha$ od $.05$ impliciraju da kritička regija uključuje 2.5% sampling distribucije.]
+
+
+---
+
+.hi[Kritičke vrijednosti za jednostrani test]
+
+
+$$
+\begin{array}{cc}
+H_0 : & \theta \leq .5 \\
+H_1 : & \theta > .5 
+\end{array}
+$$
+
+
+```{r crit1, echo=FALSE, fig.cap=""}
+setUpPlot()
+	z <- x>=58
+	addDistPlot(x,y,z)
+	h <- .03
+	addArrow(c(58,80),h)	
+	text(75,h+.013,"kritička regija")
+	text(75,h+.007,"(5% distribucije)")
+	title(main="",font.main=1)
+```
+
+.footnote[[*] Kritička regija za jednostrani test. U ovom slučaju je alternativna hipoteza $\\theta > .05$, tako da nultu hipotezu odbacujemo samo za velike vrijednosti $X$. Zbog toga kritička regija pokriva samo gornji dio distribucije; točnije 5% distribucije.]
+
+---
+
+layout:false
+class: middle, inverse
+#p-VRIJEDNOSTI
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Kriterij za odluku.)
+---
+
+layout:true
+# p-VRIJEDNOSTI
+---
+
+.hi[**Nyewman**(granice prihvaćanja/odbacivanja)]
+
+```{r echo=FALSE}
+knitr::kable(data.frame(stringsAsFactors=FALSE,
+   Vrijednost = c(0.05, 0.04, 0.03, 0.02, 0.01),
+    Odbaci = c("Da", "Da", "Da", "Ne", "Ne")), col.names=c("Vrijednost $\\alpha$", "Odbaci nultu hipotezu?"))
+```
+
+.hi[**Fisher** (vjerojatnost ekstremnih podataka i.e. vrijednosti)]
+
+---
+
+.hi[Izvještavanje o rezultatima testa]
+
+```{r pvaltable, echo=FALSE}
+knitr::kable(data.frame(stringsAsFactors=FALSE,
+        Zapis = c("$p>.05$", "$p<.05$", "$p<.01$", "$p<.001$"),
+         Zvjezdice = c(NA, "*", "**", "***"),
+  Rjecju = c("Test nije značajan",
+                           "Test značajan na razini $\\alpha = .05 ali ne $\\alpha =.01$ niti $\\alpha = .001$.$",
+                           "Test značajan na razini $\\alpha = .05$  i $\\alpha = .01$ ali ne  $\\alpha = .001",
+                           "Test značajan na svim razinama"),
+        The.null.is... = c("Zadrži", "Odbaci", "Odbaci", "Odbaci")
+), col.names = c("Notacija", "Zvjezdice", "Značajnost", "Nulta hipoteza"), caption = "")
+```
+
+.footnote[[*] Standardne konvencije za prihvaćanje $p$ vrijednosti: konvencija je prikazati rezultate na jedan od navedenih načina (e.g., $p<.05$). Prikazane \"zvjezdice značajnosti\" (i.e.,  označava $p<.05$) su često output u statističkim programima. Nekada se sreće notacija n.s. (not significant) umjesto $p>.05$.]
+
+---
+
+layout:false
+class: middle, inverse
+# TESTIRANJE HIPOTEZA U R
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Jednostavno!)
+---
+
+layout:true
+# TESTIRANJE HIPOTEZA U R
+---
+
+.hi[Provedi test]
+
+```{r}
+# provedi testiranje hipoteza ESP istraživanja za 62 točna odgovora
+binom.test( x=62, n=100, p=.5 )
+```
+
+---
+
+layout:false
+class: middle, inverse
+# EFEKT VELIČINE I SNAGA TESTA
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Uvjerljivost testa!)
+---
+
+layout:true
+# EFEKT VELIČINE I SNAGA TESTA
+---
+
+
+.hi[Sampling distribucije za različite vrijednosti $X$]
+
+
+
+```{r crit3, fig.cap="", echo=FALSE, fig.height=4}
+	setUpPlot()
+	y <- dbinom(x,100,.55)
+	z <- x<=40 | x>=60
+	addDistPlot(x,y,z)
+	h <- .06
+	addArrow(c(40,20),h)
+	addArrow(c(60,80),h)	
+	text(22,h+.013,"donja kritička regija")
+	text(22,h+.007,"(2.5% distribucije)")
+	text(75,h+.013,"gornja kritička regija")
+	text(75,h+.007,"(2.5% distribucijie)")
+	title(main=expression(paste("Sampling distribucija X kad je ",theta,"=.55")),font.main=1)
+```
+
+.footnote[[*] Sampling distribucija pod "alternativnom" hipotezom, za populacijski parametar $\\theta = 0.55$. Značajan dio populacije leži u gornjoj kritičkoj regiji.]
+
+---
+
+```{r crit4, fig.cap="", echo=FALSE,  fig.height=4}
+	setUpPlot()	
+	y <- dbinom(x,100,.7)
+	z <- x<=40 | x>=60
+	addDistPlot(x,y,z)
+	h <- .06
+	addArrow(c(40,20),h)
+	addArrow(c(60,80),h)	
+	text(22,h+.013,"donja kritička regija")
+	text(22,h+.007,"(2.5% distribucije)")
+	text(75,h+.013,"gornja kritička regija")
+	text(75,h+.007,"(2.5% distribucije)")
+	title(main=expression(paste("Sampling distribucija X kad je ",theta,"=.70")),font.main=1)
+```
+
+.footnote[[*] Sampling distribucija pod "alternativnom" hipotezom, za populacijski parametar $\\theta = 0.70$. Skoro cijela populacija leži u gornjoj kritičkoj regiji.]
+
+---
+
+.hi[Funkcija snage testa]
+
+```{r powerfunction, fig.cap="", echo=FALSE,fig.height=4}
+width <- 8
+height <- 5.5
+	
+	# distribution
+	theta <- seq(.01,.99,.01)
+	pow <- vector("numeric",length(theta))
+	for( i in seq_along(theta) ) {
+		pow[i] <- 	pbinom(40,100,theta[i],lower.tail=TRUE) +
+					pbinom(59,100,theta[i],lower.tail=FALSE) 
+	}
+	
+	# plot
+	plot(theta,pow,type="l",lwd=3, col=ifelse(colour,emphCol,"black"),
+		xlab=expression(paste("Prava vrijednost ",theta)), ylab="Vjerojatnost odbacivanja nulte hipoteze",
+		main="Funkcija snage testa (N=100)",
+		font.main=1, frame.plot=FALSE, ylim=c(0,1)
+	)
+	lines(.5,.05,type="p",pch=19)
+```
+
+.footnote[[*]Vjerojatnost odbacivanja nulte hipoteze, prikazana kao funkcija od $\\theta$. Test ima veću snagu (veća vjerojatnost ispravnog odbacivanja nulte hipoteze) što je  $\\theta$ različitija od vrijednosti koju implicira nulta hipoteza (i.e., $\\theta=.5$). Kada je $\\theta$ jednaka .5 (točka na grafikonu), nulta hipoteza je točna.]
+
+---
+
+.hi[Efekt veličine]
+<br>
+<br>
+
+```{r echo=FALSE}
+knitr::kable(data.frame(#stringsAsFactors=FALSE,
+NANA = c("značajno", "neznačajno"),
+velikiEfekt = c("razlika je stvarna i važna",
+                      "bez efekta"),
+maliEfekt = c("razlika je stvarna ali nevažna",
+                        "bez efekta")
+), col.names=c("", "veliki_efekt", "malen_efekt"))
+```
+
+---
+
+layout:false
+class: middle, inverse
+# DODATNI KONCEPTI
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Razlike u shvaćanju testiranja hipoteza i Bayes-ov princip!)
+---
+
+layout:true
+# DODATNI KONCEPTI
+---
+
+- Neyman vs. Fisher
+
+- Bayesovo pravilo
+
+$$
+P(A | B) = \frac{P(B|A) P(A)}{P(B)}
+$$
+
+- Bayes i nulta hipoteza
+
+
+$$
+P(H_0:točna | podatci:X) = \frac{P(podatci:X | H_0:točna) P(H_0:točna)}{P(podatci:X)}
+$$
+
+- *Posteriorni* omjer
+
+
+$$
+\frac{P( H_1:točna | podatci:X)}{P(H_0:točna | podatci:X)}
+$$
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

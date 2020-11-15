@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>PRIMJENJENA STATISTIKA</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Luka Sikic, PhD" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
+    <link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+    <script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# PRIMJENJENA STATISTIKA
+## Predavanje 7: Statistička teorija - testiranje hipoteza
+### Luka Sikic, PhD
+### Fakultet hrvatskih studija | <a href="https://github.com/BrbanMiro/Statistika">Github PS</a>
+
+---
+
+
+
+
+
+
+
+
+class: inverse, middle
+# PREGLED PREDAVANJA
+
+---
+layout: true
+# PREGLED PREDAVANJA
+---
+&lt;br&gt;
+
+## CILJEVI 
+
+
+- Ključni koncepti
+- Vrste pogrešaka
+- Testna statistika i sampling distribucija
+- Kritičke vrijednosti i granice
+- p-vrijednosti
+- Interpretacija rezultata
+- Testiranje hipoteza u R
+- Efekt veličine, i snaga testa
+- Dodatni koncepti
+- Intervali pouzdanosti
+
+---
+
+layout:false
+class: middle, inverse
+# KLJUČNI KONCEPTI 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Terminologija!)
+---
+
+layout:true
+# KLJUČNI KONCEPTI
+
+---
+&lt;br&gt;
+&lt;br&gt;
+
+- Istraživačke hipoteze
+- Statističke hipoteze
+- Nulta i alternativna hipoteza
+
+---
+
+layout:false
+class: middle, inverse
+# VRSTE POGREŠAKA KOD TESTIRANJA HIPOTEZA
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Error I vs Error II)
+---
+
+layout:true
+# VRSTE POGREŠAKA KOD TESTIRANJA HIPOTEZA
+---
+
+.hi[Pogreške kod testiranja hipoteza] 
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; zadrži `\(H_0\)` &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; odbaci `\(H_0\)` &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(H_0\)` je točna: &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ispravna odluka &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; greška (tip I) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(H_0\)` nije točna: &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; greška (tip II) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ispravna odluka &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+.hi[Razine signifikantnosti]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; zadrži `\(H_0\)` &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; odbaci `\(H_0\)` &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(H_0\)` je točna: &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(1-\alpha\)` (vjerojatnost zadržavanja točne hipoteze) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(\alpha\)` (tip I pogreške) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(H_0\)` nije točna: &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(\beta\)` (tip II pogreške) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(1-\beta\)`  (snaga testa) &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+
+layout:false
+class: middle, inverse
+# TESTNA STATISTIKA I SAMPLING DISTRIBUCIJA
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Osnova za odluku.)
+---
+
+layout:true
+# TESTNA STATISTIKA I SAMPLING DISTRIBUCIJA
+---
+
+
+.hi[Testna statistika]
+
+$$
+X \sim \mbox{Binomial}(\theta,N)
+$$
+
+.hi[Sampling distribucija testne statistike]
+
+
+```r
+	# Distribucija
+	x &lt;- 0:100
+	y &lt;- dbinom(x,100,.5)
+	
+	# Vizualizacija
+	plot(x,y,type="h",lwd=3, col=ifelse(colour,emphCol,"black"),
+		xlab="Broj točnih odgovora (X)", ylab="Vjerojatnost",
+		main="Sampling distribucija za X kada je nulta hipoteza točna",
+		font.main=1, frame.plot=FALSE
+	)
+```
+
+---
+
+.hi[Sampling distribucija testne statistike]
+
+&lt;img src="07_HIPOTEZE_files/figure-html/samplingdist1-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*] Sampling distribucija testne statistike `\(X\)` kad je nulta hipoteza istinita. U našem prmjeru je riječ o binomnoj distribuciji. Pod nultom hipotezom je vjerojatnost `\(\\theta = .5\)`, pa sampling distribucija implicira vrijednost 50 (od 100) točnih odgovora. Većina mase vjerojatnosti se nalazi izmedju vrijednopsti 40 i 60.]
+
+---
+
+layout:false
+class: middle, inverse
+# KRITIČKE VRIJEDNOSTI I GRANICE
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Kriterij za odluku.)
+---
+
+layout:true
+# KRITIČKE VRIJEDNOSTI I GRANICE
+
+---
+
+
+.hi[Kritičke vrijednosti za dvostrani test]
+
+$$
+\begin{array}{cc}
+H_0 : &amp; \theta = .5 \\
+H_1 : &amp; \theta \neq .5 
+\end{array}`
+$$
+
+&lt;img src="07_HIPOTEZE_files/figure-html/crit2-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*] Kritičke vrijednosti vezane uz hipotezu testa ESP istraživanja, za test sa razinama signifikantnosti `\(\\alpha = .05\)`. Grafikon prikazuje sampling distribuciju `\(X\)` pod nultom hipotezom: prostor u sredini odgovara vrijednostima sampling distribucije za `\(X\)` za koje bismo zadržali nultu hipotezu. Stupci se odnose na kritičke vrijednosti: vrijednosti `\(X\)` za koje bismo odbacili nultu hipotezu. Obzirom da je test dvostrani (i.e., omogućuje `\(\\theta &lt;.5\)` i `\(\\theta &gt;.5\)`), kritičke granice pokrivaju oba repa distribucije. Razine `\(\\alpha\)` od `\(.05\)` impliciraju da kritička regija uključuje 2.5% sampling distribucije.]
+
+
+---
+
+.hi[Kritičke vrijednosti za jednostrani test]
+
+
+$$
+\begin{array}{cc}
+H_0 : &amp; \theta \leq .5 \\
+H_1 : &amp; \theta &gt; .5 
+\end{array}`
+$$
+
+
+&lt;img src="07_HIPOTEZE_files/figure-html/crit1-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*] Kritička regija za jednostrani test. U ovom slučaju je alternativna hipoteza `\(\\theta &gt; .05\)`, tako da nultu hipotezu odbacujemo samo za velike vrijednosti `\(X\)`. Zbog toga kritička regija pokriva samo gornji dio distribucije; točnije 5% distribucije.]
+
+---
+
+layout:false
+class: middle, inverse
+#p-VRIJEDNOSTI
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Kriterij za odluku.)
+---
+
+layout:true
+# p-VRIJEDNOSTI
+---
+
+.hi[**Nyewman**(granice prihvaćanja/odbacivanja)]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;"&gt; Vrijednost `\(\alpha\)` &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Odbaci nultu hipotezu? &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Da &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.04 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Da &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.03 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Da &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.02 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Ne &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Ne &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+.hi[**Fisher** (vjerojatnost ekstremnih podataka i.e. vrijednosti)]
+
+---
+
+.hi[Izvještavanje o rezultatima testa]
+
+&lt;table&gt;
+&lt;caption&gt;&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Notacija &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Zvjezdice &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Značajnost &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Nulta hipoteza &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(p&amp;gt;.05\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Test nije značajan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Zadrži &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(p&amp;lt;.05\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; * &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Test značajan na razini $\alpha = .05 ali ne `\(\alpha =.01\)` niti `\(\alpha = .001\)`.$ &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Odbaci &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(p&amp;lt;.01\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ** &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Test značajan na razini `\(\alpha = .05\)`  i `\(\alpha = .01\)` ali ne  $\alpha = .001 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Odbaci &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(p&amp;lt;.001\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; *** &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Test značajan na svim razinama &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Odbaci &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+.footnote[[*] Standardne konvencije za prihvaćanje `\(p\)` vrijednosti: konvencija je prikazati rezultate na jedan od navedenih načina (e.g., `\(p&lt;.05\)`). Prikazane \"zvjezdice značajnosti\" (i.e.,  označava `\(p&lt;.05\)`) su često output u statističkim programima. Nekada se sreće notacija n.s. (not significant) umjesto `\(p&gt;.05\)`.]
+
+---
+
+layout:false
+class: middle, inverse
+# TESTIRANJE HIPOTEZA U R
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Jednostavno!)
+---
+
+layout:true
+# TESTIRANJE HIPOTEZA U R
+---
+
+.hi[Provedi test]
+
+
+```r
+# provedi testiranje hipoteza ESP istraživanja za 62 točna odgovora
+binom.test( x=62, n=100, p=.5 )
+```
+
+```
+#&gt; 
+#&gt; 	Exact binomial test
+#&gt; 
+#&gt; data:  62 and 100
+#&gt; number of successes = 62, number of trials = 100, p-value = 0.02098
+#&gt; alternative hypothesis: true probability of success is not equal to 0.5
+#&gt; 95 percent confidence interval:
+#&gt;  0.5174607 0.7152325
+#&gt; sample estimates:
+#&gt; probability of success 
+#&gt;                   0.62
+```
+
+---
+
+layout:false
+class: middle, inverse
+# EFEKT VELIČINE I SNAGA TESTA
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Uvjerljivost testa!)
+---
+
+layout:true
+# EFEKT VELIČINE I SNAGA TESTA
+---
+
+
+.hi[Sampling distribucije za različite vrijednosti `\(X\)`]
+
+
+
+&lt;img src="07_HIPOTEZE_files/figure-html/crit3-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*] Sampling distribucija pod "alternativnom" hipotezom, za populacijski parametar `\(\\theta = 0.55\)`. Značajan dio populacije leži u gornjoj kritičkoj regiji.]
+
+---
+
+&lt;img src="07_HIPOTEZE_files/figure-html/crit4-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*] Sampling distribucija pod "alternativnom" hipotezom, za populacijski parametar `\(\\theta = 0.70\)`. Skoro cijela populacija leži u gornjoj kritičkoj regiji.]
+
+---
+
+.hi[Funkcija snage testa]
+
+&lt;img src="07_HIPOTEZE_files/figure-html/powerfunction-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Vjerojatnost odbacivanja nulte hipoteze, prikazana kao funkcija od `\(\\theta\)`. Test ima veću snagu (veća vjerojatnost ispravnog odbacivanja nulte hipoteze) što je  `\(\\theta\)` različitija od vrijednosti koju implicira nulta hipoteza (i.e., `\(\\theta=.5\)`). Kada je `\(\\theta\)` jednaka .5 (točka na grafikonu), nulta hipoteza je točna.]
+
+---
+
+.hi[Efekt veličine]
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; veliki_efekt &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; malen_efekt &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; značajno &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; razlika je stvarna i važna &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; razlika je stvarna ali nevažna &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; neznačajno &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; bez efekta &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; bez efekta &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+layout:false
+class: middle, inverse
+# DODATNI KONCEPTI
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Razlike u shvaćanju testiranja hipoteza i Bayes-ov princip!)
+---
+
+layout:true
+# DODATNI KONCEPTI
+---
+
+- Neyman vs. Fisher
+
+- Bayesovo pravilo
+
+$$
+P(A | B) = \frac{P(B|A) P(A)}{P(B)}
+$$
+
+- Bayes i nulta hipoteza
+
+
+$$
+P(H_0:točna | podatci:X) = \frac{P(podatci:X | H_0:točna) P(H_0:točna)}{P(podatci:X)}
+$$
+
+- *Posteriorni* omjer
+
+
+$$
+\frac{P( H_1:točna | podatci:X)}{P(H_0:točna | podatci:X)}
+$$
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -138,9 +138,15 @@ Koristiti ćemo tri knjige.
 <li> Interpretacija rezultata</li>
 <li> Testiranje hipoteza u R</li>
 <li> Efekt veličine i snaga testa</li>
+<li> Dodatni koncepti</li>
 <ul>
 
 </div>
+
+<b>Format predavanja:</b> <a href="/Moduli/07_HIPOTEZE.html">.html</a> | <a href="/Moduli/07_HIPOTEZE.Rmd">.Rmd</a>
+<br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 11.</a>
+
+
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
 <a href="/Predavanja/08_.pdf">Predavanje 08: Kategorijalna analiza</a>

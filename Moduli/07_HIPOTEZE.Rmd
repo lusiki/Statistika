@@ -201,7 +201,9 @@ layout:true
 <br>
 
 - Istraživačke hipoteze
+<br>
 - Statističke hipoteze
+<br>
 - Nulta i alternativna hipoteza
 
 ---

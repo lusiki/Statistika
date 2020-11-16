@@ -128,7 +128,7 @@ Koristiti ćemo tri knjige.
 <br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 10.</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Predavanja/07_.pdf">Predavanje 07: Testiranje hipoteza</a>
+<a href="https://raw.githack.com/BrbanMiro/Statistika/main/Moduli/07_HIPOTEZE.html">Predavanje 07: Testiranje hipoteza</a>
 
 <ul>
 <li> Vrste pogrešaka</li>

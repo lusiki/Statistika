@@ -257,7 +257,7 @@ layout:true
 ---
 
 
-.hi[Testna statistika-primjer]
+.hi[Testna statistika(primjer)]
 
 
 $X \sim \mbox{Binomial}(\theta,N)$
@@ -330,7 +330,7 @@ layout:true
 
 .hi[Kritičke vrijednosti za dvostrani test]
 
-```{r eval=F}
+```{r eval=F,echo=F}
 $$
   \begin{array}{cc}
 H_0 : & \theta = .5 \\
@@ -400,7 +400,7 @@ $$
 
 .hi[Kritičke vrijednosti za jednostrani test]
 
-```{r eval=F}
+```{r eval=F,echo=F}
 $$
   \begin{array}{cc}
 H_0 : & \theta \leq .5 \\

@@ -147,11 +147,11 @@ layout:true
 ---
 
 
-.hi[Testna statistika]
+.hi[Testna statistika-primjer]
 
-$$
-X \sim \mbox{Binomial}(\theta,N)
-$$
+
+`\(X \sim \mbox{Binomial}(\theta,N)\)`
+
 
 .hi[Sampling distribucija testne statistike]
 
@@ -175,7 +175,7 @@ $$
 
 &lt;img src="07_HIPOTEZE_files/figure-html/samplingdist1-1.svg" style="display: block; margin: auto;" /&gt;
 
-.footnote[[*] Sampling distribucija testne statistike `\(X\)` kad je nulta hipoteza istinita. U našem prmjeru je riječ o binomnoj distribuciji. Pod nultom hipotezom je vjerojatnost `\(\\theta = .5\)`, pa sampling distribucija implicira vrijednost 50 (od 100) točnih odgovora. Većina mase vjerojatnosti se nalazi izmedju vrijednopsti 40 i 60.]
+.footnote[[*] Sampling distribucija testne statistike `\(X\)` kad je nulta hipoteza istinita. U našem prmjeru je riječ o binomnoj distribuciji. Pod nultom hipotezom je vjerojatnost `\(theta = .5\)`, pa sampling distribucija implicira vrijednost 50 (od 100) točnih odgovora. Većina mase vjerojatnosti se nalazi izmedju vrijednosti 40 i 60.]
 
 ---
 
@@ -188,22 +188,14 @@ class: middle, inverse
 
 layout:true
 # KRITIČKE VRIJEDNOSTI I GRANICE
-
 ---
-
 
 .hi[Kritičke vrijednosti za dvostrani test]
 
-$$
-\begin{array}{cc}
-H_0 : &amp; \theta = .5 \\
-H_1 : &amp; \theta \neq .5 
-\end{array}`
-$$
 
 &lt;img src="07_HIPOTEZE_files/figure-html/crit2-1.svg" style="display: block; margin: auto;" /&gt;
 
-.footnote[[*] Kritičke vrijednosti vezane uz hipotezu testa ESP istraživanja, za test sa razinama signifikantnosti `\(\\alpha = .05\)`. Grafikon prikazuje sampling distribuciju `\(X\)` pod nultom hipotezom: prostor u sredini odgovara vrijednostima sampling distribucije za `\(X\)` za koje bismo zadržali nultu hipotezu. Stupci se odnose na kritičke vrijednosti: vrijednosti `\(X\)` za koje bismo odbacili nultu hipotezu. Obzirom da je test dvostrani (i.e., omogućuje `\(\\theta &lt;.5\)` i `\(\\theta &gt;.5\)`), kritičke granice pokrivaju oba repa distribucije. Razine `\(\\alpha\)` od `\(.05\)` impliciraju da kritička regija uključuje 2.5% sampling distribucije.]
+.footnote[[*] Kritičke vrijednosti vezane uz hipotezu testa ESP istraživanja, za test sa razinama signifikantnosti `alpha = .05`. Grafikon prikazuje sampling distribuciju `X` pod nultom hipotezom: prostor u sredini odgovara vrijednostima sampling distribucije za `X` za koje bismo zadržali nultu hipotezu.Stupci se odnose na kritičke vrijednosti: vrijednosti `X` za koje bismo odbacili nultu hipotezu.]
 
 
 ---
@@ -211,17 +203,11 @@ $$
 .hi[Kritičke vrijednosti za jednostrani test]
 
 
-$$
-\begin{array}{cc}
-H_0 : &amp; \theta \leq .5 \\
-H_1 : &amp; \theta &gt; .5 
-\end{array}`
-$$
-
 
 &lt;img src="07_HIPOTEZE_files/figure-html/crit1-1.svg" style="display: block; margin: auto;" /&gt;
 
-.footnote[[*] Kritička regija za jednostrani test. U ovom slučaju je alternativna hipoteza `\(\\theta &gt; .05\)`, tako da nultu hipotezu odbacujemo samo za velike vrijednosti `\(X\)`. Zbog toga kritička regija pokriva samo gornji dio distribucije; točnije 5% distribucije.]
+.footnote[[*] Kritička regija za jednostrani test. U ovom slučaju je alternativna hipoteza `theta &gt; .05`, tako da nultu hipotezu odbacujemo samo za velike vrijednosti `X`. Zbog toga kritička regija pokriva samo gornji dio distribucije; točnije 5% distribucije.]
+
 
 ---
 
@@ -241,7 +227,7 @@ layout:true
 &lt;table&gt;
  &lt;thead&gt;
   &lt;tr&gt;
-   &lt;th style="text-align:right;"&gt; Vrijednost `\(\alpha\)` &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Vrijednost alpha &lt;/th&gt;
    &lt;th style="text-align:left;"&gt; Odbaci nultu hipotezu? &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
@@ -295,13 +281,13 @@ layout:true
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; `\(p&amp;lt;.05\)` &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; * &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Test značajan na razini $\alpha = .05 ali ne `\(\alpha =.01\)` niti `\(\alpha = .001\)`.$ &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Test značajan na razini alpha = .05 ali ne alpha =.01 niti alpha = .001 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; Odbaci &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; `\(p&amp;lt;.01\)` &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; ** &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; Test značajan na razini `\(\alpha = .05\)`  i `\(\alpha = .01\)` ali ne  $\alpha = .001 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Test značajan na razini alpha = .05  i alpha = .01 ali ne alpha = .001 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; Odbaci &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
@@ -313,7 +299,7 @@ layout:true
 &lt;/tbody&gt;
 &lt;/table&gt;
 
-.footnote[[*] Standardne konvencije za prihvaćanje `\(p\)` vrijednosti: konvencija je prikazati rezultate na jedan od navedenih načina (e.g., `\(p&lt;.05\)`). Prikazane \"zvjezdice značajnosti\" (i.e.,  označava `\(p&lt;.05\)`) su često output u statističkim programima. Nekada se sreće notacija n.s. (not significant) umjesto `\(p&gt;.05\)`.]
+.footnote[[*] Standardne konvencije za prihvaćanje `p `vrijednosti: konvencija je prikazati rezultate na jedan od navedenih načina (e.g., `p&lt;.05`). Prikazane "zvjezdice značajnosti" (i.e.,  označava `p&lt;.05`) su često output u statističkim programima. Nekada se sreće notacija n.s. (not significant) umjesto `p&gt;.05`.]
 
 ---
 
@@ -364,19 +350,19 @@ layout:true
 ---
 
 
-.hi[Sampling distribucije za različite vrijednosti `\(X\)`]
+.hi[Sampling distribucije za različite vrijednosti `X`]
 
 
 
 &lt;img src="07_HIPOTEZE_files/figure-html/crit3-1.svg" style="display: block; margin: auto;" /&gt;
 
-.footnote[[*] Sampling distribucija pod "alternativnom" hipotezom, za populacijski parametar `\(\\theta = 0.55\)`. Značajan dio populacije leži u gornjoj kritičkoj regiji.]
+.footnote[[*] Sampling distribucija pod "alternativnom" hipotezom, za populacijski parametar `theta = 0.55`. Značajan dio populacije leži u gornjoj kritičkoj regiji.]
 
 ---
 
 &lt;img src="07_HIPOTEZE_files/figure-html/crit4-1.svg" style="display: block; margin: auto;" /&gt;
 
-.footnote[[*] Sampling distribucija pod "alternativnom" hipotezom, za populacijski parametar `\(\\theta = 0.70\)`. Skoro cijela populacija leži u gornjoj kritičkoj regiji.]
+.footnote[[*] Sampling distribucija pod "alternativnom" hipotezom, za populacijski parametar `theta = 0.70`. Skoro cijela populacija leži u gornjoj kritičkoj regiji.]
 
 ---
 
@@ -384,7 +370,7 @@ layout:true
 
 &lt;img src="07_HIPOTEZE_files/figure-html/powerfunction-1.svg" style="display: block; margin: auto;" /&gt;
 
-.footnote[[*]Vjerojatnost odbacivanja nulte hipoteze, prikazana kao funkcija od `\(\\theta\)`. Test ima veću snagu (veća vjerojatnost ispravnog odbacivanja nulte hipoteze) što je  `\(\\theta\)` različitija od vrijednosti koju implicira nulta hipoteza (i.e., `\(\\theta=.5\)`). Kada je `\(\\theta\)` jednaka .5 (točka na grafikonu), nulta hipoteza je točna.]
+.footnote[[*] Vjerojatnost odbacivanja nulte hipoteze, prikazana kao funkcija od `theta.` Test ima veću snagu (veća vjerojatnost ispravnog odbacivanja nulte hipoteze) što je `theta` različitija od vrijednosti koju implicira nulta hipoteza (i.e., `theta=.5`). Kada je `theta = .5` (točka na grafikonu), nulta hipoteza je točna.]
 
 ---
 

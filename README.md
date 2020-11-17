@@ -1,7 +1,7 @@
 
 <p align="center">
   <img src="Foto/stats2.png" width="750" title="hover text">
-</p>
+</p> 
 
 
 

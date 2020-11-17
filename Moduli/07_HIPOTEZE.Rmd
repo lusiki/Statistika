@@ -436,7 +436,7 @@ layout:true
 # p-VRIJEDNOSTI
 ---
 
-.hi[**Nyewman**(granice prihvaćanja/odbacivanja)]
+.hi[**Neyman**(granice prihvaćanja/odbacivanja)]
 
 ```{r echo=FALSE}
 knitr::kable(data.frame(stringsAsFactors=FALSE,
@@ -514,7 +514,7 @@ layout:true
 	text(22,h+.007,"(2.5% distribucije)")
 	text(75,h+.013,"gornja kritička regija")
 	text(75,h+.007,"(2.5% distribucijie)")
-	title(main=expression(paste("Sampling distribucija X kad je `theta=.55`")),font.main=1)
+	title(main=expression(paste("Sampling distribucija X kad je",theta,"=.55")),font.main=1)
 ```
 
 .footnote[[*] Sampling distribucija pod "alternativnom" hipotezom, za populacijski parametar `theta = 0.55`. Značajan dio populacije leži u gornjoj kritičkoj regiji.]

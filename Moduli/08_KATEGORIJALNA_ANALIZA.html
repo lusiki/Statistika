@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>PRIMJENJENA STATISTIKA</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Luka Sikic, PhD" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
+    <link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+    <script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# PRIMJENJENA STATISTIKA
+## Predavanje 8: Kategorijalna analiza
+### Luka Sikic, PhD
+### Fakultet hrvatskih studija | <a href="https://github.com/BrbanMiro/Statistika">Github PS</a>
+
+---
+
+
+
+
+
+
+
+
+class: inverse, middle
+# PREGLED PREDAVANJA
+
+---
+layout: true
+# PREGLED PREDAVANJA
+---
+&lt;br&gt;
+
+## CILJEVI 
+
+
+- Goodness-of-fit test
+- Test nezavisnosti
+- Korekcija kontinuiranosti
+- Efekt veličine
+- Pretpostavke testa
+- Izvođenje chi-sq testova u R
+- Fisherov test za male uzorke
+- McNemarov test zavisnih uzoraka
+
+---
+
+layout:false
+class: middle, inverse
+# GOF TEST 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Jedan od najstarijih statističkih testova!)
+---
+
+layout:true
+# GOF TEST
+
+---
+&lt;br&gt;
+&lt;br&gt;
+
+- Pregled podataka (cards) za analizu
+
+
+```
+#&gt; 'data.frame':	200 obs. of  3 variables:
+#&gt;  $ id      : Factor w/ 200 levels "subj1","subj10",..: 1 112 124 135 146 157 168 179 190 2 ...
+#&gt;  $ choice_1: Factor w/ 4 levels "clubs","diamonds",..: 4 2 3 4 3 1 3 2 4 2 ...
+#&gt;  $ choice_2: Factor w/ 4 levels "clubs","diamonds",..: 1 1 1 1 4 3 2 1 1 4 ...
+```
+
+
+```r
+head(cards,4) # Pregledaj prva 4 reda
+```
+
+```
+#&gt;      id choice_1 choice_2
+#&gt; 1 subj1   spades    clubs
+#&gt; 2 subj2 diamonds    clubs
+#&gt; 3 subj3   hearts    clubs
+#&gt; 4 subj4   spades    clubs
+```
+.footnote[[*] Test je osmislio Person (1900), a doradio Fisher (1922).]
+---
+
+.hi[Tabulirani pregled *cards* podataka]
+
+
+```r
+podatci &lt;- table(cards$choice_1) # Tabuliraj prvu varijablu
+podatci # Pregledaj tabuliranu varijablu
+```
+
+```
+#&gt; 
+#&gt;    clubs diamonds   hearts   spades 
+#&gt;       35       51       64       50
+```
+
+.hi[Matematički zapis]
+
+$$
+O = (O_1, O_2, O_3, O_4)
+$$
+.hi[Matematički zapis rezultata]
+
+$$
+O = (35, 51, 64, 50)
+$$
+---
+
+.hi[Intuitivniji prikaz podataka]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; naziv &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; indeks `\(i\)` &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; simbol &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; R naredba &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; vrijednost &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; clubs `\(\clubsuit\)` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; `\(O_1\)` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; `observed[1]` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 35 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; diamonds `\(\diamondsuit\)` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; `\(O_2\)` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; `observed[2]` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 51 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; hearts `\(\heartsuit\)` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; `\(O_3\)` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; `observed[3]` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 64 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; spades `\(\spadesuit\)` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; `\(O_4\)` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; `observed[4]` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 50 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+
+.hi[Formuliranje nulte hipoteze]
+
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Hipoteza &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Formalni.Zapis &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(H_0\)` : Sve četiri karte su izabrane sa jednakom vjerojatnošću &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(H_0: {P} = (.25, .25, .25, .25)\)` &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+.hi[Formuliranje alternativne hipoteze]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Nulta.Hipoteza &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Alternativna.Hipoteza &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(H_0\)` : Sve četiri karte su izabrane sa jednakom vjerojatnošću &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(H_1\)` : Barem jedan izbor nije sa vjerojatnošću 0.25 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+.hi[Formalni zapis]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; `\(H_0\)` &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; `\(H_1\)` &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(P = (.25, .25, .25, .25)\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P \neq (.25,.25,.25,.25)\)` &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+- Formiraj vjerojatnosti u R
+
+
+```r
+# Pripiši vjerojatnosti varijabli
+probabilities &lt;- c(clubs = .25, diamonds = .25, hearts = .25, spades = .25) 
+probabilities # Pogledaj varijablu
+```
+
+```
+#&gt;    clubs diamonds   hearts   spades 
+#&gt;     0.25     0.25     0.25     0.25
+```
+
+
+- Testna statistika
+
+$$
+E_i = N \times P_i
+$$
+
+- Formiraj očekivane vjerojatnosti u R
+
+
+```r
+N &lt;- 200  # Veličina uzorka
+expected &lt;- N * probabilities # Očekivane frekvencije
+expected # Pogledaj podatke
+```
+
+```
+#&gt;    clubs diamonds   hearts   spades 
+#&gt;       50       50       50       50
+```
+
+---
+
+.hi[Prikaži sve podatke]
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; club &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; dijamant &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; hertz &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; spade &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Očekivana frekvencija &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(E_i\)` &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Podatci &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_i\)` &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 51 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 64 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Razlika &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_i - E_i\)` &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -15 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+
+.hi[Postupak izračuna u R (korak po korak)]
+
+
+```r
+# Izračunaj razliku izmedju podataka i očekivanih frekvencija
+podatci - expected 
+```
+
+```
+#&gt; 
+#&gt;    clubs diamonds   hearts   spades 
+#&gt;      -15        1       14        0
+```
+
+
+```r
+# Kvadriraj razlike kako bi se dobili veći brojevi
+(podatci - expected)^2
+```
+
+```
+#&gt; 
+#&gt;    clubs diamonds   hearts   spades 
+#&gt;      225        1      196        0
+```
+
+
+```r
+# Podijeli kvadrirane razlike 
+(podatci - expected)^2 / expected
+```
+
+```
+#&gt; 
+#&gt;    clubs diamonds   hearts   spades 
+#&gt;     4.50     0.02     3.92     0.00
+```
+
+
+```r
+# Zbroji podatke za sve karte
+sum( (podatci - expected)^2 / expected )
+```
+
+```
+#&gt; [1] 8.44
+```
+
+---
+
+.hi[Matematički zapis]
+&lt;br&gt;
+&lt;br&gt;
+$$
+X^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}
+$$ 
+
+
+.hi[Sampling distribucija GOF statistike]
+&lt;br&gt;
+&lt;br&gt;
+$$
+O_i \sim \mbox{Binomial}(P_i, N)
+$$
+
+---
+
+.hi[Stupnjevi slobode]
+
+
+&lt;img src="08_KATEGORIJALNA_ANALIZA_files/figure-html/manychi-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Chi-square distribucija za različite stupnjeve slobode.]
+
+---
+
+.hi[Grafički prikaz]
+
+&lt;img src="08_KATEGORIJALNA_ANALIZA_files/figure-html/goftest-1.svg" style="display: block; margin: auto;" /&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

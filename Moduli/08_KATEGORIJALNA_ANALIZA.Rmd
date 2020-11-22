@@ -1,0 +1,478 @@
+---
+title: "PRIMJENJENA STATISTIKA"
+# subtitle: "<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>"
+subtitle: "Predavanje 8: Kategorijalna analiza"
+author: "Luka Sikic, PhD"
+date: "Fakultet hrvatskih studija | [Github PS](https://github.com/BrbanMiro/Statistika)" #"`r format(Sys.time(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      beforeInit: "macros.js"
+---
+
+
+```{R, setup, include = F}
+# devtools::install_github("dill/emoGG")
+library(pacman)
+p_load(
+  broom, tidyverse,
+  latex2exp, ggplot2, ggthemes, ggforce, viridis, extrafont, gridExtra,
+  kableExtra, snakecase, janitor,
+  data.table, dplyr, estimatr,
+  lubridate, knitr, parallel,
+  lfe,
+  here, magrittr
+)
+# Define pink color
+red_pink <- "#e64173"
+turquoise <- "#20B2AA"
+orange <- "#FFA500"
+red <- "#fb6107"
+blue <- "#2b59c3"
+green <- "#8bb174"
+grey_light <- "grey70"
+grey_mid <- "grey50"
+grey_dark <- "grey20"
+purple <- "#6A5ACD"
+slate <- "#314f4f"
+# Dark slate grey: #314f4f
+# Knitr options
+opts_chunk$set(
+  comment = "#>",
+  fig.align = "center",
+  fig.height = 7,
+  fig.width = 10.5,
+  warning = F,
+  message = F
+)
+opts_chunk$set(dev = "svg")
+options(device = function(file, width, height) {
+  svg(tempfile(), width = width, height = height)
+})
+options(crayon.enabled = F)
+options(knitr.table.format = "html")
+# A blank theme for ggplot
+theme_empty <- theme_bw() + theme(
+  line = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  plot.margin = structure(c(0, 0, -0.5, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_simple <- theme_bw() + theme(
+  line = element_blank(),
+  panel.grid = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text.x = element_text(size = 18, family = "STIXGeneral"),
+  axis.text.y = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  # plot.margin = structure(c(0, 0, -1, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_math <- theme_void() + theme(
+  text = element_text(family = "MathJax_Math"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_serif <- theme_void() + theme(
+  text = element_text(family = "MathJax_Main"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes <- theme_void() + theme(
+  text = element_text(family = "Fira Sans Book"),
+  axis.title = element_text(size = 18),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = grey_light,
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_set(theme_gray(base_size = 20))
+# Column names for regression results
+reg_columns <- c("Term", "Est.", "S.E.", "t stat.", "p-Value")
+# Function for formatting p values
+format_pvi <- function(pv) {
+  return(ifelse(
+    pv < 0.0001,
+    "<0.0001",
+    round(pv, 4) %>% format(scientific = F)
+  ))
+}
+format_pv <- function(pvs) lapply(X = pvs, FUN = format_pvi) %>% unlist()
+# Tidy regression results table
+tidy_table <- function(x, terms, highlight_row = 1, highlight_color = "black", highlight_bold = T, digits = c(NA, 3, 3, 2, 5), title = NULL) {
+  x %>%
+    tidy() %>%
+    select(1:5) %>%
+    mutate(
+      term = terms,
+      p.value = p.value %>% format_pv()
+    ) %>%
+    kable(
+      col.names = reg_columns,
+      escape = F,
+      digits = digits,
+      caption = title
+    ) %>%
+    kable_styling(font_size = 20) %>%
+    row_spec(1:nrow(tidy(x)), background = "white") %>%
+    row_spec(highlight_row, bold = highlight_bold, color = highlight_color)
+}
+```
+
+```{css, echo = F, eval = F}
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+```
+
+
+class: inverse, middle
+# PREGLED PREDAVANJA
+
+---
+layout: true
+# PREGLED PREDAVANJA
+---
+<br>
+
+## CILJEVI 
+
+
+- Goodness-of-fit test
+- Test nezavisnosti
+- Korekcija kontinuiranosti
+- Efekt veličine
+- Pretpostavke testa
+- Izvođenje chi-sq testova u R
+- Fisherov test za male uzorke
+- McNemarov test zavisnih uzoraka
+
+---
+
+layout:false
+class: middle, inverse
+# GOF TEST 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Jedan od najstarijih statističkih testova!)
+---
+
+layout:true
+# GOF TEST
+
+---
+<br>
+<br>
+
+- Pregled podataka (cards) za analizu
+
+```{r warning = FALSE, message= FALSE, echo= F}
+library( lsr ) # Učitaj paket
+load( file.path("../Podatci/randomness.Rdata" )) # Uvezi podatke
+str(cards) # Pregledaj podatke
+```
+
+```{r}
+head(cards,4) # Pregledaj prva 4 reda
+
+```
+.footnote[[*] Test je osmislio Person (1900), a doradio Fisher (1922).]
+---
+
+.hi[Tabulirani pregled *cards* podataka]
+
+```{r}
+
+podatci <- table(cards$choice_1) # Tabuliraj prvu varijablu
+podatci # Pregledaj tabuliranu varijablu
+
+```
+
+.hi[Matematički zapis]
+
+$$
+O = (O_1, O_2, O_3, O_4)
+$$
+.hi[Matematički zapis rezultata]
+
+$$
+O = (35, 51, 64, 50)
+$$
+---
+
+.hi[Intuitivniji prikaz podataka]
+
+```{r echo = FALSE}
+knitr::kable(data.frame(stringsAsFactors=FALSE,
+                                oznaka = c("clubs $\\clubsuit$ \t", 
+                                          "diamonds $\\diamondsuit$", 
+                                          "hearts $\\heartsuit$\t", 
+                                          "spades $\\spadesuit$"), 
+                                indeks = c(1:4),
+                                simbol = c("$O_1$", 
+                                                "$O_2$", 
+                                                "$O_3$", 
+                                                "$O_4$"),
+                                naredba = c("`observed[1]`", 
+                                            "`observed[2]`", 
+                                            "`observed[3]`", 
+                                            "`observed[4]`"),
+                                vrijednost = c(35, 51, 64, 50)), 
+             col.names = c("naziv", 
+                           "indeks $i$", 
+                           "simbol", 
+                           "R naredba", 
+                           "vrijednost"), align = 'lcccc')
+```
+
+---
+
+
+.hi[Formuliranje nulte hipoteze]
+
+
+```{r, echo = FALSE}
+
+knitr::kable(data.frame(stringsAsFactors=FALSE,
+                        Hipoteza = c("$H_0$ : Sve četiri karte su izabrane sa jednakom vjerojatnošću"),
+                        Formalni.Zapis = c("$H_0: {P} = (.25, .25, .25, .25)$")))
+
+
+```
+
+.hi[Formuliranje alternativne hipoteze]
+
+```{r, echo = FALSE}
+
+knitr::kable(data.frame(stringsAsFactors=FALSE,
+                        Nulta.Hipoteza = c("$H_0$ : Sve četiri karte su izabrane sa jednakom vjerojatnošću"),
+                        Alternativna.Hipoteza = c("$H_1$ : Barem jedan izbor nije sa vjerojatnošću 0.25")))
+
+```
+
+.hi[Formalni zapis]
+
+```{r echo=FALSE}
+knitr::kable(data.frame(stringsAsFactors=FALSE,
+       NANA = c("$P = (.25, .25, .25, .25)$"),
+       NANA = c("$P \\neq (.25,.25,.25,.25)$")),
+       col.names = c("$H_0$", "$H_1$")) 
+```
+
+---
+
+- Formiraj vjerojatnosti u R
+
+```{r}
+# Pripiši vjerojatnosti varijabli
+probabilities <- c(clubs = .25, diamonds = .25, hearts = .25, spades = .25) 
+probabilities # Pogledaj varijablu
+
+```
+
+
+- Testna statistika
+
+$$
+E_i = N \times P_i
+$$
+
+- Formiraj očekivane vjerojatnosti u R
+
+```{r}
+N <- 200  # Veličina uzorka
+expected <- N * probabilities # Očekivane frekvencije
+expected # Pogledaj podatke
+```
+
+---
+
+.hi[Prikaži sve podatke]
+
+<br>
+<br>
+```{r echo=FALSE}
+knitr::kable(data.frame(stringsAsFactors=FALSE,
+NANA = c("Očekivana frekvencija", "Podatci", "Razlika"),
+NANA = c("$E_i$", "$O_i$", "$O_i - E_i$"),
+club = c(50, 35, -15),
+diamondsuit = c(50, 51, 1),
+heartsuit = c(50, 64, 14),
+spadesuit = c(50, 50, 0)
+), col.names = c("", "", "club", "dijamant", "hertz", "spade"))
+
+#knitr::kable(tibble::tribble(
+#  ~V1, ~V2, ~V3,~V4,~V5,
+#  "Očekivana frekvencija", "Podatci", "Razlika",
+#  "$E_i$", "$O_i$", "$O_i - E_i$",
+#   "50", "35", "-15",
+#   "50", "51", "1",
+#   "50", "64", "14",
+#   "50", "50", "0" ),
+#   col.names = c("", "", "club", "dijamant", "hertz", "spade"))
+ 
+```
+
+
+---
+
+.hi[Postupak izračuna u R (korak po korak)]
+
+```{r}
+# Izračunaj razliku izmedju podataka i očekivanih frekvencija
+podatci - expected 
+```
+
+```{r}
+# Kvadriraj razlike kako bi se dobili veći brojevi
+(podatci - expected)^2
+```
+
+```{r}
+# Podijeli kvadrirane razlike 
+(podatci - expected)^2 / expected
+```
+
+```{r}
+# Zbroji podatke za sve karte
+sum( (podatci - expected)^2 / expected )
+
+```
+
+---
+
+.hi[Matematički zapis]
+<br>
+<br>
+$$
+X^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}
+$$ 
+
+
+.hi[Sampling distribucija GOF statistike]
+<br>
+<br>
+$$
+O_i \sim \mbox{Binomial}(P_i, N)
+$$
+
+---
+
+.hi[Stupnjevi slobode]
+
+
+```{r manychi, fig.cap="", echo=FALSE, fig.height=5}
+chiSqImg <- list()
+emphCol <- rgb(0,0,1)
+emphColLight <- rgb(.5,.5,1)
+emphGrey <- grey(.5)
+eps <- TRUE
+colour <- TRUE
+	width <- 8
+	height <- 6
+	plot.new()
+	plot.window( xlim=c(0,10), ylim=c(0,.25))
+	axis(1)
+	title(xlab="Vrijednost")
+	
+	x <- seq(0,10,.1)
+	
+	lines(x, dchisq(x,df=3),col=ifelse(colour,emphCol,"black"), 
+		lwd=3, lty=1 )
+	lines(x, dchisq(x,df=4),col=ifelse(colour,emphCol,"black"), 
+		lwd=3, lty=2 )
+	lines(x, dchisq(x,df=5),col=ifelse(colour,emphCol,"black"), 
+		lwd=3, lty=3 )
+		
+	legend(7,.22,legend=c("df = 3","df = 4","df = 5"), lty=1:3, 
+		lwd=3, col=ifelse(colour,emphCol,"black"), bty="n" )
+```
+
+.footnote[[*]Chi-square distribucija za različite stupnjeve slobode.]
+
+---
+
+.hi[Grafički prikaz]
+
+```{r goftest, fig.cap="", echo=FALSE, fig.height=5}
+	width <- 9
+	height <- 6
+	fileName <- "chiSqTest.eps"
+	
+	max.val <- 14
+	plot.new()
+	plot.window( xlim=c(0,max.val), ylim=c(0,.25))
+	axis(1)
+	title(xlab="Vrijednost GOF statistke")
+	
+	df <- 3
+	
+	crit.val <- qchisq(.95,df)
+	
+	x <- seq(crit.val,max.val,.1)
+	x <- c(x,max.val)
+	y <- dchisq(x,df)
+	polygon( c(x[1], x, x[length(x)]), c(0,y,0), 
+		col=ifelse(colour,emphCol,"black"),
+		density=10, lwd=2 )
+	x <- seq(0,max.val,.1)
+	lines(x, dchisq(x,df=df),col="black", 
+		lwd=3, lty=1 )
+	
+	lines( 8.44, 0, pch=19, col="black", type="p" )
+	
+	arrows( x1=crit.val,x0=6,y0=.145,y1=.026)
+	arrows( x1=8.44,x0=10,y0=.115,y1=.021)
+	
+	text(6,.16,"Kritička vrijednost je 7.81")
+	text(10.5,.13,"Vrijednost GOF statistike je 8.44")
+```
+
+.footnote[[*]Prikaz kritičke regije za odbacivanje nulte hipoteze.]
+
+
+
+
+
+
+
+
+
+
+
+
+

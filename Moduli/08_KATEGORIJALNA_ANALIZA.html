@@ -379,6 +379,121 @@ $$
 .hi[Grafički prikaz]
 
 &lt;img src="08_KATEGORIJALNA_ANALIZA_files/figure-html/goftest-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Prikaz kritičke regije za odbacivanje nulte hipoteze.]
+
+---
+
+.hi[Testiranje u R]
+
+
+```r
+# Izračunaj 95i centil chi-sq distribucije
+qchisq( p = .95, df = 3 )
+```
+
+```
+#&gt; [1] 7.814728
+```
+
+
+```r
+# Izračunaj p-vrijednost za podatke iz radnog primjera
+pchisq( q = 8.44, df = 3, lower.tail = FALSE )
+```
+
+```
+#&gt; [1] 0.03774185
+```
+
+
+```r
+# Alternativna varijanta izračuna
+1-pchisq( q = 8.44, df = 3 )
+```
+
+```
+#&gt; [1] 0.03774185
+```
+
+---
+
+
+```r
+# IProvedi test u R pomoću funkcije
+lsr::goodnessOfFitTest( cards$choice_1 )
+```
+
+```
+#&gt; 
+#&gt;      Chi-square test against specified probabilities
+#&gt; 
+#&gt; Data variable:   cards$choice_1 
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        true probabilities are as specified
+#&gt;    alternative: true probabilities differ from those specified
+#&gt; 
+#&gt; Descriptives: 
+#&gt;          observed freq. expected freq. specified prob.
+#&gt; clubs                35             50            0.25
+#&gt; diamonds             51             50            0.25
+#&gt; hearts               64             50            0.25
+#&gt; spades               50             50            0.25
+#&gt; 
+#&gt; Test results: 
+#&gt;    X-squared statistic:  8.44 
+#&gt;    degrees of freedom:  3 
+#&gt;    p-value:  0.038
+```
+
+
+---
+
+.hi[Test sa drugim vjerojatnostima]
+
+
+```r
+# Formuliraj druge vjerojatnosti
+nullProbs &lt;- c(clubs = .2, diamonds = .3, hearts = .3, spades = .2)
+nullProbs # Pregledaj varijablu
+```
+
+```
+#&gt;    clubs diamonds   hearts   spades 
+#&gt;      0.2      0.3      0.3      0.2
+```
+
+---
+Test sa drugim vjerojatnostima
+
+```r
+# Izvedi test sa drugačije specificiranim vjerojatnostima
+goodnessOfFitTest( x = cards$choice_1, p = nullProbs )
+```
+
+```
+#&gt; 
+#&gt;      Chi-square test against specified probabilities
+#&gt; 
+#&gt; Data variable:   cards$choice_1 
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        true probabilities are as specified
+#&gt;    alternative: true probabilities differ from those specified
+#&gt; 
+#&gt; Descriptives: 
+#&gt;          observed freq. expected freq. specified prob.
+#&gt; clubs                35             40             0.2
+#&gt; diamonds             51             60             0.3
+#&gt; hearts               64             60             0.3
+#&gt; spades               50             40             0.2
+#&gt; 
+#&gt; Test results: 
+#&gt;    X-squared statistic:  4.742 
+#&gt;    degrees of freedom:  3 
+#&gt;    p-value:  0.192
+```
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

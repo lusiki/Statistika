@@ -244,8 +244,8 @@ $$
 
 ```r
 # Pripiši vjerojatnosti varijabli
-probabilities &lt;- c(clubs = .25, diamonds = .25, hearts = .25, spades = .25) 
-probabilities # Pogledaj varijablu
+vjerojatnosti &lt;- c(clubs = .25, diamonds = .25, hearts = .25, spades = .25) 
+vjerojatnosti # Pogledaj varijablu
 ```
 
 ```
@@ -264,8 +264,8 @@ $$
 
 ```r
 N &lt;- 200  # Veličina uzorka
-expected &lt;- N * probabilities # Očekivane frekvencije
-expected # Pogledaj podatke
+ocekivano &lt;- N * vjerojatnosti # Očekivane frekvencije
+ocekivano# Pogledaj podatke
 ```
 
 ```
@@ -326,7 +326,7 @@ expected # Pogledaj podatke
 
 ```r
 # Izračunaj razliku između podataka i očekivanih frekvencija
-podatci - expected 
+podatci - ocekivano 
 ```
 
 ```
@@ -338,7 +338,7 @@ podatci - expected
 
 ```r
 # Kvadriraj razlike kako bi se dobili veći brojevi
-(podatci - expected)^2
+(podatci - ocekivano)^2
 ```
 
 ```
@@ -350,7 +350,7 @@ podatci - expected
 
 ```r
 # Podijeli kvadrirane razlike 
-(podatci - expected)^2 / expected
+(podatci - ocekivano)^2 / ocekivano
 ```
 
 ```
@@ -362,7 +362,7 @@ podatci - expected
 
 ```r
 # Zbroji podatke za sve karte
-sum( (podatci - expected)^2 / expected )
+sum( (podatci - ocekivano)^2 / ocekivano )
 ```
 
 ```

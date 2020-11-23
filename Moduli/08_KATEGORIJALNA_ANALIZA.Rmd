@@ -314,8 +314,8 @@ knitr::kable(data.frame(stringsAsFactors=FALSE,
 
 ```{r}
 # Pripiši vjerojatnosti varijabli
-probabilities <- c(clubs = .25, diamonds = .25, hearts = .25, spades = .25) 
-probabilities # Pogledaj varijablu
+vjerojatnosti <- c(clubs = .25, diamonds = .25, hearts = .25, spades = .25) 
+vjerojatnosti # Pogledaj varijablu
 
 ```
 
@@ -329,8 +329,8 @@ $$
 
 ```{r}
 N <- 200  # Veličina uzorka
-expected <- N * probabilities # Očekivane frekvencije
-expected # Pogledaj podatke
+ocekivano <- N * vjerojatnosti # Očekivane frekvencije
+ocekivano# Pogledaj podatke
 ```
 
 ---
@@ -368,22 +368,22 @@ spadesuit = c(50, 50, 0)
 
 ```{r}
 # Izračunaj razliku između podataka i očekivanih frekvencija
-podatci - expected 
+podatci - ocekivano 
 ```
 
 ```{r}
 # Kvadriraj razlike kako bi se dobili veći brojevi
-(podatci - expected)^2
+(podatci - ocekivano)^2
 ```
 
 ```{r}
 # Podijeli kvadrirane razlike 
-(podatci - expected)^2 / expected
+(podatci - ocekivano)^2 / ocekivano
 ```
 
 ```{r}
 # Zbroji podatke za sve karte
-sum( (podatci - expected)^2 / expected )
+sum( (podatci - ocekivano)^2 / ocekivano )
 
 ```
 

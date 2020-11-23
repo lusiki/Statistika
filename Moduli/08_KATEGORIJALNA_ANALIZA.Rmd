@@ -16,7 +16,7 @@ output:
 ---
 
 
-```{R, setup, include = F}
+```{R, setup, include = T}
 # devtools::install_github("dill/emoGG")
 library(pacman)
 p_load(
@@ -152,15 +152,31 @@ tidy_table <- function(x, terms, highlight_row = 1, highlight_color = "black", h
 }
 ```
 
-```{css, echo = F, eval = F}
+```{css, echo = F, eval = T}
 @media print {
   .has-continuation {
     display: block !important;
   }
 }
+remark-slide-content {
+  font-size: 22px;
+  padding: 20px 80px 20px 80px;
+}
+.remark-code, .remark-inline-code {
+  background: #f0f0f0;
+}
+.remark-code {
+  font-size: 16px;
+}
+.huge .remark-code { /*Change made here*/
+  font-size: 200% !important;
+}
+.tiny .remark-code { /*Change made here*/
+  font-size: 50% !important;
+}
 ```
 
-
+---
 class: inverse, middle
 # PREGLED PREDAVANJA
 
@@ -195,25 +211,22 @@ layout:true
 # GOF TEST
 
 ---
-<br>
-<br>
 
-- Pregled podataka (cards) za analizu
+.hi[**Pregled podataka za analizu**]
 
 ```{r warning = FALSE, message= FALSE, echo= F}
 library( lsr ) # Učitaj paket
 load( file.path("../Podatci/randomness.Rdata" )) # Uvezi podatke
-str(cards) # Pregledaj podatke
+head(cards,4) # Pregledaj prva 4 reda
 ```
 
 ```{r}
-head(cards,4) # Pregledaj prva 4 reda
-
+str(cards) # Pregledaj podatke
 ```
 .footnote[[*] Test je osmislio Person (1900), a doradio Fisher (1922).]
 ---
 
-.hi[Tabulirani pregled *cards* podataka]
+.hi[**Tabulirani pregled podataka**]
 
 ```{r}
 
@@ -234,8 +247,10 @@ O = (35, 51, 64, 50)
 $$
 ---
 
-.hi[Intuitivniji prikaz podataka]
-
+.hi[**Intuitivniji prikaz podataka**]
+<br>
+<br>
+<br>
 ```{r echo = FALSE}
 knitr::kable(data.frame(stringsAsFactors=FALSE,
                                 oznaka = c("clubs $\\clubsuit$ \t", 
@@ -295,7 +310,7 @@ knitr::kable(data.frame(stringsAsFactors=FALSE,
 
 ---
 
-- Formiraj vjerojatnosti u R
+.hi[**Formiraj vjerojatnosti u R**]
 
 ```{r}
 # Pripiši vjerojatnosti varijabli
@@ -305,13 +320,12 @@ probabilities # Pogledaj varijablu
 ```
 
 
-- Testna statistika
+.hi[**Testna statistika**]
 
 $$
 E_i = N \times P_i
 $$
-
-- Formiraj očekivane vjerojatnosti u R
+.hi[**Formiraj očekivane vjerojatnosti u R**]
 
 ```{r}
 N <- 200  # Veličina uzorka
@@ -321,7 +335,7 @@ expected # Pogledaj podatke
 
 ---
 
-.hi[Prikaži sve podatke]
+.hi[**Prikaži sve podatke**]
 
 <br>
 <br>
@@ -350,10 +364,10 @@ spadesuit = c(50, 50, 0)
 
 ---
 
-.hi[Postupak izračuna u R (korak po korak)]
+.hi[**Postupak izračuna u R (korak po korak)**]
 
 ```{r}
-# Izračunaj razliku izmedju podataka i očekivanih frekvencija
+# Izračunaj razliku između podataka i očekivanih frekvencija
 podatci - expected 
 ```
 
@@ -468,33 +482,36 @@ colour <- TRUE
 
 ---
 
-.hi[Testiranje u R]
+.hi[**Testiranje u R**]
 
 ```{r}
 # Izračunaj 95i centil chi-sq distribucije
-qchisq( p = .95, df = 3 )
+qchisq(p = .95, df = 3)
 ```
 
 ```{r}
 # Izračunaj p-vrijednost za podatke iz radnog primjera
-pchisq( q = 8.44, df = 3, lower.tail = FALSE )
+pchisq(q = 8.44, df = 3, lower.tail = FALSE)
 ```
 
 ```{r}
 # Alternativna varijanta izračuna
-1-pchisq( q = 8.44, df = 3 )
+1-pchisq(q = 8.44, df = 3)
 ```
 
 ---
-
+.tiny[
 ```{r}
 # Provedi test u R pomoću funkcije
 lsr::goodnessOfFitTest( cards$choice_1 )
 ```
-
+]
 ---
 
-.hi[Test sa drugim vjerojatnostima]
+.hi[**Test sa drugim vjerojatnostima**]
+<br>
+<br>
+<br>
 
 ```{r}
 # Formuliraj druge vjerojatnosti
@@ -503,22 +520,28 @@ nullProbs # Pregledaj varijablu
 ```
 
 ---
-
+.tiny[
 ```{r}
 # Provedi test sa drugačije specificiranim vjerojatnostima
 goodnessOfFitTest( x = cards$choice_1, p = nullProbs )
 ```
-
+]
 ---
 
 
-.hi[Interpretacija rezultata testa]
+.hi[**Interpretacija rezultata testa**]
+<br>
+<br>
 <br>
 <br>
 1. Opis podataka i nulte hipoteze.
 <br>
+<br>
+
 2. Statistički blok.
 <br>
+<br>
+
 3. Interpretacija rezultata.
 
 ---
@@ -527,7 +550,7 @@ layout:false
 class: middle, inverse
 # TEST NEZAVISNOSTI KATEGORIJA
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
-()
+(Povezanost kategoričkih varijabli.)
 ---
 
 layout:true
@@ -535,7 +558,7 @@ layout:true
 
 ---
 
-.[Pregled podataka]
+.hi[**Pregled podataka**]
 
 ```{r, echo = 3}
 # Uvezi podatke
@@ -550,14 +573,13 @@ head(chapek9)
 
 ---
 
-.[Pregled podataka]
+.hi[**Pregled podataka**]
 
 ```{r}
-# Pregledaj podatke
 summary(chapek9)
 ```
 
-.[Tabuliraj podatke]
+.hi[**Tabuliraj podatke**]
 
 ```{r}
 chapekFrequencies <- xtabs( ~ choice + species, data = chapek9)
@@ -566,7 +588,8 @@ chapekFrequencies # Pregledaj tabulirane podatke
 
 ---
 
-.hi[Tablični prikaz podataka]
+.hi[**Tablični prikaz podataka**]
+<br>
 <br>
 <br>
 ```{r echo=FALSE}
@@ -582,7 +605,8 @@ Total = c(28, 43, 109, 180)
 
 ---
 
-.hi[Formalni zapis podataka]
+.hi[**Formalni zapis podataka**]
+<br>
 <br>
 <br>
 ```{r echo=FALSE}
@@ -597,7 +621,8 @@ Total = c("$R_{1}$", "$R_{2}$", "$R_{3}$", "$N$")
 
 ---
 
-.hi[Formuliraj nultu hipotezu]
+.hi[**Formuliraj nultu hipotezu**]
+<br>
 <br>
 <br>
 ```{r echo=FALSE}
@@ -612,7 +637,7 @@ knitr::kable(tibble::tribble(
 
 ---
 
-.hi[Formuliraj testnu statistiku]
+.hi[**Formuliraj testnu statistiku**]
 
 
 $$
@@ -631,11 +656,12 @@ $$
 <br>
 
 $$ 
-X^2 = \sum_{i=1}^r  \sum_{j=1}^c \frac{({E}_{ij} - O_{ij})^2}{{E}_{ij}}
+X^2 = \sum_{i=1}^r\sum_{j=1}^c\frac{({E}_{ij} - O_{ij})^2}{{E}_{ij}}
 $$
 
 ---
-.hi[Stupnjevi slobode kod testa nezavisnosti]
+.hi[**Stupnjevi slobode kod testa nezavisnosti**]
+<br>
 
 $$
 df = (r-1)(c-1)
@@ -663,50 +689,58 @@ df &=& \mbox{(broj opservacija)} - \mbox{(broj ograničenja)} \\
 $$
 ---
 
-.hi[Izvođenje testa u R]
+.hi[**Izvođenje testa u R**]
+<br>
+<br>
 
 ```{r}
 # Tabuliraj podatke
-xtabs( formula = ~choice+species, data = chapek9 )
+xtabs( formula = ~ choice + species, data = chapek9 )
 ```
 
 ---
 
-```{r}
+.tiny[
+```{r }
 # Izvedi test u R
-associationTest( formula = ~choice+species, data = chapek9 )
+associationTest( formula = ~ choice + species, data = chapek9 )
 ```
+]
+
 
 ---
 
-.hi[Korekcija kontinuiranosti]
-
+.hi[**Korekcija kontinuiranosti**]
+<br>
+<br>
 
 $$
 X^2 = \sum_{i} \frac{(|E_i - O_i| - 0.5)^2}{E_i}
 $$
 
 
-.hi[Efekt veličine]
-
-- $$\phi \koeficijent$$
+.hi[**Efekt veličine**]
+<br>
+<br>
 
 $$ 
 \phi = \sqrt{\frac{X^2}{N}}
 $$
+---
 
-.hi[Cramer V]
-
+.hi[**Cramer V**]
+<br>
+<br>
 $$
 V = \sqrt{\frac{X^2}{N(k-1)}}
 $$
 
----
 
-.hi[Izvedi test u R]
-
+.hi[**Izvedi test u R**]
+<br>
+<br>
 ```{r}
-cramersV( chapekFrequencies )
+cramersV(chapekFrequencies)
 ```
 
 ---
@@ -723,11 +757,15 @@ layout:true
 
 ---
 
-.hi[Radne pretpostavke GOF i testa nezavisnosti]
+.hi[**Radne pretpostavke GOF i testa nezavisnosti**]
+<br>
+<br>
 <br>
 <br>
 <br>
 1. Očekivane frekvencije su dovoljno velike
+<br>
+<br>
 <br>
 <br>
 2. Podatci su međusobno neovisni
@@ -754,7 +792,6 @@ layout:true
 podatci
 ```
 
----
 
 ```{r}
 # Izvedi chi-sq test na standardni način
@@ -775,7 +812,6 @@ chisq.test(x = podatci, p = c(.2,.3,.3,.2))
 chapekFrequencies
 ```
 
----
 
 ```{r}
 # Izvedi chi-sq test
@@ -795,50 +831,64 @@ layout:true
 # FISHEROV TEST
 
 ---
-.hi[Pregledaj podatke]
+.hi[**Pregledaj podatke**]
 
 ```{r echo = 3:8}
 # Učitaj nove podatke
 load(file.path("../Podatci/salem.Rdata"))
 head(trial,5) # prvih pet redova
 str(trial) # Struktura podataka
-# Tabuliraj podatke
+```
+
+---
+
+.hi[**Tabuliraj podatke**]
+
+```{r}
 salem.tabs <- table( trial )
 # Prikaži podatke
 print( salem.tabs )
 ```
 ---
-.hi[Provedi test]
+
+.hi[**Provedi test**]
+
 ```{r}
 # Izvedi chi-sq test na tabuliranim podatcima
 chisq.test( salem.tabs )
 ```
 ---
 
-.hi[Pregled varijabli u formalnom zapisu]
+.hi[**Pregled varijabli u formalnom zapisu**]
+<br>
+<br>
+<br>
 
 ```{r echo=FALSE}
 knitr::kable(tibble::tribble(
                  ~NANA,          ~Happy,          ~Sad,         ~Ukupno,
-    "Set on fire   ", " $O_{11}$ ", " $O_{12}$ ", " $R_{1}$ ",
-  "Not set on fire ", " $O_{21}$ ", " $O_{22}$ ", " $R_{2}$ ",
-            "Total ",  " $C_{1}$ ",  " $C_{2}$ ",      " $N$"
-  ), col.names = c("", "Happy", "Sad", "Ukupno"))
+    "Zapaljena   ", " $O_{11}$ ", " $O_{12}$ ", " $R_{1}$ ",
+  "Nije zapaljena ", " $O_{21}$ ", " $O_{22}$ ", " $R_{2}$ ",
+            "Ukupno ",  " $C_{1}$ ",  " $C_{2}$ ",      " $N$"
+  ), col.names = c("", "Sretan", "Tužan", "Ukupno"))
 ```
 
+<br>
+<br>
+<br>
 
-.hi[Formalni zapis vjerojatnosti za test]
+.hi[**Formalni zapis vjerojatnosti za test**]
 
 $$
 P(O_{11}, O_{12}, O_{21}, O_{22} \ | \ R_1, R_2, C_1, C_2) 
 $$
 ---
 
-.hi[Provedi Fisherov test]
+.hi[**Provedi Fisherov test**]
 
 ```{r}
 # Izvedi Fisherov test u R
-fisher.test( salem.tabs )
+fisher.test(salem.tabs)
 ```
 
 
@@ -856,35 +906,40 @@ layout:true
 
 ---
 
-.hi[Pregledaj podatke]
+.hi[**Pregledaj podatke**]
 
+<br>
+<br>
+<br>
 ```{r echo=FALSE}
 knitr::kable(tibble::tribble(
-        ~"NANA", ~"Before", ~"After", ~"Ukupno",
-  "Yes",     "30",    "10",    "40",
-  "No",     "70",    "90",   "160",
+        ~"NANA", ~"Prije", ~"Poslije", ~"Ukupno",
+  "Da",     "30",    "10",    "40",
+  "Ne",     "70",    "90",   "160",
   "Ukupno",    "100 ",   "100",    "200"
-  ), col.names = c("", "Before", "After", "Total"), align = 'lccc')
+  ), col.names = c("", "Prije", "Poslije", "Ukupno"), align = 'lccc')
 ```
 
 .footnote[[*]Podatci su međusobno zavisni je ima 200 opservacija, a 100 ljudi]
 
 ---
 
-.hi[Drugačiji prikaz podataka]
-
+.hi[**Drugačiji prikaz podataka**]
+<br>
+<br>
+<br>
 ```{r echo=FALSE}
 knitr::kable(tibble::tribble(
-               ~"NANA", ~"Before: Yes", ~"Before: No", ~"Ukupno",
-  "After: Yes",           "5",          "5",    "10",
-  "After: No",          "25",         "65",    "90",
+               ~"NANA", ~"Prije: Yes", ~"Prije: No", ~"Ukupno",
+  "Poslije: Yes",           "5",          "5",    "10",
+  "Poslije: No",          "25",         "65",    "90",
   "Ukupno",          "30",         "70",    "100"
-  ), col.names = c("", "Before: Yes", "Before: No", "Ukupno"), align = 'lccc')
+  ), col.names = c("", "Prije: Yes", "Prije: No", "Ukupno"), align = 'lccc')
 ```
 
 ---
 
-.hi[Formalni zapis testa]
+.hi[**Formalni zapis testa**]
 
 <br>
 $$
@@ -898,51 +953,62 @@ X^2 = \frac{(|O_{12}-O_{21}| - 0.5)^2}{O_{12} + O_{21}}
 $$
 ---
 
-.hi[Pregled podatak]
+.hi[**Pregled podataka**]
 
 ```{r echo = 3:5}
 # Učitaj podatke
 load(file.path("../Podatci/agpp.Rdata"))
 str(agpp)      # Pregled podataka
 head(agpp,5)     # Pregled podataka
+```
+
+---
+
+.hi[**Tabuliraj podatke**]
+
+```{r}
 summary(agpp ) # Pregled podataka
+pravaTablica <- xtabs( ~ response_before + response_after, data = agpp)
+print(pravaTablica) # Pregled podataka
 ```
 
 ---
-
-.hi[Tabuliraj podatke]
+.hi[**Provedi test u R**]
+<br>
+<br>
+<br>
 ```{r}
-right.table <- xtabs( ~ response_before + response_after, data = agpp)
-print( right.table ) # Pregled podataka
+mcnemar.test(pravaTablica)
 ```
 
 ---
-.hi[Provedi test u R]
-
-```{r}
-mcnemar.test( right.table )
-```
-
----
-.hi[Razlika među testovima]
+.hi[**Razlika među testovima**]
 
 ```{r}
 # Tabuliraj podatke
 cardChoices <- xtabs( ~ choice_1 + choice_2, data = cards )
 cardChoices # Pregled podataka
 ```
-.hi[Provedi testove]
+
+---
+
+.hi[**Provedi testove**]
+
 ```{r}
 # Provedi standardni chi-sq test
 chisq.test(cardChoices)
 # Provedi McNemarov tets
 mcnemar.test(cardChoices)
-
-
 ```
 
+---
 
-
+layout:false
+class: middle, inverse
+# HVALA NA PAŽNJI!
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Sljedeće predavanje: Usporedba prosjeka.)
+---
 
 
 

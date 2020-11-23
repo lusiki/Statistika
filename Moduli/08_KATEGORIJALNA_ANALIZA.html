@@ -24,10 +24,167 @@ class: center, middle, inverse, title-slide
 
 
 
+```r
+# devtools::install_github("dill/emoGG")
+library(pacman)
+p_load(
+  broom, tidyverse,
+  latex2exp, ggplot2, ggthemes, ggforce, viridis, extrafont, gridExtra,
+  kableExtra, snakecase, janitor,
+  data.table, dplyr, estimatr,
+  lubridate, knitr, parallel,
+  lfe,
+  here, magrittr
+)
+# Define pink color
+red_pink &lt;- "#e64173"
+turquoise &lt;- "#20B2AA"
+orange &lt;- "#FFA500"
+red &lt;- "#fb6107"
+blue &lt;- "#2b59c3"
+green &lt;- "#8bb174"
+grey_light &lt;- "grey70"
+grey_mid &lt;- "grey50"
+grey_dark &lt;- "grey20"
+purple &lt;- "#6A5ACD"
+slate &lt;- "#314f4f"
+# Dark slate grey: #314f4f
+# Knitr options
+opts_chunk$set(
+  comment = "#&gt;",
+  fig.align = "center",
+  fig.height = 7,
+  fig.width = 10.5,
+  warning = F,
+  message = F
+)
+opts_chunk$set(dev = "svg")
+options(device = function(file, width, height) {
+  svg(tempfile(), width = width, height = height)
+})
+options(crayon.enabled = F)
+options(knitr.table.format = "html")
+# A blank theme for ggplot
+theme_empty &lt;- theme_bw() + theme(
+  line = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  plot.margin = structure(c(0, 0, -0.5, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_simple &lt;- theme_bw() + theme(
+  line = element_blank(),
+  panel.grid = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text.x = element_text(size = 18, family = "STIXGeneral"),
+  axis.text.y = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  # plot.margin = structure(c(0, 0, -1, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_math &lt;- theme_void() + theme(
+  text = element_text(family = "MathJax_Math"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_serif &lt;- theme_void() + theme(
+  text = element_text(family = "MathJax_Main"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes &lt;- theme_void() + theme(
+  text = element_text(family = "Fira Sans Book"),
+  axis.title = element_text(size = 18),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = grey_light,
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_set(theme_gray(base_size = 20))
+# Column names for regression results
+reg_columns &lt;- c("Term", "Est.", "S.E.", "t stat.", "p-Value")
+# Function for formatting p values
+format_pvi &lt;- function(pv) {
+  return(ifelse(
+    pv &lt; 0.0001,
+    "&lt;0.0001",
+    round(pv, 4) %&gt;% format(scientific = F)
+  ))
+}
+format_pv &lt;- function(pvs) lapply(X = pvs, FUN = format_pvi) %&gt;% unlist()
+# Tidy regression results table
+tidy_table &lt;- function(x, terms, highlight_row = 1, highlight_color = "black", highlight_bold = T, digits = c(NA, 3, 3, 2, 5), title = NULL) {
+  x %&gt;%
+    tidy() %&gt;%
+    select(1:5) %&gt;%
+    mutate(
+      term = terms,
+      p.value = p.value %&gt;% format_pv()
+    ) %&gt;%
+    kable(
+      col.names = reg_columns,
+      escape = F,
+      digits = digits,
+      caption = title
+    ) %&gt;%
+    kable_styling(font_size = 20) %&gt;%
+    row_spec(1:nrow(tidy(x)), background = "white") %&gt;%
+    row_spec(highlight_row, bold = highlight_bold, color = highlight_color)
+}
+```
 
+&lt;style type="text/css"&gt;
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+remark-slide-content {
+  font-size: 22px;
+  padding: 20px 80px 20px 80px;
+}
+.remark-code, .remark-inline-code {
+  background: #f0f0f0;
+}
+.remark-code {
+  font-size: 16px;
+}
+.huge .remark-code { /*Change made here*/
+  font-size: 200% !important;
+}
+.tiny .remark-code { /*Change made here*/
+  font-size: 50% !important;
+}
+&lt;/style&gt;
 
-
-
+---
 class: inverse, middle
 # PREGLED PREDAVANJA
 
@@ -62,23 +219,9 @@ layout:true
 # GOF TEST
 
 ---
-&lt;br&gt;
-&lt;br&gt;
 
-- Pregled podataka (cards) za analizu
+.hi[**Pregled podataka za analizu**]
 
-
-```
-#&gt; 'data.frame':	200 obs. of  3 variables:
-#&gt;  $ id      : Factor w/ 200 levels "subj1","subj10",..: 1 112 124 135 146 157 168 179 190 2 ...
-#&gt;  $ choice_1: Factor w/ 4 levels "clubs","diamonds",..: 4 2 3 4 3 1 3 2 4 2 ...
-#&gt;  $ choice_2: Factor w/ 4 levels "clubs","diamonds",..: 1 1 1 1 4 3 2 1 1 4 ...
-```
-
-
-```r
-head(cards,4) # Pregledaj prva 4 reda
-```
 
 ```
 #&gt;      id choice_1 choice_2
@@ -87,10 +230,22 @@ head(cards,4) # Pregledaj prva 4 reda
 #&gt; 3 subj3   hearts    clubs
 #&gt; 4 subj4   spades    clubs
 ```
+
+
+```r
+str(cards) # Pregledaj podatke
+```
+
+```
+#&gt; 'data.frame':	200 obs. of  3 variables:
+#&gt;  $ id      : Factor w/ 200 levels "subj1","subj10",..: 1 112 124 135 146 157 168 179 190 2 ...
+#&gt;  $ choice_1: Factor w/ 4 levels "clubs","diamonds",..: 4 2 3 4 3 1 3 2 4 2 ...
+#&gt;  $ choice_2: Factor w/ 4 levels "clubs","diamonds",..: 1 1 1 1 4 3 2 1 1 4 ...
+```
 .footnote[[*] Test je osmislio Person (1900), a doradio Fisher (1922).]
 ---
 
-.hi[Tabulirani pregled *cards* podataka]
+.hi[**Tabulirani pregled podataka**]
 
 
 ```r
@@ -116,8 +271,10 @@ O = (35, 51, 64, 50)
 $$
 ---
 
-.hi[Intuitivniji prikaz podataka]
-
+.hi[**Intuitivniji prikaz podataka**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
 &lt;table&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -217,7 +374,7 @@ $$
 
 ---
 
-- Formiraj vjerojatnosti u R
+.hi[**Formiraj vjerojatnosti u R**]
 
 
 ```r
@@ -232,13 +389,12 @@ probabilities # Pogledaj varijablu
 ```
 
 
-- Testna statistika
+.hi[**Testna statistika**]
 
 $$
 E_i = N \times P_i
 $$
-
-- Formiraj očekivane vjerojatnosti u R
+.hi[**Formiraj očekivane vjerojatnosti u R**]
 
 
 ```r
@@ -254,7 +410,7 @@ expected # Pogledaj podatke
 
 ---
 
-.hi[Prikaži sve podatke]
+.hi[**Prikaži sve podatke**]
 
 &lt;br&gt;
 &lt;br&gt;
@@ -300,11 +456,11 @@ expected # Pogledaj podatke
 
 ---
 
-.hi[Postupak izračuna u R (korak po korak)]
+.hi[**Postupak izračuna u R (korak po korak)**]
 
 
 ```r
-# Izračunaj razliku izmedju podataka i očekivanih frekvencija
+# Izračunaj razliku između podataka i očekivanih frekvencija
 podatci - expected 
 ```
 
@@ -353,12 +509,14 @@ sum( (podatci - expected)^2 / expected )
 .hi[Matematički zapis]
 &lt;br&gt;
 &lt;br&gt;
+&lt;br&gt;
 $$
 X^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}
 $$ 
 
 
 .hi[Sampling distribucija GOF statistike]
+&lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
 $$
@@ -384,12 +542,12 @@ $$
 
 ---
 
-.hi[Testiranje u R]
+.hi[**Testiranje u R**]
 
 
 ```r
 # Izračunaj 95i centil chi-sq distribucije
-qchisq( p = .95, df = 3 )
+qchisq(p = .95, df = 3)
 ```
 
 ```
@@ -399,7 +557,7 @@ qchisq( p = .95, df = 3 )
 
 ```r
 # Izračunaj p-vrijednost za podatke iz radnog primjera
-pchisq( q = 8.44, df = 3, lower.tail = FALSE )
+pchisq(q = 8.44, df = 3, lower.tail = FALSE)
 ```
 
 ```
@@ -409,7 +567,7 @@ pchisq( q = 8.44, df = 3, lower.tail = FALSE )
 
 ```r
 # Alternativna varijanta izračuna
-1-pchisq( q = 8.44, df = 3 )
+1-pchisq(q = 8.44, df = 3)
 ```
 
 ```
@@ -417,10 +575,10 @@ pchisq( q = 8.44, df = 3, lower.tail = FALSE )
 ```
 
 ---
-
+.tiny[
 
 ```r
-# IProvedi test u R pomoću funkcije
+# Provedi test u R pomoću funkcije
 lsr::goodnessOfFitTest( cards$choice_1 )
 ```
 
@@ -446,11 +604,13 @@ lsr::goodnessOfFitTest( cards$choice_1 )
 #&gt;    degrees of freedom:  3 
 #&gt;    p-value:  0.038
 ```
-
-
+]
 ---
 
-.hi[Test sa drugim vjerojatnostima]
+.hi[**Test sa drugim vjerojatnostima**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
 
 
 ```r
@@ -465,10 +625,10 @@ nullProbs # Pregledaj varijablu
 ```
 
 ---
-Test sa drugim vjerojatnostima
+.tiny[
 
 ```r
-# Izvedi test sa drugačije specificiranim vjerojatnostima
+# Provedi test sa drugačije specificiranim vjerojatnostima
 goodnessOfFitTest( x = cards$choice_1, p = nullProbs )
 ```
 
@@ -494,6 +654,879 @@ goodnessOfFitTest( x = cards$choice_1, p = nullProbs )
 #&gt;    degrees of freedom:  3 
 #&gt;    p-value:  0.192
 ```
+]
+---
+
+
+.hi[**Interpretacija rezultata testa**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+1. Opis podataka i nulte hipoteze.
+&lt;br&gt;
+&lt;br&gt;
+
+2. Statistički blok.
+&lt;br&gt;
+&lt;br&gt;
+
+3. Interpretacija rezultata.
+
+---
+
+layout:false
+class: middle, inverse
+# TEST NEZAVISNOSTI KATEGORIJA
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Povezanost kategoričkih varijabli.)
+---
+
+layout:true
+# TEST NEZAVISNOSTI KATEGORIJA
+
+---
+
+.hi[**Pregled podataka**]
+
+
+```r
+str(chapek9) # Pregledaj strukturu podataka
+```
+
+```
+#&gt; 'data.frame':	180 obs. of  2 variables:
+#&gt;  $ species: Factor w/ 2 levels "robot","human": 1 2 2 2 1 2 2 1 2 1 ...
+#&gt;  $ choice : Factor w/ 3 levels "puppy","flower",..: 2 3 3 3 3 2 3 3 1 2 ...
+```
+
+
+```r
+# Pregledaj podatke
+head(chapek9)
+```
+
+```
+#&gt;   species choice
+#&gt; 1   robot flower
+#&gt; 2   human   data
+#&gt; 3   human   data
+#&gt; 4   human   data
+#&gt; 5   robot   data
+#&gt; 6   human flower
+```
+
+---
+
+.hi[**Pregled podataka**]
+
+
+```r
+summary(chapek9)
+```
+
+```
+#&gt;   species      choice   
+#&gt;  robot:87   puppy : 28  
+#&gt;  human:93   flower: 43  
+#&gt;             data  :109
+```
+
+.hi[**Tabuliraj podatke**]
+
+
+```r
+chapekFrequencies &lt;- xtabs( ~ choice + species, data = chapek9)
+chapekFrequencies # Pregledaj tabulirane podatke 
+```
+
+```
+#&gt;         species
+#&gt; choice   robot human
+#&gt;   puppy     13    15
+#&gt;   flower    30    13
+#&gt;   data      44    65
+```
+
+---
+
+.hi[**Tablični prikaz podataka**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Robot &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Human &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Ukupno &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Puppy &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 28 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Flower &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 43 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Data file &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 44 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 109 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Ukupno &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 93 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 180 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.hi[**Formalni zapis podataka**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Robot &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Human &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Ukupno &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Puppy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_{11}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_{12}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(R_{1}\)` &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Flower &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_{21}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_{22}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(R_{2}\)` &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Data file &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_{31}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_{32}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(R_{3}\)` &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Ukupno &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(C_{1}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(C_{2}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(N\)` &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+
+.hi[**Formuliraj nultu hipotezu**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; `\(H_0\)`: &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sve od sljedećeg je točno: &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P_{11} = P_{12}\)` (jednaka vjerojatnost izbora puppy) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P_{21} = P_{22}\)` (jednaka vjerojatnost izbora flower) i &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(P_{31} = P_{32}\)` (jednaka vjerojatnost izbora data). &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.hi[**Formuliraj testnu statistiku**]
+
+
+$$
+E_{ij} = C_j \times P_i
+$$
+&lt;br&gt;
+
+$$
+\hat{P}_i = \frac{R_i}{N}
+$$ 
+&lt;br&gt;
+
+$$
+E_{ij} = \frac{R_i \times C_j}{N}
+$$
+&lt;br&gt;
+
+$$ 
+X^2 = \sum_{i=1}^r\sum_{j=1}^c\frac{({E}_{ij} - O_{ij})^2}{{E}_{ij}}
+$$
+
+---
+.hi[**Stupnjevi slobode kod testa nezavisnosti**]
+&lt;br&gt;
+
+$$
+df = (r-1)(c-1)
+$$
+&lt;br&gt;
+
+$$
+\begin{array}{rcl}
+df &amp;=&amp; \mbox{(broj opservacija)} - \mbox{(broj ograničenja)} \\
+&amp;=&amp; (rc) - (c + (r-1)) \\
+&amp;=&amp; rc - c - r + 1 \\
+&amp;=&amp; (r - 1)(c - 1)
+\end{array}`
+$$
+
+&lt;br&gt;
+
+$$
+\begin{array}{rcl}
+df &amp;=&amp; \mbox{(broj opservacija)} - \mbox{(broj ograničenja)} \\
+&amp;=&amp; rc - ( (c-1) + (r-1) + 1) \\
+&amp;=&amp; rc - c - r + 1 \\
+&amp;=&amp; (r - 1)(c - 1)
+\end{array}`
+$$
+---
+
+.hi[**Izvođenje testa u R**]
+&lt;br&gt;
+&lt;br&gt;
+
+
+```r
+# Tabuliraj podatke
+xtabs( formula = ~ choice + species, data = chapek9 )
+```
+
+```
+#&gt;         species
+#&gt; choice   robot human
+#&gt;   puppy     13    15
+#&gt;   flower    30    13
+#&gt;   data      44    65
+```
+
+---
+
+.tiny[
+
+```r
+# Izvedi test u R
+associationTest( formula = ~ choice + species, data = chapek9 )
+```
+
+```
+#&gt; 
+#&gt;      Chi-square test of categorical association
+#&gt; 
+#&gt; Variables:   choice, species 
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        variables are independent of one another
+#&gt;    alternative: some contingency exists between variables
+#&gt; 
+#&gt; Observed contingency table:
+#&gt;         species
+#&gt; choice   robot human
+#&gt;   puppy     13    15
+#&gt;   flower    30    13
+#&gt;   data      44    65
+#&gt; 
+#&gt; Expected contingency table under the null hypothesis:
+#&gt;         species
+#&gt; choice   robot human
+#&gt;   puppy   13.5  14.5
+#&gt;   flower  20.8  22.2
+#&gt;   data    52.7  56.3
+#&gt; 
+#&gt; Test results: 
+#&gt;    X-squared statistic:  10.722 
+#&gt;    degrees of freedom:  2 
+#&gt;    p-value:  0.005 
+#&gt; 
+#&gt; Other information: 
+#&gt;    estimated effect size (Cramer's v):  0.244
+```
+]
+
+
+---
+
+.hi[**Korekcija kontinuiranosti**]
+&lt;br&gt;
+&lt;br&gt;
+
+$$
+X^2 = \sum_{i} \frac{(|E_i - O_i| - 0.5)^2}{E_i}
+$$
+
+
+.hi[**Efekt veličine**]
+&lt;br&gt;
+&lt;br&gt;
+
+$$ 
+\phi = \sqrt{\frac{X^2}{N}}
+$$
+---
+
+.hi[**Cramer V**]
+&lt;br&gt;
+&lt;br&gt;
+$$
+V = \sqrt{\frac{X^2}{N(k-1)}}
+$$
+
+
+.hi[**Izvedi test u R**]
+&lt;br&gt;
+&lt;br&gt;
+
+```r
+cramersV(chapekFrequencies)
+```
+
+```
+#&gt; [1] 0.244058
+```
+
+---
+
+layout:false
+class: middle, inverse
+# PRETPOSTAVKE TESTA
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Uvjerljivost testa!)
+---
+
+layout:true
+# PRETPOSTAVKE TESTA
+
+---
+
+.hi[**Radne pretpostavke GOF i testa nezavisnosti**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+1. Očekivane frekvencije su dovoljno velike
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+2. Podatci su međusobno neovisni
+&lt;br&gt;
+&lt;br&gt;
+
+
+---
+
+layout:false
+class: middle, inverse
+# IZVOĐENJE CHI-SQ TESTOVA U R
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Uvjerljivost testa!)
+---
+
+layout:true
+# IZVOĐENJE CHI-SQ TESTOVA U R
+
+---
+
+
+```r
+# Pregledaj podatke
+podatci
+```
+
+```
+#&gt; 
+#&gt;    clubs diamonds   hearts   spades 
+#&gt;       35       51       64       50
+```
+
+
+
+```r
+# Izvedi chi-sq test na standardni način
+chisq.test(x = podatci)
+```
+
+```
+#&gt; 
+#&gt; 	Chi-squared test for given probabilities
+#&gt; 
+#&gt; data:  podatci
+#&gt; X-squared = 8.44, df = 3, p-value = 0.03774
+```
+
+---
+
+
+```r
+# Izvedi chi-sq test na standardni način; drugačije definirane vjerojatnosti
+chisq.test(x = podatci, p = c(.2,.3,.3,.2))
+```
+
+```
+#&gt; 
+#&gt; 	Chi-squared test for given probabilities
+#&gt; 
+#&gt; data:  podatci
+#&gt; X-squared = 4.7417, df = 3, p-value = 0.1917
+```
+
+---
+
+```r
+# Test sa drugim podatcima
+# Pregledaj podatke
+chapekFrequencies
+```
+
+```
+#&gt;         species
+#&gt; choice   robot human
+#&gt;   puppy     13    15
+#&gt;   flower    30    13
+#&gt;   data      44    65
+```
+
+
+
+```r
+# Izvedi chi-sq test
+chisq.test(chapekFrequencies)
+```
+
+```
+#&gt; 
+#&gt; 	Pearson's Chi-squared test
+#&gt; 
+#&gt; data:  chapekFrequencies
+#&gt; X-squared = 10.722, df = 2, p-value = 0.004697
+```
+
+---
+
+layout:false
+class: middle, inverse
+# FISHEROV TEST
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Premalo podataka...)
+---
+
+layout:true
+# FISHEROV TEST
+
+---
+.hi[**Pregledaj podatke**]
+
+
+```r
+head(trial,5) # prvih pet redova
+```
+
+```
+#&gt;   happy on.fire
+#&gt; 1  TRUE   FALSE
+#&gt; 2  TRUE   FALSE
+#&gt; 3 FALSE   FALSE
+#&gt; 4 FALSE    TRUE
+#&gt; 5  TRUE   FALSE
+```
+
+```r
+str(trial) # Struktura podataka
+```
+
+```
+#&gt; 'data.frame':	16 obs. of  2 variables:
+#&gt;  $ happy  : logi  TRUE TRUE FALSE FALSE TRUE TRUE ...
+#&gt;  $ on.fire: logi  FALSE FALSE FALSE TRUE FALSE FALSE ...
+```
+
+---
+
+.hi[**Tabuliraj podatke**]
+
+
+```r
+salem.tabs &lt;- table( trial )
+# Prikaži podatke
+print( salem.tabs )
+```
+
+```
+#&gt;        on.fire
+#&gt; happy   FALSE TRUE
+#&gt;   FALSE     3    3
+#&gt;   TRUE     10    0
+```
+---
+
+.hi[**Provedi test**]
+
+
+```r
+# Izvedi chi-sq test na tabuliranim podatcima
+chisq.test( salem.tabs )
+```
+
+```
+#&gt; 
+#&gt; 	Pearson's Chi-squared test with Yates' continuity correction
+#&gt; 
+#&gt; data:  salem.tabs
+#&gt; X-squared = 3.3094, df = 1, p-value = 0.06888
+```
+---
+
+.hi[**Pregled varijabli u formalnom zapisu**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Sretan &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Tužan &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Ukupno &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Zapaljena &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_{11}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_{12}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(R_{1}\)` &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Nije zapaljena &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_{21}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(O_{22}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(R_{2}\)` &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Ukupno &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(C_{1}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(C_{2}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; `\(N\)` &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+.hi[**Formalni zapis vjerojatnosti za test**]
+
+$$
+P(O_{11}, O_{12}, O_{21}, O_{22} \ | \ R_1, R_2, C_1, C_2) 
+$$
+---
+
+.hi[**Provedi Fisherov test**]
+
+
+```r
+# Izvedi Fisherov test u R
+fisher.test(salem.tabs)
+```
+
+```
+#&gt; 
+#&gt; 	Fisher's Exact Test for Count Data
+#&gt; 
+#&gt; data:  salem.tabs
+#&gt; p-value = 0.03571
+#&gt; alternative hypothesis: true odds ratio is not equal to 1
+#&gt; 95 percent confidence interval:
+#&gt;  0.000000 1.202913
+#&gt; sample estimates:
+#&gt; odds ratio 
+#&gt;          0
+```
+
+
+---
+
+layout:false
+class: middle, inverse
+# McNEMAROV TEST
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Međusobno zavisni podatci...)
+---
+
+layout:true
+# McNEMAROV TEST
+
+---
+
+.hi[**Pregledaj podatke**]
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Prije &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Poslije &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Ukupno &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Da &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 40 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Ne &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 70 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 90 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 160 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Ukupno &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 100 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 100 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 200 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+.footnote[[*]Podatci su međusobno zavisni je ima 200 opservacija, a 100 ljudi]
+
+---
+
+.hi[**Drugačiji prikaz podataka**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Prije: Yes &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Prije: No &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Ukupno &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Poslije: Yes &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Poslije: No &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 90 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Ukupno &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 70 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 100 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.hi[**Formalni zapis testa**]
+
+&lt;br&gt;
+$$
+X^2 = \frac{(|b-c| - 0.5)^2}{b+c}
+$$
+
+&lt;br&gt;
+&lt;br&gt;
+$$
+X^2 = \frac{(|O_{12}-O_{21}| - 0.5)^2}{O_{12} + O_{21}}
+$$
+---
+
+.hi[**Pregled podataka**]
+
+
+```r
+str(agpp)      # Pregled podataka
+```
+
+```
+#&gt; 'data.frame':	100 obs. of  3 variables:
+#&gt;  $ id             : Factor w/ 100 levels "subj.1","subj.10",..: 1 13 24 35 46 57 68 79 90 2 ...
+#&gt;  $ response_before: Factor w/ 2 levels "no","yes": 1 2 2 2 1 1 1 1 1 1 ...
+#&gt;  $ response_after : Factor w/ 2 levels "no","yes": 2 1 1 1 1 1 1 2 1 1 ...
+```
+
+```r
+head(agpp,5)     # Pregled podataka
+```
+
+```
+#&gt;       id response_before response_after
+#&gt; 1 subj.1              no            yes
+#&gt; 2 subj.2             yes             no
+#&gt; 3 subj.3             yes             no
+#&gt; 4 subj.4             yes             no
+#&gt; 5 subj.5              no             no
+```
+
+---
+
+.hi[**Tabuliraj podatke**]
+
+
+```r
+summary(agpp ) # Pregled podataka
+```
+
+```
+#&gt;         id     response_before response_after
+#&gt;  subj.1  : 1   no :70          no :90        
+#&gt;  subj.10 : 1   yes:30          yes:10        
+#&gt;  subj.100: 1                                 
+#&gt;  subj.11 : 1                                 
+#&gt;  subj.12 : 1                                 
+#&gt;  subj.13 : 1                                 
+#&gt;  (Other) :94
+```
+
+```r
+pravaTablica &lt;- xtabs( ~ response_before + response_after, data = agpp)
+print(pravaTablica) # Pregled podataka
+```
+
+```
+#&gt;                response_after
+#&gt; response_before no yes
+#&gt;             no  65   5
+#&gt;             yes 25   5
+```
+
+---
+.hi[**Provedi test u R**]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+```r
+mcnemar.test(pravaTablica)
+```
+
+```
+#&gt; 
+#&gt; 	McNemar's Chi-squared test with continuity correction
+#&gt; 
+#&gt; data:  pravaTablica
+#&gt; McNemar's chi-squared = 12.033, df = 1, p-value = 0.0005226
+```
+
+---
+.hi[**Razlika među testovima**]
+
+
+```r
+# Tabuliraj podatke
+cardChoices &lt;- xtabs( ~ choice_1 + choice_2, data = cards )
+cardChoices # Pregled podataka
+```
+
+```
+#&gt;           choice_2
+#&gt; choice_1   clubs diamonds hearts spades
+#&gt;   clubs       10        9     10      6
+#&gt;   diamonds    20        4     13     14
+#&gt;   hearts      20       18      3     23
+#&gt;   spades      18       13     15      4
+```
+
+---
+
+.hi[**Provedi testove**]
+
+
+```r
+# Provedi standardni chi-sq test
+chisq.test(cardChoices)
+```
+
+```
+#&gt; 
+#&gt; 	Pearson's Chi-squared test
+#&gt; 
+#&gt; data:  cardChoices
+#&gt; X-squared = 29.237, df = 9, p-value = 0.0005909
+```
+
+```r
+# Provedi McNemarov tets
+mcnemar.test(cardChoices)
+```
+
+```
+#&gt; 
+#&gt; 	McNemar's Chi-squared test
+#&gt; 
+#&gt; data:  cardChoices
+#&gt; McNemar's chi-squared = 16.033, df = 6, p-value = 0.01358
+```
+
+---
+
+layout:false
+class: middle, inverse
+# HVALA NA PAŽNJI!
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Sljedeće predavanje: Usporedba prosjeka.)
+---
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

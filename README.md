@@ -149,7 +149,7 @@ Koristiti ćemo tri knjige.
 
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Predavanja/08_.pdf">Predavanje 08: Kategorijalna analiza</a>
+<a href=>Predavanje 08: Kategorijalna analiza</a>
 
 <ul>
 <li> Goodness-of-fit test</li>
@@ -163,6 +163,10 @@ Koristiti ćemo tri knjige.
 <ul>
 
 </div>
+
+<b>Format predavanja:</b> <a href="/Moduli/08_KATEGORIJALNA_ANALIZA.html">.html</a> | <a href="/Moduli/08_KATEGORIJALNA_ANALIZA.Rmd">.Rmd</a>
+<br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 12.</a>
+
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
 <a href="/Predavanja/9_.pdf">Predavanje 09: Usporedba prosjeka</a>

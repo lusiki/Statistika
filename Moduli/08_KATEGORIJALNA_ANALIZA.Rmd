@@ -930,11 +930,11 @@ knitr::kable(tibble::tribble(
 <br>
 ```{r echo=FALSE}
 knitr::kable(tibble::tribble(
-               ~"NANA", ~"Prije: Yes", ~"Prije: No", ~"Ukupno",
-  "Poslije: Yes",           "5",          "5",    "10",
-  "Poslije: No",          "25",         "65",    "90",
+               ~"NANA", ~"Prije: Da", ~"Prije: Ne", ~"Ukupno",
+  "Poslije: Da",           "5",          "5",    "10",
+  "Poslije: Ne",          "25",         "65",    "90",
   "Ukupno",          "30",         "70",    "100"
-  ), col.names = c("", "Prije: Yes", "Prije: No", "Ukupno"), align = 'lccc')
+  ), col.names = c("", "Prije: Da", "Prije: Ne", "Ukupno"), align = 'lccc')
 ```
 
 ---

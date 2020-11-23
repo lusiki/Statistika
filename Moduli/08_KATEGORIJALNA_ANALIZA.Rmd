@@ -16,7 +16,7 @@ output:
 ---
 
 
-```{R, setup, include = T}
+```{R, setup, include = T, echo = F}
 # devtools::install_github("dill/emoGG")
 library(pacman)
 p_load(

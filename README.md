@@ -149,7 +149,7 @@ Koristiti ćemo tri knjige.
 
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href=>Predavanje 08: Kategorijalna analiza</a>
+<a href="https://raw.githack.com/BrbanMiro/Statistika/main/Moduli/08_KATEGORIJALNA_ANALIZA.html">Predavanje 08: Kategorijalna analiza</a>
 
 <ul>
 <li> Goodness-of-fit test</li>

@@ -986,8 +986,8 @@ mcnemar.test(pravaTablica)
 
 ```{r}
 # Tabuliraj podatke
-cardChoices <- xtabs( ~ choice_1 + choice_2, data = cards )
-cardChoices # Pregled podataka
+izborKarata <- xtabs( ~ choice_1 + choice_2, data = cards )
+izborKarata # Pregled podataka
 ```
 
 ---
@@ -996,9 +996,9 @@ cardChoices # Pregled podataka
 
 ```{r}
 # Provedi standardni chi-sq test
-chisq.test(cardChoices)
+chisq.test(izborKarata)
 # Provedi McNemarov tets
-mcnemar.test(cardChoices)
+mcnemar.test(izborKarata)
 ```
 
 ---

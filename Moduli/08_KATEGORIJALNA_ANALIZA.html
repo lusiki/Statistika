@@ -1340,8 +1340,8 @@ mcnemar.test(pravaTablica)
 
 ```r
 # Tabuliraj podatke
-cardChoices &lt;- xtabs( ~ choice_1 + choice_2, data = cards )
-cardChoices # Pregled podataka
+izborKarata &lt;- xtabs( ~ choice_1 + choice_2, data = cards )
+izborKarata # Pregled podataka
 ```
 
 ```
@@ -1360,27 +1360,27 @@ cardChoices # Pregled podataka
 
 ```r
 # Provedi standardni chi-sq test
-chisq.test(cardChoices)
+chisq.test(izborKarata)
 ```
 
 ```
 #&gt; 
 #&gt; 	Pearson's Chi-squared test
 #&gt; 
-#&gt; data:  cardChoices
+#&gt; data:  izborKarata
 #&gt; X-squared = 29.237, df = 9, p-value = 0.0005909
 ```
 
 ```r
 # Provedi McNemarov tets
-mcnemar.test(cardChoices)
+mcnemar.test(izborKarata)
 ```
 
 ```
 #&gt; 
 #&gt; 	McNemar's Chi-squared test
 #&gt; 
-#&gt; data:  cardChoices
+#&gt; data:  izborKarata
 #&gt; McNemar's chi-squared = 16.033, df = 6, p-value = 0.01358
 ```
 

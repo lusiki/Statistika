@@ -3,7 +3,7 @@
   <img src="Foto/stats2.png" width="750" title="hover text">
 </p> 
 
-
+ 
 
 # Primjena statistike u društvenim istraživanjima
 

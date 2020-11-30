@@ -30,4 +30,4 @@ plot(out.2,frame.plot=TRUE, axes=TRUE,xlab="",ylab= "" )
 
 3. Opšite razliku između deskriptivne i inferencijalne statistike. Koji parametri određuju binomnu distribuciju? Ponudite primjer binomno distribuiranog procesa.
 
-4. Definirajte istraživački problem po izboru i definirajte nultu i alternativnu hipotezu.
+4. Opišite istraživački problem po izboru i definirajte nultu i alternativnu hipotezu.

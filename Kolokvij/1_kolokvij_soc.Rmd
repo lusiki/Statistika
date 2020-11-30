@@ -65,7 +65,7 @@ library(psych)
 
 3. Navedite 4 distribucije koje poznajete. Koji parametri definiraju standardnu distribuciju?
 
-4. Definirajte istraživački problem po izboru i definirajte nultu i alternaivnu hipotezu.
+4. Opišite istraživački problem po izboru i definirajte nultu i alternaivnu hipotezu.
 
 
 

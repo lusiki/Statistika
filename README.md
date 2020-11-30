@@ -7,7 +7,7 @@
 
 # Primjena statistike u društvenim istraživanjima
 
-Dobrodošli na stranice kolegija <b>Primjena statistike u društvenim istraživanjima</b> koji u zimskom semestru, 2020/21 izvodi dr.sc. Luka Šikić na Fakultetu hrvatskih studija u Zagrebu. 
+Dobrodošli na stranice kolegija <b>Primjena statistike u društvenim istraživanjima</b> koji u zimskom semestru, 2020/21 izvodi Luka Šikić, PhD na Fakultetu hrvatskih studija u Zagrebu. 
 
 # Raspored
 

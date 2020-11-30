@@ -1,0 +1,72 @@
+---
+title: 'I. KOLOKVIJ IZ PRIMJENE STATISTIKE U DRUŠTVENIM ISTRAŽIVANJIMA'
+#author: "dr.sc. Luka Šikić"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+institute: Preddiplomski studij sociologije
+subtitle: Hrvatski studiji
+font: 3t
+
+---
+
+Pitanja:
+
+1. Koje mjere centralne tendencije poznajete? Opišite distribuciju na donjem histogramu.
+
+```{r asimetrija, echo=FALSE,warning=FALSE, fig.height=4}
+
+library(psych)
+
+
+	x1 <- rbeta(n = 100000, shape1= 10, shape2 = 2)
+#	x2 <- rbeta(n = 100000, shape1= 10, shape2 = 10)
+#	x3 <- rbeta(n = 100000, shape1= 2, shape2 = 10)
+
+	  hist(x = x1,
+#	       breaks = seq(0,1,.05),
+	       xlab = "",
+	       ylab = "",
+	       main = "",
+	       axes = TRUE,
+	       col = "black",
+	       border = "white",
+			font.main = 1
+	       )
+
+```
+
+```{r kurtosis, fig.cap="", echo=FALSE, fig.height = 3, eval=FALSE}
+# x1 <- c(rexp(n = 5000, rate =2), -rexp(n = 5000, rate =2) )
+#	x3 <- c(rnorm(n = 50000, mean =0, sd = 1), (runif(n = 50000)-.5)+rnorm(50000,0,.1) )*1.6
+#	x2 <- rnorm(n = 100000, mean = 0, sd = 1)*1.2
+	x1 <- (rnorm(100000, mean =0, sd = .1) -.5)*4
+
+		hist(x = x1,
+	#		breaks = seq(-10.5,10.5,.5),
+	#		ylim =c(0,.45),
+			xlim = c(-5,5),
+			xlab = "",
+			ylab = "",
+			main = "Histogram 2",
+			axes = TRUE,
+			freq = TRUE,
+	    col = "black",
+			font.main=1,
+			border = "white"
+		)
+#		lines(x <- seq(-4,4,.01), y = dnorm(x, mean(x1), sd(x1)), 
+#			lwd = 2, lty = 1, col = "black")
+
+```
+
+
+
+2. Koje vrste grafikona poznajete? Kakvi podatci se opisuju histogramom? Skicirajte podatke po izboru pomoću histograma i opišite skicu. 
+
+3. Navedite 4 distribucije koje poznajete. Koji parametri definiraju standardnu distribuciju?
+
+4. Opišite istraživački problem po izboru i definirajte nultu i alternaivnu hipotezu.
+
+
+
+

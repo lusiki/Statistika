@@ -1,0 +1,33 @@
+---
+title: 'I. KOLOKVIJ IZ STATISTIKE'
+#author: "dr.sc. Luka Šikić"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+institute: Preddiplomski studij komunikologije
+subtitle: Hrvatski studiji
+font: 3t
+
+---
+
+Pitanja:
+
+1. Koje mjere varijabilnosti poznajete? Opišite korelaciju na donjem grafikonu.
+
+
+```{r korelacija_066, echo=FALSE}
+
+library(MASS)
+d.cor <- 0.66
+out.2 <- as.data.frame(mvrnorm(100, mu = c(0,0), 
+                             Sigma = matrix(c(1,d.cor,d.cor,1), ncol = 2), 
+                             empirical = TRUE))
+plot(out.2,frame.plot=TRUE, axes=TRUE,xlab="",ylab= "" )
+
+```
+
+2. Koje vrste grafikona poznajete? Kakvi podatci se opisuju dijagramom raspršivanja? Skicirajte podatke po izboru na dijagramu raspršivanja i opišite skicu. 
+
+
+3. Opšite razliku između deskriptivne i inferencijalne statistike. Koji parametri određuju binomnu distribuciju? Ponudite primjer binomno distribuiranog procesa.
+
+4. Opišite istraživački problem po izboru i definirajte nultu i alternativnu hipotezu.

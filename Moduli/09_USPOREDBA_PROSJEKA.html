@@ -260,6 +260,1404 @@ print( p.value ) # Pogledaj podatke
 ```
 #&gt; [1] 0.02384574
 ```
+
+---
+&lt;br&gt;
+&lt;br&gt;
+
+.hi[**Pretpostavke z testa**]
+&lt;br&gt;
+&lt;br&gt;
+1. Normalnost distribucije
+&lt;br&gt;
+2. Nezavisnost podataka u uzorku
+&lt;br&gt;
+3. Poznata standardna devijacija
+
+
+---
+layout:false
+class: middle, inverse
+# t test 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Realnija varijanta...)
+---
+
+layout:true
+# t test
+
+---
+
+.hi[**grafički prikaži nultu i alternativnu hipotezu kod t testa**]
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/ttesthyp_onesample-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Grafički prikaz nulte i alternativne hipoteze kod t testa. Primijeti sličnosti u usporedbi sa z testom. Pod nultom hipotezom je prosjek populacije mu jednak nekoj apriori specificiranoj vrijednosti mu_0, a pod alternativnom nije tako. Kao kod z testa prtpostavljamo standardnu distribuciju; razlika se odnosi na to da kod t-testa(distribucije) ne pretpostavljamo da je standardna devijacija sigma unaprijed poznata.]
+
+---
+
+.hi[Što ako ne znamo standardnu devijaciju populacije?]
+
+
+
+```r
+# Provjeri standardnu devijaciju uzorka na našem primjeru
+sd( grades )
+```
+
+```
+#&gt; [1] 9.520615
+```
+
+.hi[Distribucija t statistike]
+
+`$$t = \frac{\bar{X} - \mu}{\hat{\sigma}/\sqrt{N} }$$`
+.hi[Prikaži distribuciju grafički]
+
+&lt;img src="../Foto/t_dist.png" width="2665" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]t distribucija sa 2 stupnja slobode(l) i 10 stupnjeva slobode(d) i standardna distribucija(prosjek 0, i st_dev 1) prikazana isprekidanom linijom. t distribucija ima deblje repove(viša asimetričnost) od standardne distribucije. Ova razlika je izražena kod malog broja stupnjeva slobode ali zanemariva za više vrijednosti stupnjeva slobode. Za veći broj stupnjeva slobode je t distribucija skoro identična normalnoj distribuciji.]
+
+---
+
+.hi[**Provedi test u R**]
+
+
+```r
+library(lsr) # Učitaj paket
+# Provedi test
+lsr::oneSampleTTest( x=grades, mu=67.5 )
+```
+
+```
+#&gt; 
+#&gt;    One sample t-test 
+#&gt; 
+#&gt; Data variable:   grades 
+#&gt; 
+#&gt; Descriptive statistics: 
+#&gt;             grades
+#&gt;    mean     72.300
+#&gt;    std dev.  9.521
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        population mean equals 67.5 
+#&gt;    alternative: population mean not equal to 67.5 
+#&gt; 
+#&gt; Test results: 
+#&gt;    t-statistic:  2.255 
+#&gt;    degrees of freedom:  19 
+#&gt;    p-value:  0.036 
+#&gt; 
+#&gt; Other information: 
+#&gt;    two-sided 95% confidence interval:  [67.844, 76.756] 
+#&gt;    estimated effect size (Cohen's d):  0.504
+```
+---
+&lt;br&gt;
+&lt;br&gt;
+
+.hi[**Zapis rezultata testa**]
+
+&gt; t(19) = 2.25, p &lt; .05, CI_{95} = [67.8, 76.8]
+
+&lt;br&gt;
+&lt;br&gt;
+
+.hi[**Pretpostavke t testa**]
+&lt;br&gt;
+&lt;br&gt;
+
+1. Normalnost distribucije
+&lt;br&gt;
+2. Nezavisnost
+
+---
+
+
+layout:false
+class: middle, inverse
+# t test ZA NEZAVISNE UZORKE (Student) 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Realnija varijanta...)
+---
+
+layout:true
+# t test ZA NEZAVISNE UZORKE (Student)
+---
+
+
+```r
+load (file.path("../Podatci/harpo.Rdata" )) # Učitaj podatke
+str(harpo) # Pregledaj podatke
+```
+
+```
+#&gt; 'data.frame':	33 obs. of  2 variables:
+#&gt;  $ grade: num  65 72 66 74 73 71 66 76 69 79 ...
+#&gt;  $ tutor: Factor w/ 2 levels "Anastasia","Bernadette": 1 2 2 1 1 2 2 2 2 2 ...
+```
+
+
+```r
+head( harpo,4 ) # Pregledaj podatke
+```
+
+```
+#&gt;   grade      tutor
+#&gt; 1    65  Anastasia
+#&gt; 2    72 Bernadette
+#&gt; 3    66 Bernadette
+#&gt; 4    74  Anastasia
+```
+
+---
+
+
+```r
+# Deskriptivna statistika
+library(tidyverse)
+harpo %&gt;%
+  dplyr::group_by(tutor) %&gt;%
+  dplyr::summarise(prosjek = mean(grade),
+            stDev = sd(grade))
+```
+
+```
+#&gt; # A tibble: 2 x 3
+#&gt;   tutor      prosjek stDev
+#&gt;   &lt;fct&gt;        &lt;dbl&gt; &lt;dbl&gt;
+#&gt; 1 Anastasia     74.5  9.00
+#&gt; 2 Bernadette    69.1  5.77
+```
+
+
+
+---
+
+.hi[**histogram ocjena**]
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/harpohistanastasia-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Histogram prikazuje distribuciju ocjena u Anastasijnom razredu]
+
+---
+
+.hi[**histogram ocjena**]
+
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/harpohistbernadette-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Histogram prikazuje distribuciju ocjena u Bernadettinom razredu]
+
+---
+
+.hi[**Postavi nultu i alternativnu hipotezu**]
+
+`$$\begin{array}{ll}
+H_0: &amp; \mu_1 = \mu_2  \\
+H_1: &amp; \mu_1 \neq \mu_2
+\end{array}$$`
+
+.hi[**Prikaži test grafički**]
+
+
+&lt;img src="../Foto/t_promjena.png" width="2667" style="display: block; margin: auto;" /&gt;
+
+---
+
+.hi[**Testna statistika**]
+
+`$$t = \frac{\bar{X}_1 - \bar{X}_2}{\mbox{SE}}$$`
+
+.hi[**Grafički prikaz t distribucije**]
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/ttesthyp-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+.footnote[[*] Grafički prikaz nulte i alternativne hipoteze kod Studentovog t testa. Nulta hipoteza pretpostavlja da obje grupe imaju jednak prosjek mu_1 i mu_2 dok su ti prosjeci pod alternativnom hipotezom različiti. Primijeti pretpostavku da su populacijske distribucije normalne i da imaju jednaku standardnu devijaciju.]
+
+---
+
+.hi[**Zapis**]
+
+`$$\mu_1 - \mu_2 = 0$$`
+
+
+`$$\bar{X}_1 - \bar{X}_2$$`
+---
+
+.hi[**Procjena udružene standardne devijacije**]
+
+- Definiraj pondere
+
+`$$\begin{array}{rcl}
+w_1 &amp;=&amp; N_1 - 1\\
+w_2 &amp;=&amp; N_2 - 1
+\end{array}$$`
+
+- Udružena procjena varijance
+
+`$$\hat\sigma^2_p = \frac{w_1 {\hat\sigma_1}^2 + w_2 {\hat\sigma_2}^2}{w_1 + w_2}$$`
+
+- Udružena procjena standardne devijacije
+
+`$$\hat\sigma_p = \sqrt{\frac{w_1 {\hat\sigma_1}^2 + w_2 {\hat\sigma_2}^2}{w_1 + w_2}}$$`
+
+---
+
+
+.hi[**Drugačiji način**] 
+
+- Izračunaj devijaciju od grupnog prosjeka
+
+`$$X_{ik} - \bar{X}_k$$`
+
+- Zbroji za sve opservacije
+
+`$$\frac{\sum_{ik} \left( X_{ik} - \bar{X}_k \right)^2}{N}$$`
+- Izvrši korekciju (nazivnik)
+
+`$$\hat\sigma^2_p = \frac{\sum_{ik} \left( X_{ik} - \bar{X}_k \right)^2}{N -2}$$`
+
+---
+
+.hi[**Drugačiji način**]
+
+- Izračunaj standardnu pogrešku razlike prosjeka
+
+`$$\mbox{SE}({\bar{X}_1 - \bar{X}_2}) = \hat\sigma \sqrt{\frac{1}{N_1} + \frac{1}{N_2}}$$`
+
+- t statistika u našem testu
+
+`$$t = \frac{\bar{X}_1 - \bar{X}_2}{\mbox{SE}({\bar{X}_1 - \bar{X}_2})}$$`
+---
+
+.hi[**Izvođenje testa u R**]
+
+
+```r
+# Pregledaj podatke
+head( harpo )
+```
+
+```
+#&gt;   grade      tutor
+#&gt; 1    65  Anastasia
+#&gt; 2    72 Bernadette
+#&gt; 3    66 Bernadette
+#&gt; 4    74  Anastasia
+#&gt; 5    73  Anastasia
+#&gt; 6    71 Bernadette
+```
+
+---
+
+.hi[**Izvođenje testa u R**]
+
+
+```r
+# Izvedi test
+independentSamplesTTest( 
+      formula = grade ~ tutor,  # Formula za zavisnu i nezavisnu varijablu
+      data = harpo,             # Podatci
+      var.equal = TRUE          # Pretpostavka jednakih varijanci
+  )
+```
+
+```
+#&gt; 
+#&gt;    Student's independent samples t-test 
+#&gt; 
+#&gt; Outcome variable:   grade 
+#&gt; Grouping variable:  tutor 
+#&gt; 
+#&gt; Descriptive statistics: 
+#&gt;             Anastasia Bernadette
+#&gt;    mean        74.533     69.056
+#&gt;    std dev.     8.999      5.775
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        population means equal for both groups
+#&gt;    alternative: different population means in each group
+#&gt; 
+#&gt; Test results: 
+#&gt;    t-statistic:  2.115 
+#&gt;    degrees of freedom:  31 
+#&gt;    p-value:  0.043 
+#&gt; 
+#&gt; Other information: 
+#&gt;    two-sided 95% confidence interval:  [0.197, 10.759] 
+#&gt;    estimated effect size (Cohen's d):  0.74
+```
+
+
+---
+
+
+.hi[**Sažeti statistički zapis rezultata testa**]
+
+&gt; t(31) = 2.1, p&lt;.05, CI_{95} = [0.2, 10.8], d = .74
+
+&lt;br&gt;
+&lt;br&gt;
+
+.hi[**Pretpostavke testa**]
+&lt;br&gt;
+&lt;br&gt;
+1. Normalnost distribucije
+&lt;br&gt;
+2. Nezavisnost
+&lt;br&gt;
+3. Homogenost varijance
+
+
+
+---
+layout:false
+class: middle, inverse
+# t test ZA NEZAVISNE UZORKE (Student) 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Realnija varijanta...za nezavisne uzorke)
+---
+
+layout:true
+# t test ZA NEZAVISNE UZORKE (Student)
+---
+
+
+.hi[Testna statistika]
+
+`$$t = \frac{\bar{X}_1 - \bar{X}_2}{\mbox{SE}({\bar{X}_1 - \bar{X}_2})}$$`
+.hi[Standardna greška statistike]
+
+`$$\mbox{SE}({\bar{X}_1 - \bar{X}_2}) = \sqrt{ \frac{{\hat{\sigma}_1}^2}{N_1} + \frac{{\hat{\sigma}_2}^2}{N_2} }$$`
+
+.hi[Izračun stupnjeva slobode]
+
+`$$\mbox{df} = \frac{ ({\hat{\sigma}_1}^2 / N_1 + {\hat{\sigma}_2}^2 / N_2)^2 }{  ({\hat{\sigma}_1}^2 / N_1)^2 / (N_1 -1 )  + ({\hat{\sigma}_2}^2 / N_2)^2 / (N_2 -1 ) }$$`
+
+---
+
+.hi[**Prikaži nultu i alternativnu hipotezu grafički**]
+
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/ttesthyp2-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+.footnote[[*]Grafički prikaz nulte i alternativne hipoteze za Welch t test. Kao kod studentovog t testa pretpostavljamo normalnu distribuciju ali valja primijetiti da pod alternativnom hipotezom više ne zahtijevamo da oba uzorka imaju jednake varijance.]
+
+
+---
+
+
+.hi[**Izvedi test u R**]
+
+
+```r
+independentSamplesTTest( 
+      formula = grade ~ tutor,  # Formula za zavisnu i nezavisnu varijablu
+      data = harpo)          # Podatci
+```
+
+```
+#&gt; 
+#&gt;    Welch's independent samples t-test 
+#&gt; 
+#&gt; Outcome variable:   grade 
+#&gt; Grouping variable:  tutor 
+#&gt; 
+#&gt; Descriptive statistics: 
+#&gt;             Anastasia Bernadette
+#&gt;    mean        74.533     69.056
+#&gt;    std dev.     8.999      5.775
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        population means equal for both groups
+#&gt;    alternative: different population means in each group
+#&gt; 
+#&gt; Test results: 
+#&gt;    t-statistic:  2.034 
+#&gt;    degrees of freedom:  23.025 
+#&gt;    p-value:  0.054 
+#&gt; 
+#&gt; Other information: 
+#&gt;    two-sided 95% confidence interval:  [-0.092, 11.048] 
+#&gt;    estimated effect size (Cohen's d):  0.724
+```
+
+---
+&lt;br&gt;
+.hi[**Pretpostavke testa**]
+&lt;br&gt;
+&lt;br&gt;
+1. Normalnost distribucije
+&lt;br&gt;
+2. Nezavisnost
+
+---
+layout:false
+class: middle, inverse
+# t test ZA ZAVISNE UZORKE 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Realnija varijanta...za zavisne uzorke)
+---
+
+layout:true
+# t test ZA ZAVISNE UZORKE
+---
+
+
+```r
+# Učitaj podatke
+load( file.path("../Podatci/chico.Rdata" ))
+str(chico)  # Pogledaj podatke   
+```
+
+```
+#&gt; 'data.frame':	20 obs. of  3 variables:
+#&gt;  $ id         : Factor w/ 20 levels "student1","student10",..: 1 12 14 15 16 17 18 19 20 2 ...
+#&gt;  $ grade_test1: num  42.9 51.8 71.7 51.6 63.5 58 59.8 50.8 62.5 61.9 ...
+#&gt;  $ grade_test2: num  44.6 54 72.3 53.4 63.8 59.3 60.8 51.6 64.3 63.2 ...
+```
+
+
+```r
+# Pregledaj podatke
+head( chico,4 )
+```
+
+```
+#&gt;         id grade_test1 grade_test2
+#&gt; 1 student1        42.9        44.6
+#&gt; 2 student2        51.8        54.0
+#&gt; 3 student3        71.7        72.3
+#&gt; 4 student4        51.6        53.4
+```
+
+---
+
+
+```r
+library( psych ) # Učitaj paket
+psych::describe( chico ) # Pregledaj podatke
+```
+
+```
+#&gt;             vars  n  mean   sd median trimmed  mad  min  max range  skew
+#&gt; id*            1 20 10.50 5.92   10.5   10.50 7.41  1.0 20.0  19.0  0.00
+#&gt; grade_test1    2 20 56.98 6.62   57.7   56.92 7.71 42.9 71.7  28.8  0.05
+#&gt; grade_test2    3 20 58.38 6.41   59.7   58.35 6.45 44.6 72.3  27.7 -0.05
+#&gt;             kurtosis   se
+#&gt; id*            -1.38 1.32
+#&gt; grade_test1    -0.35 1.48
+#&gt; grade_test2    -0.39 1.43
+```
+
+---
+
+
+.hi[**Prikaži podatke grafički**]
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/pairedta-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Prosječna ocjena za test 1 i 2, uz prateće 95% intervale pouzdanosti.]
+
+---
+
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/pairedtb-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+.footnote[[*]Dijagram rasipanja za odnos ocjena na prvom i drugom testu.]
+
+---
+
+.hi[Izračunaj razliku u ocjeni]
+
+
+```r
+# Stvori vektor razlika u ocjenama između prvog i drugog testa
+chico$improvement &lt;- chico$grade_test2 - chico$grade_test1 
+```
+
+
+```r
+# Pregledaj podatke
+head( chico,5 )
+```
+
+```
+#&gt;         id grade_test1 grade_test2 improvement
+#&gt; 1 student1        42.9        44.6         1.7
+#&gt; 2 student2        51.8        54.0         2.2
+#&gt; 3 student3        71.7        72.3         0.6
+#&gt; 4 student4        51.6        53.4         1.8
+#&gt; 5 student5        63.5        63.8         0.3
+```
+
+---
+
+.hi[**Prikaži razlike grafički**]
+
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/pairedtc-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Histogram prikazuje individualna poboljšanja ocjene između prvog i drugog testa. Valja primijetiti da je gotovo cjelokupna distribucija iznad 0: najveći broj studenata je poboljšao rezultat na drugom testu.]
+
+
+---
+
+
+
+```r
+# Pogledaj granice pouzdanosti za varijablu poboljšanja ocjena
+ciMean( x = chico$improvement )
+```
+
+```
+#&gt;           2.5%    97.5%
+#&gt; [1,] 0.9508686 1.859131
+```
+
+---
+
+.hi[**Tehnički aspekti testa**]
+
+- Definiraj razliku
+
+`$$D_{i} = X_{i1} - X_{i2}$$`
+
+- Formuliraj hipoteze
+
+`$$\begin{array}{ll}
+H_0: &amp; \mu_D = 0  \\
+H_1: &amp; \mu_D \neq 0
+\end{array}$$`
+
+- Testna statistika
+
+`$$t = \frac{\bar{D}}{\mbox{SE}({\bar{D}})}$$`
+
+`$$t = \frac{\bar{D}}{\hat\sigma_D / \sqrt{N}}$$`
+---
+
+.hi[**Izvođenje testa u R**]
+
+I. način
+
+
+```r
+oneSampleTTest( chico$improvement, mu=0 )
+```
+
+```
+#&gt; 
+#&gt;    One sample t-test 
+#&gt; 
+#&gt; Data variable:   chico$improvement 
+#&gt; 
+#&gt; Descriptive statistics: 
+#&gt;             improvement
+#&gt;    mean           1.405
+#&gt;    std dev.       0.970
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        population mean equals 0 
+#&gt;    alternative: population mean not equal to 0 
+#&gt; 
+#&gt; Test results: 
+#&gt;    t-statistic:  6.475 
+#&gt;    degrees of freedom:  19 
+#&gt;    p-value:  &lt;.001 
+#&gt; 
+#&gt; Other information: 
+#&gt;    two-sided 95% confidence interval:  [0.951, 1.859] 
+#&gt;    estimated effect size (Cohen's d):  1.448
+```
+---
+
+.hi[**Izvođenje testa u R**]
+
+II. način
+
+
+```r
+pairedSamplesTTest( 
+     formula = ~ grade_test2 + grade_test1, # Formula za definiranje zavisnih i nezavisnih varijabli
+     data = chico                           # Podatci 
+  )
+```
+
+```
+#&gt; 
+#&gt;    Paired samples t-test 
+#&gt; 
+#&gt; Variables:  grade_test2 , grade_test1 
+#&gt; 
+#&gt; Descriptive statistics: 
+#&gt;             grade_test2 grade_test1 difference
+#&gt;    mean          58.385      56.980      1.405
+#&gt;    std dev.       6.406       6.616      0.970
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        population means equal for both measurements
+#&gt;    alternative: different population means for each measurement
+#&gt; 
+#&gt; Test results: 
+#&gt;    t-statistic:  6.475 
+#&gt;    degrees of freedom:  19 
+#&gt;    p-value:  &lt;.001 
+#&gt; 
+#&gt; Other information: 
+#&gt;    two-sided 95% confidence interval:  [0.951, 1.859] 
+#&gt;    estimated effect size (Cohen's d):  1.448
+```
+
+---
+
+.hi[**Izvođenje testa u R**]
+
+II. način
+
+
+```r
+# Prestrukturiraj podatke
+chico2 &lt;- wideToLong( chico, within="time" )
+head( chico2 ) # Pregledaj podatke
+```
+
+```
+#&gt;         id improvement  time grade
+#&gt; 1 student1         1.7 test1  42.9
+#&gt; 2 student2         2.2 test1  51.8
+#&gt; 3 student3         0.6 test1  71.7
+#&gt; 4 student4         1.8 test1  51.6
+#&gt; 5 student5         0.3 test1  63.5
+#&gt; 6 student6         1.3 test1  58.0
+```
+
+---
+II. način
+
+
+```r
+# Sortiraj podatke
+chico2 &lt;- sortFrame( chico2, id )
+head( chico2 ) # Pregledaj podatke
+```
+
+```
+#&gt;           id improvement  time grade
+#&gt; 1   student1         1.7 test1  42.9
+#&gt; 21  student1         1.7 test2  44.6
+#&gt; 10 student10         1.3 test1  61.9
+#&gt; 30 student10         1.3 test2  63.2
+#&gt; 11 student11         1.4 test1  50.4
+#&gt; 31 student11         1.4 test2  51.8
+```
+
+---
+
+II. način
+
+
+```r
+# Provedi test
+pairedSamplesTTest( 
+     formula = grade ~ time,  # Definiraj formulu
+     data = chico2,           # Podatci
+     id = "id"                # Naziv id
+  )
+```
+
+```
+#&gt; 
+#&gt;    Paired samples t-test 
+#&gt; 
+#&gt; Outcome variable:   grade 
+#&gt; Grouping variable:  time 
+#&gt; ID variable:        id 
+#&gt; 
+#&gt; Descriptive statistics: 
+#&gt;              test1  test2 difference
+#&gt;    mean     56.980 58.385     -1.405
+#&gt;    std dev.  6.616  6.406      0.970
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        population means equal for both measurements
+#&gt;    alternative: different population means for each measurement
+#&gt; 
+#&gt; Test results: 
+#&gt;    t-statistic:  -6.475 
+#&gt;    degrees of freedom:  19 
+#&gt;    p-value:  &lt;.001 
+#&gt; 
+#&gt; Other information: 
+#&gt;    two-sided 95% confidence interval:  [-1.859, -0.951] 
+#&gt;    estimated effect size (Cohen's d):  1.448
+```
+
+---
+
+.hi[**Alternativna specifikacija testa**]
+&lt;br&gt;
+&lt;br&gt;
+
+```
+pairedSamplesTTest( 
+     formula = grade ~ time + (id),
+     data = chico2
+  )
+  
+```
+
+```
+ pairedSamplesTTest( grade ~ time + (id), chico2 )
+ 
+```
+
+---
+layout:false
+class: middle, inverse
+# JEDNOSTRANI TESTOVI 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Realnija varijanta...za zavisne uzorke)
+---
+
+layout:true
+# JEDNOSTRANI TESTOVI
+---
+
+.hi[**Provedi test sa pretpostavkom da je prosjek uzorka veći od pretpostavljenog prosjeka populacije**]
+
+
+```r
+library(psych)
+library(lsr)
+ # Provedi test
+lsr::oneSampleTTest( x = grades,
+                mu = 67.5,
+                one.sided = "greater" # Gornja granica
+                ) 
+```
+
+```
+#&gt; 
+#&gt;    One sample t-test 
+#&gt; 
+#&gt; Data variable:   grades 
+#&gt; 
+#&gt; Descriptive statistics: 
+#&gt;             grades
+#&gt;    mean     72.300
+#&gt;    std dev.  9.521
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        population mean less than or equal to 67.5 
+#&gt;    alternative: population mean greater than 67.5 
+#&gt; 
+#&gt; Test results: 
+#&gt;    t-statistic:  2.255 
+#&gt;    degrees of freedom:  19 
+#&gt;    p-value:  0.018 
+#&gt; 
+#&gt; Other information: 
+#&gt;    one-sided 95% confidence interval:  [68.619, Inf] 
+#&gt;    estimated effect size (Cohen's d):  0.504
+```
+
+---
+
+
+
+```r
+# Provedi test na drugi način
+lsr::independentSamplesTTest( 
+    formula = grade ~ tutor, 
+    data = harpo, 
+    one.sided = "Anastasia"
+  )
+```
+
+```
+#&gt; 
+#&gt;    Welch's independent samples t-test 
+#&gt; 
+#&gt; Outcome variable:   grade 
+#&gt; Grouping variable:  tutor 
+#&gt; 
+#&gt; Descriptive statistics: 
+#&gt;             Anastasia Bernadette
+#&gt;    mean        74.533     69.056
+#&gt;    std dev.     8.999      5.775
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        population means are equal, or smaller for group 'Anastasia' 
+#&gt;    alternative: population mean is larger for group 'Anastasia' 
+#&gt; 
+#&gt; Test results: 
+#&gt;    t-statistic:  2.034 
+#&gt;    degrees of freedom:  23.025 
+#&gt;    p-value:  0.027 
+#&gt; 
+#&gt; Other information: 
+#&gt;    one-sided 95% confidence interval:  [0.863, Inf] 
+#&gt;    estimated effect size (Cohen's d):  0.724
+```
+
+---
+
+
+```r
+# Provedi test na treći način
+pairedSamplesTTest( 
+     formula = ~ grade_test2 + grade_test1, 
+     data = chico, 
+     one.sided = "grade_test2" 
+  )
+```
+
+```
+#&gt; 
+#&gt;    Paired samples t-test 
+#&gt; 
+#&gt; Variables:  grade_test2 , grade_test1 
+#&gt; 
+#&gt; Descriptive statistics: 
+#&gt;             grade_test2 grade_test1 difference
+#&gt;    mean          58.385      56.980      1.405
+#&gt;    std dev.       6.406       6.616      0.970
+#&gt; 
+#&gt; Hypotheses: 
+#&gt;    null:        population means are equal, or smaller for measurement 'grade_test2' 
+#&gt;    alternative: population mean is larger for measurement 'grade_test2' 
+#&gt; 
+#&gt; Test results: 
+#&gt;    t-statistic:  6.475 
+#&gt;    degrees of freedom:  19 
+#&gt;    p-value:  &lt;.001 
+#&gt; 
+#&gt; Other information: 
+#&gt;    one-sided 95% confidence interval:  [1.03, Inf] 
+#&gt;    estimated effect size (Cohen's d):  1.448
+```
+
+---
+&lt;br&gt;
+&lt;br&gt;
+
+```r
+# Alternativne specifikacije testa
+&gt; pairedSamplesTTest( 
+    formula = grade ~ time, 
+    data = chico2, 
+    id = "id", 
+    one.sided = "test2" 
+  )
+&gt; pairedSamplesTTest( 
+    formula = grade ~ time + (id), 
+    data = chico2, 
+    one.sided = "test2" 
+  )
+```
+
+
+---
+layout:false
+class: middle, inverse
+# STANDARDNI NAČIN PROVOĐENJA t-testa  
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Test u praksi...)
+---
+
+layout:true
+# STANDARDNI NAČIN PROVOĐENJA t-testa U R
+---
+
+
+```r
+# Provedi standardni test usporedbe prosjeka
+t.test( x = grades, # Definiraj podatke
+        mu = 67.5   # Definiraj prosjek 
+        )
+```
+
+```
+#&gt; 
+#&gt; 	One Sample t-test
+#&gt; 
+#&gt; data:  grades
+#&gt; t = 2.2547, df = 19, p-value = 0.03615
+#&gt; alternative hypothesis: true mean is not equal to 67.5
+#&gt; 95 percent confidence interval:
+#&gt;  67.84422 76.75578
+#&gt; sample estimates:
+#&gt; mean of x 
+#&gt;      72.3
+```
+---
+
+
+```r
+# Provedi test za nezavisne uzorke
+t.test( formula = grade ~ tutor, # Definiraj formulu
+        data = harpo )           # Definiraj podatke
+```
+
+```
+#&gt; 
+#&gt; 	Welch Two Sample t-test
+#&gt; 
+#&gt; data:  grade by tutor
+#&gt; t = 2.0342, df = 23.025, p-value = 0.05361
+#&gt; alternative hypothesis: true difference in means is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  -0.09249349 11.04804904
+#&gt; sample estimates:
+#&gt;  mean in group Anastasia mean in group Bernadette 
+#&gt;                 74.53333                 69.05556
+```
+
+---
+
+
+```r
+# Provedi test za zavisne uzorke
+t.test( x = chico$grade_test2,   # Definiraj varijablu
+        y = chico$grade_test1,   # Definiraj varijablu
+         paired = TRUE           # Zavisni uzorci
+ )
+```
+
+```
+#&gt; 
+#&gt; 	Paired t-test
+#&gt; 
+#&gt; data:  chico$grade_test2 and chico$grade_test1
+#&gt; t = 6.4754, df = 19, p-value = 3.321e-06
+#&gt; alternative hypothesis: true difference in means is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  0.9508686 1.8591314
+#&gt; sample estimates:
+#&gt; mean of the differences 
+#&gt;                   1.405
+```
+
+---
+layout:false
+class: middle, inverse
+# EFEKT VELIČINE 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Snaga procijenjenog odnosa...)
+---
+
+layout:true
+# EFEKT VELIČINE
+---
+
+.hi[**Osnovna ideja**]
+
+`$$d = \frac{\mbox{(prosjek 1)} - \mbox{(prosjek 2)}}{\mbox{std dev}}$$`
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; `\(d\)`-vrijednost &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; okvirna interpretsacija &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; otprilike 0.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; mali efekt &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; otprilike 0.5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; umjereni efekt &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; otprilike 0.8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; veliki efekt &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+.footnote[[*] Okvirni prikaz za interpretaciju Choenove d statistike. d statistika pokazuje kolika je razlika između dva prosjeka izraženo u standardnim devijacijama.]
+
+---
+
+.hi[**Jedan uzorak**]
+
+`$$d = \frac{\bar{X} - \mu_0}{\hat{\sigma}}$$`
+
+
+```r
+# Provedi Choen test za jedan uzorak
+lsr::cohensD( x = grades,    # Podatci
+          mu = 67.5     # cUsporedi sa prosjekom od 67.5
+ )
+```
+
+```
+#&gt; [1] 0.5041691
+```
+
+
+```r
+# Provedi test "ručno" (bez funkcije)
+(mean(grades) - 67.5 ) / sd(grades)
+```
+
+```
+#&gt; [1] 0.5041691
+```
+
+---
+
+.hi[**Efekt veličine Studentovog t testa**]
+
+
+`$$\delta = \frac{\mu_1 - \mu_2}{\sigma}$$`
+
+`$$d = \frac{\bar{X}_1 - \bar{X}_2}{\hat{\sigma}_p}$$`
+
+
+```r
+# Provedi test u R
+lsr::cohensD( formula = grade ~ tutor,   # Definiraj formulu
+          data = harpo,             # Podatci 
+          method = "pooled"         # Tip testa
+)
+```
+
+```
+#&gt; [1] 0.7395614
+```
+---
+
+.hi[**Efekt veličine Welchovog t testa**]
+
+
+`$$\delta^\prime = \frac{\mu_1 - \mu_2}{\sigma^\prime}$$`
+
+`$$\sigma^\prime = \sqrt{\displaystyle{\frac{ {\sigma_1}^2 + {\sigma_2}^2}{2}}}$$`
+
+
+`$$d = \frac{\bar{X}_1 - \bar{X}_2}{\sqrt{\displaystyle{\frac{ {\hat\sigma_1}^2 + {\hat\sigma_2}^2}{2}}}}$$`
+
+
+```r
+# Provedi test u R
+lsr::cohensD( formula = grade ~ tutor,  # Definiraj formulu
+          data = harpo,            # Podatci
+          method = "unequal"       # Tip testa
+ )
+```
+
+```
+#&gt; [1] 0.7244995
+```
+---
+
+.hi[**Efekt veličine kod zavisnih uzoraka**]
+
+
+`$$d = \frac{\bar{D}}{\hat{\sigma}_D}$$`
+
+
+```r
+# Provedi test u R
+lsr::cohensD( x = chico$grade_test2,  # Definiraj prvu varijablu
+         y = chico$grade_test1,  # Definiraj drugu varijablu
+          method = "paired"      # Izaberi metodu
+ )
+```
+
+```
+#&gt; [1] 1.447952
+```
+
+---
+layout:false
+class: middle, inverse
+# PROVJERA NORMALNOSTI DISTRIBUCIJE 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Jesu li zadovoljene pretpostavke?)
+---
+
+layout:true
+# PROVJERA NORMALNOSTI DISTRIBUCIJE
+---
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/qq1a-1.svg" style="display: block; margin: auto;" /&gt;
+
+```
+#&gt; Normalno distribuirani podatci 
+#&gt; Asimetrija= -0.02936155 
+#&gt; Zakrivljenost= -0.06035938 
+#&gt; 
+#&gt; 	Shapiro-Wilk normality test
+#&gt; 
+#&gt; data:  data
+#&gt; W = 0.99108, p-value = 0.7515
+```
+
+
+.footnote[[*]Histogram normalno distribuiranih podataka; prikaz se odnosi na simulaciju 100 opservacija.]
+
+---
+
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/qq1b-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]QQ plot normalno distribuiranih podataka, prikaz se odnosi na simulaciju 100 opservacija.]
+
+---
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/qq2a-1.svg" style="display: block; margin: auto;" /&gt;
+
+```
+#&gt; Podatci sa gamma distribucijom. 
+#&gt; Asimetrija= 1.889475 
+#&gt; Zakrivljenost= 4.4396 
+#&gt; 
+#&gt; 	Shapiro-Wilk normality test
+#&gt; 
+#&gt; data:  data
+#&gt; W = 0.81758, p-value = 8.908e-10
+```
+
+.footnote[[*]Histogram 100 opservacija "zakrivljeno" distribuiranih podataka.]
+
+---
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/qq2b-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]QQ plot normalno distribuiranih, "zakrivljenih" podataka, prikaz se odnosi na simulaciju 100 opservacija.]
+
+---
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/qq2c-1.svg" style="display: block; margin: auto;" /&gt;
+
+```
+#&gt; Heavy-Tailed Data 
+#&gt; Asimetrija= -0.05308273 
+#&gt; Zakrivljenost= 7.508765 
+#&gt; 
+#&gt; 	Shapiro-Wilk normality test
+#&gt; 
+#&gt; data:  data
+#&gt; W = 0.83892, p-value = 4.718e-09
+```
+
+.footnote[[*]Histogram 100 opservacija u distribuciji koja ima puno mase u repovima.]
+
+---
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/qq2d-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Histogram 100 opservacija u distribuciji koja ima puno mase u repovima.]
+
+---
+
+
+```r
+normal.data &lt;- rnorm( n = 100 )  # Stvori 100 normalno distribuiranih brojeva
+par(mfrow=c(1,2))                # Postavi grid za prikaz grafikona
+hist( x = normal.data )          # Napravi histogram
+qqnorm( y = normal.data )        # Napravi QQ grafikon
+```
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/unnamed-chunk-45-1.svg" style="display: block; margin: auto;" /&gt;
+
+```r
+par(mfrow=c(1,1))                # Resetiraj grid za prikaz grafikona
+```
+
+---
+
+
+.hi[**Shapiro-Wilk test**]
+
+
+`$$W = \frac{ \left( \sum_{i = 1}^N a_i X_i \right)^2 }{ \sum_{i = 1}^N (X_i - \bar{X})^2}$$`
+
+
+```r
+# Provedi test na nizu normalno distribuiranih podataka
+shapiro.test( x = normal.data )
+```
+
+```
+#&gt; 
+#&gt; 	Shapiro-Wilk normality test
+#&gt; 
+#&gt; data:  normal.data
+#&gt; W = 0.98654, p-value = 0.4076
+```
+
+---
+layout:false
+class: middle, inverse
+# TESTIRANJE NE-NORMALNO DISTRIBUIRANIH PODATAKA 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Jesu li zadovoljene pretpostavke?)
+---
+
+layout:true
+# TESTIRANJE NE-NORMALNO DISTRIBUIRANIH PODATAKA
+---
+
+.hi[**Wilcoxson test za dva uzorka**]
+
+
+```r
+load(file.path("../Podatci/awesome.Rdata")) # Uvezi podatke
+print( awesome ) # Prikaži podatke
+```
+
+```
+#&gt;    scores group
+#&gt; 1     6.4     A
+#&gt; 2    10.7     A
+#&gt; 3    11.9     A
+#&gt; 4     7.3     A
+#&gt; 5    10.0     A
+#&gt; 6    14.5     B
+#&gt; 7    10.4     B
+#&gt; 8    12.9     B
+#&gt; 9    11.7     B
+#&gt; 10   13.0     B
+```
+---
+
+
+
+
+```r
+# Provedi Wicoxonov test
+wilcox.test( formula = scores ~ group, data = awesome)
+```
+
+```
+#&gt; 
+#&gt; 	Wilcoxon rank sum exact test
+#&gt; 
+#&gt; data:  scores by group
+#&gt; W = 3, p-value = 0.05556
+#&gt; alternative hypothesis: true location shift is not equal to 0
+```
+
+---
+
+
+```r
+# Uvezi drugačije organizirane podatke
+load( file.path("../Podatci/awesome2.Rdata" ))
+score.A
+```
+
+```
+#&gt; [1]  6.4 10.7 11.9  7.3 10.0
+```
+
+```r
+score.B
+```
+
+```
+#&gt; [1] 14.5 10.4 12.9 11.7 13.0
+```
+
+
+
+```r
+# Provedi Wicoxonov test
+wilcox.test( x = score.A, y = score.B )
+```
+
+```
+#&gt; 
+#&gt; 	Wilcoxon rank sum exact test
+#&gt; 
+#&gt; data:  score.A and score.B
+#&gt; W = 3, p-value = 0.05556
+#&gt; alternative hypothesis: true location shift is not equal to 0
+```
+
+
+---
+
+.hi[**Wilcoxson test za jedan uzorak**]
+
+
+
+```r
+# Učitaj podatke
+load( file.path("../podatci/happy.Rdata" ))
+print( happiness ) # Prikaži podatke
+```
+
+```
+#&gt;    before after change
+#&gt; 1      30     6    -24
+#&gt; 2      43    29    -14
+#&gt; 3      21    11    -10
+#&gt; 4      24    31      7
+#&gt; 5      23    17     -6
+#&gt; 6      40     2    -38
+#&gt; 7      29    31      2
+#&gt; 8      56    21    -35
+#&gt; 9      38     8    -30
+#&gt; 10     16    21      5
+```
+---
+
+
+```r
+# Wilcoxconov test za jedan uzorak
+wilcox.test( x = happiness$change,
+              mu = 0
+)
+```
+
+```
+#&gt; 
+#&gt; 	Wilcoxon signed rank exact test
+#&gt; 
+#&gt; data:  happiness$change
+#&gt; V = 7, p-value = 0.03711
+#&gt; alternative hypothesis: true location is not equal to 0
+```
+---
+
+
+```r
+# Wilcoxonov test za zavisne uzorke
+wilcox.test( x = happiness$after,
+             y = happiness$before,
+              paired = TRUE 
+)
+```
+
+```
+#&gt; 
+#&gt; 	Wilcoxon signed rank exact test
+#&gt; 
+#&gt; data:  happiness$after and happiness$before
+#&gt; V = 7, p-value = 0.03711
+#&gt; alternative hypothesis: true location shift is not equal to 0
+```
+
+
+---
+
+layout:false
+class: middle, inverse
+# HVALA NA PAŽNJI! 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Sljedeće predavanje: Usporedba više od dva prosjeka.)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

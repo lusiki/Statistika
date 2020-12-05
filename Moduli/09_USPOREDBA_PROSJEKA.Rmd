@@ -590,13 +590,19 @@ library(lsr) # Učitaj paket
 lsr::oneSampleTTest( x=grades, mu=67.5 )
 ```
 ---
+<br>
+<br>
 
 .hi[**Zapis rezultata testa**]
 
-> $t(19) = 2.25$, $p<.05$, CI$_{95} = [67.8, 76.8]$
+> t(19) = 2.25, p < .05, CI_{95} = [67.8, 76.8]
 
+<br>
+<br>
 
 .hi[**Pretpostavke t testa**]
+<br>
+<br>
 
 1. Normalnost distribucije
 <br>
@@ -614,19 +620,29 @@ class: middle, inverse
 
 layout:true
 # t test ZA NEZAVISNE UZORKE (Student)
----h
+---
 
 ```{r}
-load (file.path("./harpo.Rdata" )) # Učitaj podatke
+load (file.path("../Podatci/harpo.Rdata" )) # Učitaj podatke
 str(harpo) # Pregledaj podatke
 ```
 
 ```{r}
-head( harpo ) # Pregledaj podatke
+head( harpo,4 ) # Pregledaj podatke
 ```
 
+---
 
-```{r echo=FALSE}
+```{r}
+# Deskriptivna statistika
+library(tidyverse)
+harpo %>%
+  dplyr::group_by(tutor) %>%
+  dplyr::summarise(prosjek = mean(grade),
+            stDev = sd(grade))
+```
+
+```{r echo=FALSE, eval=F, include=F}
 knitr::kable(
   tibble::tribble(
       ~V1,       ~V2,         ~V3,    ~V4,
@@ -635,16 +651,921 @@ knitr::kable(
    col.names = c("",  "Prosjek", "std dev",  "N"), align="lccc")
 ```
 
+---
+
+.hi[**histogram ocjena**]
+
+```{r harpohistanastasia, fig.cap="", echo=FALSE, fig.height=4}
+  plotHist(harpo$grade[harpo$tutor == "Anastasia"],
+           xlim=c(50,100),xlab="Ocjena", main="Anastazijini studenti",
+           font.main=1,breaks=seq(50,100,5), ylim=c(0,7))
+```
+
+.footnote[[*]Histogram prikazuje distribuciju ocjena u Anastasijnom razredu]
+
+---
+
+.hi[**histogram ocjena**]
+
+
+```{r harpohistbernadette, fig.cap="", echo=FALSE, fig.height=4}
+  plotHist(harpo$grade[harpo$tutor == "Bernadette"],
+           xlim=c(50,100),xlab="Ocjena", main="Bernadettini studenti",
+           font.main=1,breaks=seq(50,100,5), ylim=c(0,7))
+```
+
+.footnote[[*]Histogram prikazuje distribuciju ocjena u Bernadettinom razredu]
+
+---
+
+.hi[**Postavi nultu i alternativnu hipotezu**]
+
+$$\begin{array}{ll}
+H_0: & \mu_1 = \mu_2  \\
+H_1: & \mu_1 \neq \mu_2
+\end{array}$$
+
+.hi[**Prikaži test grafički**]
+
+
+```{r, echo=FALSE, fig.height=4}
+knitr::include_graphics(file.path("../Foto/t_promjena.png"))
+```
+
+---
+
+.hi[**Testna statistika**]
+
+$$t = \frac{\bar{X}_1 - \bar{X}_2}{\mbox{SE}}$$
+
+.hi[**Grafički prikaz t distribucije**]
+
+```{r ttesthyp, fig.cap="", echo=FALSE, fig.height=3}
+	
+	width <- 12
+	height <- 4
+	plotOne <- function( sd1 ) {
+ 
+		Grade <- 40:100
+		mu1 <- c(60, 75)
+		mu0 <- 70
+		sd0 <- 9
+		plot.new()   # new figure window
+		old <- par( no.readonly = TRUE )
+	
+		par( mfcol = c(1,2),  # array of two plots
+	     	mfg = c(1,1) )   # start on the left
+		ymax <- .07
+		plot.window( xlim = range(Grade),
+	        ylim = c(0, ymax)
+	  	)
+		# null distribution
+		lines( x = Grade, 
+	       y = ynull <- dnorm(Grade, mu0, sd0), 
+	       lw = 2 )
+		axis(side = 1, at = seq(40,100,10), labels = F)
+		text(x = mu0, y = max(ynull)*1.1, 
+	     expression(mu) , cex = 1.2)
+		title( main = "Nulta hipoteza", font.main = 1)
+		title( xlab = "Vrijednost X", mgp = rep(1,3))
+		par( mfg = c(1,2) ) 
+		plot.window( xlim = range(Grade),
+	             ylim = c(0, ymax) )
+		# alternative distributions
+		lines( x = Grade, 
+	       y = ya1 <- dnorm(Grade, mu1[1], sd1[1]), 
+	       lw = 2 )
+		lines( x = Grade, 
+	       y = ya2 <- dnorm(Grade, mu1[2], sd1[2]), 
+	       lw = 2 )
+		axis(side = 1, at = seq(40,100,10), labels = F)
+		text(x = mu1[1], y = max(ya1)*1.1, 
+	     expression(mu[1]) , cex = 1.2)
+		text(x = mu1[2], y = max(ya2)*1.1, 
+	     expression(mu[2]) , cex = 1.2)
+	
+		title( main = "Alternativna hipoteza", font.main = 1)
+		title( xlab = "Vijednost X", mgp = rep(1,3))
+	
+		par(old)
+	
+	}
+	# print 
+	sd1 <- c(6.5, 6.5)
+	plotOne( sd1 )
+```
+
+
+.footnote[[*] Grafički prikaz nulte i alternativne hipoteze kod Studentovog t testa. Nulta hipoteza pretpostavlja da obje grupe imaju jednak prosjek mu_1 i mu_2 dok su ti prosjeci pod alternativnom hipotezom različiti. Primijeti pretpostavku da su populacijske distribucije normalne i da imaju jednaku standardnu devijaciju.]
+
+---
+
+.hi[**Zapis**]
+
+$$\mu_1 - \mu_2 = 0$$
+
+
+$$\bar{X}_1 - \bar{X}_2$$
+---
+
+.hi[**Procjena udružene standardne devijacije**]
+
+- Definiraj pondere
+
+$$\begin{array}{rcl}
+w_1 &=& N_1 - 1\\
+w_2 &=& N_2 - 1
+\end{array}$$
+
+- Udružena procjena varijance
+
+$$\hat\sigma^2_p = \frac{w_1 {\hat\sigma_1}^2 + w_2 {\hat\sigma_2}^2}{w_1 + w_2}$$
+
+- Udružena procjena standardne devijacije
+
+$$\hat\sigma_p = \sqrt{\frac{w_1 {\hat\sigma_1}^2 + w_2 {\hat\sigma_2}^2}{w_1 + w_2}}$$
+
+---
+
+
+.hi[**Drugačiji način**] 
+
+- Izračunaj devijaciju od grupnog prosjeka
+
+$$X_{ik} - \bar{X}_k$$
+
+- Zbroji za sve opservacije
+
+$$\frac{\sum_{ik} \left( X_{ik} - \bar{X}_k \right)^2}{N}$$
+- Izvrši korekciju (nazivnik)
+
+$$\hat\sigma^2_p = \frac{\sum_{ik} \left( X_{ik} - \bar{X}_k \right)^2}{N -2}$$
+
+---
+
+.hi[**Drugačiji način**]
+
+- Izračunaj standardnu pogrešku razlike prosjeka
+
+$$\mbox{SE}({\bar{X}_1 - \bar{X}_2}) = \hat\sigma \sqrt{\frac{1}{N_1} + \frac{1}{N_2}}$$
+
+- t statistika u našem testu
+
+$$t = \frac{\bar{X}_1 - \bar{X}_2}{\mbox{SE}({\bar{X}_1 - \bar{X}_2})}$$
+---
+
+.hi[**Izvođenje testa u R**]
+
+```{r}
+# Pregledaj podatke
+head( harpo )
+```
+
+---
+
+.hi[**Izvođenje testa u R**]
+
+```{r}
+# Izvedi test
+independentSamplesTTest( 
+      formula = grade ~ tutor,  # Formula za zavisnu i nezavisnu varijablu
+      data = harpo,             # Podatci
+      var.equal = TRUE          # Pretpostavka jednakih varijanci
+  )
+```
+
+
+---
+
+
+.hi[**Sažeti statistički zapis rezultata testa**]
+
+> t(31) = 2.1, p<.05, CI_{95} = [0.2, 10.8], d = .74
+
+<br>
+<br>
+
+.hi[**Pretpostavke testa**]
+<br>
+<br>
+1. Normalnost distribucije
+<br>
+2. Nezavisnost
+<br>
+3. Homogenost varijance
 
 
 
+---
+layout:false
+class: middle, inverse
+# t test ZA NEZAVISNE UZORKE (Student) 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Realnija varijanta...za nezavisne uzorke)
+---
+
+layout:true
+# t test ZA NEZAVISNE UZORKE (Student)
+---
 
 
+.hi[Testna statistika]
+
+$$t = \frac{\bar{X}_1 - \bar{X}_2}{\mbox{SE}({\bar{X}_1 - \bar{X}_2})}$$
+.hi[Standardna greška statistike]
+
+$$\mbox{SE}({\bar{X}_1 - \bar{X}_2}) = \sqrt{ \frac{{\hat{\sigma}_1}^2}{N_1} + \frac{{\hat{\sigma}_2}^2}{N_2} }$$
+
+.hi[Izračun stupnjeva slobode]
+
+$$\mbox{df} = \frac{ ({\hat{\sigma}_1}^2 / N_1 + {\hat{\sigma}_2}^2 / N_2)^2 }{  ({\hat{\sigma}_1}^2 / N_1)^2 / (N_1 -1 )  + ({\hat{\sigma}_2}^2 / N_2)^2 / (N_2 -1 ) }$$
+
+---
+
+.hi[**Prikaži nultu i alternativnu hipotezu grafički**]
 
 
+```{r ttesthyp2, fig.cap="", echo=FALSE, fig.height=4}
+	width <- 12
+	height <- 4
+	plotOne <- function( sd1 ) {
+ 
+		Grade <- 40:100
+		mu1 <- c(60, 75)
+		mu0 <- 70
+		sd0 <- 9
+		plot.new()   # new figure window
+		old <- par( no.readonly = TRUE )
+	
+		par( mfcol = c(1,2),  # array of two plots
+	     	mfg = c(1,1) )   # start on the left
+		ymax <- .07
+		plot.window( xlim = range(Grade),
+	        ylim = c(0, ymax)
+	  	)
+		# null distribution
+		lines( x = Grade, 
+	       y = ynull <- dnorm(Grade, mu0, sd0), 
+	       lw = 2 )
+		axis(side = 1, at = seq(40,100,10), labels = F)
+		text(x = mu0, y = max(ynull)*1.1, 
+	     expression(mu) , cex = 1.2)
+		title( main = "Nulta hipoteza", font.main = 1)
+		title( xlab = "Vrijednost X", mgp = rep(1,3))
+		par( mfg = c(1,2) ) 
+		plot.window( xlim = range(Grade),
+	             ylim = c(0, ymax) )
+		# alternative distributions
+		lines( x = Grade, 
+	       y = ya1 <- dnorm(Grade, mu1[1], sd1[1]), 
+	       lw = 2 )
+		lines( x = Grade, 
+	       y = ya2 <- dnorm(Grade, mu1[2], sd1[2]), 
+	       lw = 2 )
+		axis(side = 1, at = seq(40,100,10), labels = F)
+		text(x = mu1[1], y = max(ya1)*1.1, 
+	     expression(mu[1]) , cex = 1.2)
+		text(x = mu1[2], y = max(ya2)*1.1, 
+	     expression(mu[2]) , cex = 1.2)
+	
+		title( main = "Alternativna hipoteza", font.main = 1)
+		title( xlab = "Vrijednost X", mgp = rep(1,3))
+	
+		par(old)
+	
+	}
+	# print 
+	sd1 <- c(6.5, 7.95)
+	plotOne( sd1 )
+```
 
 
+.footnote[[*]Grafički prikaz nulte i alternativne hipoteze za Welch t test. Kao kod studentovog t testa pretpostavljamo normalnu distribuciju ali valja primijetiti da pod alternativnom hipotezom više ne zahtijevamo da oba uzorka imaju jednake varijance.]
 
+
+---
+
+
+.hi[**Izvedi test u R**]
+
+```{r}
+independentSamplesTTest( 
+      formula = grade ~ tutor,  # Formula za zavisnu i nezavisnu varijablu
+      data = harpo)          # Podatci
+```
+
+---
+<br>
+.hi[**Pretpostavke testa**]
+<br>
+<br>
+1. Normalnost distribucije
+<br>
+2. Nezavisnost
+
+---
+layout:false
+class: middle, inverse
+# t test ZA ZAVISNE UZORKE 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Realnija varijanta...za zavisne uzorke)
+---
+
+layout:true
+# t test ZA ZAVISNE UZORKE
+---
+
+```{r}
+# Učitaj podatke
+load( file.path("../Podatci/chico.Rdata" ))
+str(chico)  # Pogledaj podatke   
+```
+
+```{r}
+# Pregledaj podatke
+head( chico,4 )
+```
+
+---
+
+```{r}
+library( psych ) # Učitaj paket
+psych::describe( chico ) # Pregledaj podatke
+```
+
+---
+
+
+.hi[**Prikaži podatke grafički**]
+
+```{r pairedta, fig.cap="", echo=FALSE, fig.height=4}
+chico2 <- wideToLong( data=chico, within="time") # Preoblikuj podatke za vizualizaciju
+  
+  gplots::plotmeans( formula = grade ~ time,    # Formula
+             data = chico2,                     # Podatci
+             n.label = FALSE,                   # Suspregni prikaz naziva
+             xlab = "Instanca testiranja",      # x-os naziv
+             ylab = "Ocjena"                    # y-os naziv
+  )
+```
+
+.footnote[[*]Prosječna ocjena za test 1 i 2, uz prateće 95% intervale pouzdanosti.]
+
+---
+
+
+```{r pairedtb, fig.cap="", echo=FALSE, fig.height=5}
+  # Napravi dijagram rasipanja
+  plot( x = chico$grade_test1,     # test 1 na x-osi
+        y = chico$grade_test2,     # test 2 na y-osi
+        xlab = "Ocjena za test 1", # x-os naziv 
+        ylab = "Ocjena za test  2", # y-os naziv
+        pch = 19                   # Pune točke za markere
+  )
+  
+  # Dodaj liniju
+  abline( a = 0, # presjek na y osi je 0
+          b = 1  # nagib je 1 
+  )
+```
+
+
+.footnote[[*]Dijagram rasipanja za odnos ocjena na prvom i drugom testu.]
+
+---
+
+.hi[Izračunaj razliku u ocjeni]
+
+```{r}
+# Stvori vektor razlika u ocjenama između prvog i drugog testa
+chico$improvement <- chico$grade_test2 - chico$grade_test1 
+```
+
+```{r}
+# Pregledaj podatke
+head( chico,5 )
+```
+
+---
+
+.hi[**Prikaži razlike grafički**]
+
+
+```{r pairedtc, fig.cap="", echo=FALSE, fig.height=5}
+# Stvori varijablu(kolonu) koja sadržava razlike između testova
+chico3 <- within(chico, improvement <- grade_test2 - grade_test1)
+  
+  # hist
+  hist( x = chico3$improvement,         # Podatci
+        xlab = "Poboljšanje u ocjeni", # x-os naziv
+        main = "",                      # Bez naslova
+        border = "white",               # Bijele granice na stupcima
+        col = rgb(.5,.5,1)              # Svijetloplava boja
+  )
+```
+
+.footnote[[*]Histogram prikazuje individualna poboljšanja ocjene između prvog i drugog testa. Valja primijetiti da je gotovo cjelokupna distribucija iznad 0: najveći broj studenata je poboljšao rezultat na drugom testu.]
+
+
+---
+
+
+```{r}
+# Pogledaj granice pouzdanosti za varijablu poboljšanja ocjena
+ciMean( x = chico$improvement )
+```
+
+---
+
+.hi[**Tehnički aspekti testa**]
+
+- Definiraj razliku
+
+$$D_{i} = X_{i1} - X_{i2}$$
+
+- Formuliraj hipoteze
+
+$$\begin{array}{ll}
+H_0: & \mu_D = 0  \\
+H_1: & \mu_D \neq 0
+\end{array}$$
+
+- Testna statistika
+
+$$t = \frac{\bar{D}}{\mbox{SE}({\bar{D}})}$$
+
+$$t = \frac{\bar{D}}{\hat\sigma_D / \sqrt{N}}$$
+---
+
+.hi[**Izvođenje testa u R**]
+
+I. način
+
+```{r}
+oneSampleTTest( chico$improvement, mu=0 )
+```
+---
+
+.hi[**Izvođenje testa u R**]
+
+II. način
+
+```{r}
+pairedSamplesTTest( 
+     formula = ~ grade_test2 + grade_test1, # Formula za definiranje zavisnih i nezavisnih varijabli
+     data = chico                           # Podatci 
+  )
+```
+
+---
+
+.hi[**Izvođenje testa u R**]
+
+II. način
+
+```{r}
+# Prestrukturiraj podatke
+chico2 <- wideToLong( chico, within="time" )
+head( chico2 ) # Pregledaj podatke
+```
+
+---
+II. način
+
+```{r}
+# Sortiraj podatke
+chico2 <- sortFrame( chico2, id )
+head( chico2 ) # Pregledaj podatke
+```
+
+---
+
+II. način
+
+```{r}
+# Provedi test
+pairedSamplesTTest( 
+     formula = grade ~ time,  # Definiraj formulu
+     data = chico2,           # Podatci
+     id = "id"                # Naziv id
+  )
+```
+
+---
+
+.hi[**Alternativna specifikacija testa**]
+<br>
+<br>
+
+```
+pairedSamplesTTest( 
+     formula = grade ~ time + (id),
+     data = chico2
+  )
+  
+```
+
+```
+ pairedSamplesTTest( grade ~ time + (id), chico2 )
+ 
+```
+
+---
+layout:false
+class: middle, inverse
+# JEDNOSTRANI TESTOVI 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Realnija varijanta...za zavisne uzorke)
+---
+
+layout:true
+# JEDNOSTRANI TESTOVI
+---
+
+.hi[**Provedi test sa pretpostavkom da je prosjek uzorka veći od pretpostavljenog prosjeka populacije**]
+
+```{r}
+library(psych)
+library(lsr)
+ # Provedi test
+lsr::oneSampleTTest( x = grades,
+                mu = 67.5,
+                one.sided = "greater" # Gornja granica
+                ) 
+```
+
+---
+
+
+```{r}
+# Provedi test na drugi način
+lsr::independentSamplesTTest( 
+    formula = grade ~ tutor, 
+    data = harpo, 
+    one.sided = "Anastasia"
+  )
+
+```
+
+---
+
+```{r}
+# Provedi test na treći način
+pairedSamplesTTest( 
+     formula = ~ grade_test2 + grade_test1, 
+     data = chico, 
+     one.sided = "grade_test2" 
+  )
+```
+
+---
+<br>
+<br>
+```{r eval=FALSE}
+# Alternativne specifikacije testa
+> pairedSamplesTTest( 
+    formula = grade ~ time, 
+    data = chico2, 
+    id = "id", 
+    one.sided = "test2" 
+  )
+> pairedSamplesTTest( 
+    formula = grade ~ time + (id), 
+    data = chico2, 
+    one.sided = "test2" 
+  )
+```
+
+
+---
+layout:false
+class: middle, inverse
+# STANDARDNI NAČIN PROVOĐENJA t-testa  
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Test u praksi...)
+---
+
+layout:true
+# STANDARDNI NAČIN PROVOĐENJA t-testa U R
+---
+
+```{r}
+# Provedi standardni test usporedbe prosjeka
+t.test( x = grades, # Definiraj podatke
+        mu = 67.5   # Definiraj prosjek 
+        )
+```
+---
+
+```{r}
+# Provedi test za nezavisne uzorke
+t.test( formula = grade ~ tutor, # Definiraj formulu
+        data = harpo )           # Definiraj podatke
+```
+
+---
+
+```{r}
+# Provedi test za zavisne uzorke
+t.test( x = chico$grade_test2,   # Definiraj varijablu
+        y = chico$grade_test1,   # Definiraj varijablu
+         paired = TRUE           # Zavisni uzorci
+ )
+```
+
+---
+layout:false
+class: middle, inverse
+# EFEKT VELIČINE 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Snaga procijenjenog odnosa...)
+---
+
+layout:true
+# EFEKT VELIČINE
+---
+
+.hi[**Osnovna ideja**]
+
+$$d = \frac{\mbox{(prosjek 1)} - \mbox{(prosjek 2)}}{\mbox{std dev}}$$
+
+```{r cohensdinterpretation, fig.cap="", echo=FALSE}
+knitr::kable(tibble::tribble(
+          ~V1,                    ~V2,
+  "otprilike 0.2",         "mali efekt",
+  "otprilike 0.5",      "umjereni efekt",
+  "otprilike 0.8",         "veliki efekt"
+  ), col.names = c(  "$d$-vrijednost", "okvirna interpretsacija"))
+```
+
+.footnote[[*] Okvirni prikaz za interpretaciju Choenove d statistike. d statistika pokazuje kolika je razlika između dva prosjeka izraženo u standardnim devijacijama.]
+
+---
+
+.hi[**Jedan uzorak**]
+
+$$d = \frac{\bar{X} - \mu_0}{\hat{\sigma}}$$
+
+```{r}
+# Provedi Choen test za jedan uzorak
+lsr::cohensD( x = grades,    # Podatci
+          mu = 67.5     # cUsporedi sa prosjekom od 67.5
+ )
+```
+
+```{r}
+# Provedi test "ručno" (bez funkcije)
+(mean(grades) - 67.5 ) / sd(grades)
+```
+
+---
+
+.hi[**Efekt veličine Studentovog t testa**]
+
+
+$$\delta = \frac{\mu_1 - \mu_2}{\sigma}$$
+
+$$d = \frac{\bar{X}_1 - \bar{X}_2}{\hat{\sigma}_p}$$
+
+```{r}
+# Provedi test u R
+lsr::cohensD( formula = grade ~ tutor,   # Definiraj formulu
+          data = harpo,             # Podatci 
+          method = "pooled"         # Tip testa
+)
+```
+---
+
+.hi[**Efekt veličine Welchovog t testa**]
+
+
+$$\delta^\prime = \frac{\mu_1 - \mu_2}{\sigma^\prime}$$
+
+$$\sigma^\prime = \sqrt{\displaystyle{\frac{ {\sigma_1}^2 + {\sigma_2}^2}{2}}}$$
+
+
+$$d = \frac{\bar{X}_1 - \bar{X}_2}{\sqrt{\displaystyle{\frac{ {\hat\sigma_1}^2 + {\hat\sigma_2}^2}{2}}}}$$
+
+```{r}
+# Provedi test u R
+lsr::cohensD( formula = grade ~ tutor,  # Definiraj formulu
+          data = harpo,            # Podatci
+          method = "unequal"       # Tip testa
+ )
+
+```
+---
+
+.hi[**Efekt veličine kod zavisnih uzoraka**]
+
+
+$$d = \frac{\bar{D}}{\hat{\sigma}_D}$$
+
+```{r}
+# Provedi test u R
+lsr::cohensD( x = chico$grade_test2,  # Definiraj prvu varijablu
+         y = chico$grade_test1,  # Definiraj drugu varijablu
+          method = "paired"      # Izaberi metodu
+ )
+```
+
+---
+layout:false
+class: middle, inverse
+# PROVJERA NORMALNOSTI DISTRIBUCIJE 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Jesu li zadovoljene pretpostavke?)
+---
+
+layout:true
+# PROVJERA NORMALNOSTI DISTRIBUCIJE
+---
+
+```{r qq1a, fig.cap="", echo=FALSE, fig.height=3, fig.width=6}
+  width <- 5
+  height <- 5
+  
+  plotOne <- function(data, title ) {
+    
+    hist( x = data ,
+          xlab = "Vrijednost", # x-axis label
+          main = title,                     
+          border="white", 
+          col=ifelse(colour,emphColLight,emphGrey),
+          font.main = 1
+    )         
+    
+    require(psych)
+    cat(title,"\n")
+    cat( "Asimetrija=",skew(data),"\n")
+    cat( "Zakrivljenost=",kurtosi(data),"\n")
+    print( shapiro.test(data) )
+    
+    
+  }
+  
+  normal.data <- rnorm( n = 100 )  # generate N = 100 normally distributed numbers
+  plotOne( normal.data, "Normalno distribuirani podatci" )
+```
+
+
+.footnote[[*]Histogram normalno distribuiranih podataka; prikaz se odnosi na simulaciju 100 opservacija.]
+
+---
+
+
+```{r qq1b, fig.cap="", echo=FALSE, fig.height=4, fig.width=7}
+  plotTwo <- function( data ) {   
+    qqnorm( y = data,
+            pch= 19,
+            font.main = 1
+    )        # draw the QQ plot
+  
+  }
+  plotTwo( normal.data )
+```
+
+.footnote[[*]QQ plot normalno distribuiranih podataka, prikaz se odnosi na simulaciju 100 opservacija.]
+
+---
+
+```{r qq2a, fig.cap="", echo=FALSE, fig.height=3}
+  skewed.data <- rgamma( n = 100,1,2 ) 
+  plotOne( skewed.data, "Podatci sa gamma distribucijom." )
+```
+
+.footnote[[*]Histogram 100 opservacija "zakrivljeno" distribuiranih podataka.]
+
+---
+
+```{r qq2b, fig.cap="", echo=FALSE, fig.height=4}
+  plotTwo( skewed.data )
+```
+
+.footnote[[*]QQ plot normalno distribuiranih, "zakrivljenih" podataka, prikaz se odnosi na simulaciju 100 opservacija.]
+
+---
+
+```{r qq2c, fig.cap="", echo=FALSE, fig.height=4}
+  heavy.tailed.data <- c(rnorm( n = 80 ) , rnorm( 20, sd=5))
+  plotOne( heavy.tailed.data, "Heavy-Tailed Data" )
+```
+
+.footnote[[*]Histogram 100 opservacija u distribuciji koja ima puno mase u repovima.]
+
+---
+
+```{r qq2d, fig.cap="", echo=FALSE, fig.height=5}
+  plotTwo( heavy.tailed.data )
+```
+
+.footnote[[*]Histogram 100 opservacija u distribuciji koja ima puno mase u repovima.]
+
+---
+
+```{r, fig.height=4, fig.width=6}
+normal.data <- rnorm( n = 100 )  # Stvori 100 normalno distribuiranih brojeva
+par(mfrow=c(1,2))                # Postavi grid za prikaz grafikona
+hist( x = normal.data )          # Napravi histogram
+qqnorm( y = normal.data )        # Napravi QQ grafikon
+par(mfrow=c(1,1))                # Resetiraj grid za prikaz grafikona
+```
+
+---
+
+
+.hi[**Shapiro-Wilk test**]
+
+
+$$W = \frac{ \left( \sum_{i = 1}^N a_i X_i \right)^2 }{ \sum_{i = 1}^N (X_i - \bar{X})^2}$$
+
+```{r}
+# Provedi test na nizu normalno distribuiranih podataka
+shapiro.test( x = normal.data )
+```
+
+---
+layout:false
+class: middle, inverse
+# TESTIRANJE NE-NORMALNO DISTRIBUIRANIH PODATAKA 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Jesu li zadovoljene pretpostavke?)
+---
+
+layout:true
+# TESTIRANJE NE-NORMALNO DISTRIBUIRANIH PODATAKA
+---
+
+.hi[**Wilcoxson test za dva uzorka**]
+
+```{r}
+load(file.path("../Podatci/awesome.Rdata")) # Uvezi podatke
+print( awesome ) # Prikaži podatke
+```
+---
+
+```{r echo=FALSE, eval=F, include=F}
+pdf(file.path("wilcox_neparametarski.png"))
+```
+
+```{r}
+# Provedi Wicoxonov test
+wilcox.test( formula = scores ~ group, data = awesome)
+```
+
+---
+
+```{r}
+# Uvezi drugačije organizirane podatke
+load( file.path("../Podatci/awesome2.Rdata" ))
+score.A
+score.B
+```
+
+
+```{r}
+# Provedi Wicoxonov test
+wilcox.test( x = score.A, y = score.B )
+```
+
+
+---
+
+.hi[**Wilcoxson test za jedan uzorak**]
+
+
+```{r}
+# Učitaj podatke
+load( file.path("../podatci/happy.Rdata" ))
+print( happiness ) # Prikaži podatke
+```
+---
+
+```{r}
+# Wilcoxconov test za jedan uzorak
+wilcox.test( x = happiness$change,
+              mu = 0
+)
+
+```
+---
+
+```{r}
+# Wilcoxonov test za zavisne uzorke
+wilcox.test( x = happiness$after,
+             y = happiness$before,
+              paired = TRUE 
+)
+```
+
+
+---
+
+layout:false
+class: middle, inverse
+# HVALA NA PAŽNJI! 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Sljedeće predavanje: Usporedba više od dva prosjeka.)
 
 
 

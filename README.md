@@ -184,6 +184,11 @@ Koristiti ćemo tri knjige.
 
 </div>
 
+
+<b>Format predavanja:</b> <a href="/Moduli/09_USPOREDBA PROSJEKA.html">.html</a> | <a href="/Moduli/09_USPOREDBA PROSJEKA.Rmd">.Rmd</a>
+<br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 13.</a>
+
+
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
 <a href="/Predavanja/10_.pdf">Predavanje 10: ANOVA</a>
 

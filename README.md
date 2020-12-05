@@ -169,7 +169,7 @@ Koristiti ćemo tri knjige.
 
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Predavanja/9_.pdf">Predavanje 09: Usporedba prosjeka</a>
+<a href="https://raw.githack.com/BrbanMiro/Statistika/main/Moduli/09_USPOREDBA_PROSJEKA.html">Predavanje 09: Usporedba prosjeka</a>
 
 <ul>
 <li> z-test</li>

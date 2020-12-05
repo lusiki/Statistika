@@ -1,0 +1,656 @@
+---
+title: "PRIMJENJENA STATISTIKA"
+# subtitle: "<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>"
+subtitle: "Predavanje 9: Usporedba prosjeka"
+author: "Luka Sikic, PhD"
+date: "Fakultet hrvatskih studija | [Github PS](https://github.com/BrbanMiro/Statistika)" #"`r format(Sys.time(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      beforeInit: "macros.js"
+---
+
+
+```{R, setup, include = F}
+# devtools::install_github("dill/emoGG")
+library(pacman)
+p_load(
+  broom, tidyverse,
+  latex2exp, ggplot2, ggthemes, ggforce, viridis, extrafont, gridExtra,
+  kableExtra, snakecase, janitor,
+  data.table, dplyr, estimatr,
+  lubridate, knitr, parallel,
+  lfe,
+  here, magrittr
+)
+# Define pink color
+red_pink <- "#e64173"
+turquoise <- "#20B2AA"
+orange <- "#FFA500"
+red <- "#fb6107"
+blue <- "#2b59c3"
+green <- "#8bb174"
+grey_light <- "grey70"
+grey_mid <- "grey50"
+grey_dark <- "grey20"
+purple <- "#6A5ACD"
+slate <- "#314f4f"
+# Dark slate grey: #314f4f
+# Knitr options
+opts_chunk$set(
+  comment = "#>",
+  fig.align = "center",
+  fig.height = 7,
+  fig.width = 10.5,
+  warning = F,
+  message = F
+)
+opts_chunk$set(dev = "svg")
+options(device = function(file, width, height) {
+  svg(tempfile(), width = width, height = height)
+})
+options(crayon.enabled = F)
+options(knitr.table.format = "html")
+# A blank theme for ggplot
+theme_empty <- theme_bw() + theme(
+  line = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  plot.margin = structure(c(0, 0, -0.5, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_simple <- theme_bw() + theme(
+  line = element_blank(),
+  panel.grid = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text.x = element_text(size = 18, family = "STIXGeneral"),
+  axis.text.y = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  # plot.margin = structure(c(0, 0, -1, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_math <- theme_void() + theme(
+  text = element_text(family = "MathJax_Math"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_serif <- theme_void() + theme(
+  text = element_text(family = "MathJax_Main"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes <- theme_void() + theme(
+  text = element_text(family = "Fira Sans Book"),
+  axis.title = element_text(size = 18),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = grey_light,
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_set(theme_gray(base_size = 20))
+# Column names for regression results
+reg_columns <- c("Term", "Est.", "S.E.", "t stat.", "p-Value")
+# Function for formatting p values
+format_pvi <- function(pv) {
+  return(ifelse(
+    pv < 0.0001,
+    "<0.0001",
+    round(pv, 4) %>% format(scientific = F)
+  ))
+}
+format_pv <- function(pvs) lapply(X = pvs, FUN = format_pvi) %>% unlist()
+# Tidy regression results table
+tidy_table <- function(x, terms, highlight_row = 1, highlight_color = "black", highlight_bold = T, digits = c(NA, 3, 3, 2, 5), title = NULL) {
+  x %>%
+    tidy() %>%
+    select(1:5) %>%
+    mutate(
+      term = terms,
+      p.value = p.value %>% format_pv()
+    ) %>%
+    kable(
+      col.names = reg_columns,
+      escape = F,
+      digits = digits,
+      caption = title
+    ) %>%
+    kable_styling(font_size = 20) %>%
+    row_spec(1:nrow(tidy(x)), background = "white") %>%
+    row_spec(highlight_row, bold = highlight_bold, color = highlight_color)
+}
+```
+
+```{css, echo = F, eval = F}
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+```
+
+
+class: inverse, middle
+# PREGLED PREDAVANJA
+
+---
+layout: true
+# PREGLED PREDAVANJA
+---
+<br>
+
+## CILJEVI 
+
+- z-test
+- t-test
+- t-test u nezavisnim uzorcima
+- t-test u zavisnim uzorcima
+- Jednostrani testovi
+- Izvođenje t-testova u R
+- Efekt veličine
+- Provjera normalnosti distribucije
+
+---
+
+layout:false
+class: middle, inverse
+# z test 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Da li podatci pripadju hipotetičkoj distribuciji?)
+---
+
+layout:true
+# z test
+
+---
+
+```{r}
+# Učitaj podatke
+load( file.path( "../Podatci/zeppo.Rdata" )) 
+print( grades ) # Pregledaj podatke
+``` 
+
+
+```{r}
+# Izračunaj prosjek
+mean(grades)
+```
+
+.hi[**Postavi hipoteze**]
+
+- Da li su ocjene studenata sociologije više od prosjeka na fakultetu?
+
+
+$$\begin{array}{ll}
+H_0: & \mu = 67.5 \\
+H_1: & \mu \neq 67.5
+\end{array}$$
+---
+
+
+.hi[Prikaži hipoteze grafički]
+
+```{r ztesthyp,  fig.cap="", echo=FALSE, fig.height=4}
+	
+	width <- 12
+	height <- 4
+	
+	plotOne <- function( sigEx ) {
+		x <- seq(-4,4,.1)
+		y <- dnorm(x,0,1)
+		plot.new()
+		
+		old <- par( no.readonly = TRUE )
+		par( mfcol= c(1,2), mfg = c(1,1))
+		plot.window( xlim = range(x), 
+	             	ylim = range(y)*1.2)
+		# plot density
+		lines( x ,y, lw =2 )
+		# lines and mean
+		lines(x=c(0,0), y = c(0,max(y)))
+		text(x=0, y = max(y)*1.1, 
+	     	labels= expression(mu == mu[0])
+		)    
+		# sd lines and text
+		tmp <- dnorm(-1,0,1)
+		lines(x=c(-1,0), y = rep(tmp,2))
+		text(x=-2.25, y = tmp, 
+	     	labels= sigEx
+	     )
+		axis(side = 1, labels = F)
+		title( main = "Nulta hipoteza", font.main = 1)
+		title( xlab = "vrijednost X", mgp = c(1,1,0))
+		par( mfg = c(1,2))
+		plot.window( xlim = range(x), 
+	             ylim = range(y)*1.2)
+				y <- dnorm(x,-.75,1)
+		# plot density
+		lines( x ,y, lw =2 )
+		# lines and mean
+		lines(x=c(0,0), y = c(0,max(y)))
+		text(x=0, y = max(y)*1.1, 
+	     	labels= expression(mu != mu[0])
+	     )    
+		# sd lines and text
+		tmp <- dnorm(-1,0,1)
+		lines(x=c(-1.75,-.75), y = rep(tmp,2))
+		text(x=-3, y = tmp, 
+	     	labels= sigEx
+	     )
+		axis(side = 1, labels = F)
+		title( main = "Alternativna hipoteza", font.main = 1)
+		title( xlab = "vrijednost X", mgp = c(1,1,0))
+		par(old)
+	}
+	
+	# one sample z-test
+	sigEx <- expression(sigma == sigma[0])
+	plotOne( sigEx )
+```
+
+.footnote[[*]Grafički prikaz nulte i alternativne hipoteze pod pretpostvkom jednostranog z- testa. Nulta i alternativna hipoteza pretpostavljaju da populacija (podatci) prati standarnu distribuciju i da je standardna devijacija poznata (sigma_0). Pod nultom hipotezom je prosjek populacije mu jednak apriori definiranoj vrijednosti mu_0. Pod alternativnom hipotezom prosjek populacije nije jednak tako definiranoj vrijednosti, mu neq mu_0.]
+
+---
+
+.hi[Prikaži podatke grafički]
+
+```{r zeppo, fig.cap="", echo=FALSE,fig.height=4}
+ttestImg <- list()
+emphCol <- rgb(0,0,1)
+emphColLight <- rgb(.5,.5,1)
+emphGrey <- grey(.5)
+colour <- TRUE
+plotHist <- function(x,...) {
+    hist( x, border="white", 
+          col=ifelse(colour,emphColLight,emphGrey),...
+    )
+    axis(1)
+  }
+ 
+  # needed for printing
+  width <- 6
+  height <- 6
+  
+  # Zeppo
+  plotHist(grades,xlim=c(40,90),xlab="Ocjene",axes=FALSE, ylab="", main="", freq=FALSE)
+  lines( x<-40:90, dnorm(x,67.5,10), lwd=3, col="black")
+```
+
+.footnote[[*]Puna linija predstavlja teoretsku distribuciju pod nultom hipotezom iz koje su "generirane" ocjene studenata sociologije.]
+
+---
+
+.hi[Konstruiraj testnu statistiku] 
+
+
+-  
+
+$$\bar{X} - \mu_0$$
+
+- 
+
+$$X \sim \mbox{Normal}(\mu_0,\sigma^2)$$
+
+- 
+
+$$\mbox{SE}({\bar{X}}) = \frac{\sigma}{\sqrt{N}}$$
+
+-
+
+$$\bar{X} \sim \mbox{Normal}(\mu_0,\mbox{SE}({\bar{X}}))$$
+
+---
+
+-
+
+$$z_{\bar{X}} = \frac{\bar{X} - \mu_0}{\mbox{SE}({\bar{X}})}$$
+-
+
+$$z_{\bar{X}} =  \frac{\bar{X} - \mu_0}{\sigma / \sqrt{N}}$$
+
+-
+
+$$z_{\bar{X}} \sim \mbox{Normal}(0,1)$$
+---
+
+
+
+.hi[**Prikaz kritičkih garnica za jednostrani test**]
+
+```{r ztest2, fig.cap="", echo=FALSE, fig.height=4}
+  width <- 6
+  height <- 4
+  
+  plot.new()
+  plot.window( xlim=c(-3,3), ylim=c(0,.4) )
+  
+  crit <- qnorm(.975)
+  x<-c(seq(crit,3,.01),3)
+  y<-dnorm(x)
+  polygon(c(x[1],x,3),c(0,y,0),
+          col=ifelse(colour,emphColLight,emphGrey),
+          density=10)
+  
+  crit <- qnorm(.025)
+  x<-c(seq(-3,crit,.01),crit)
+  y<-dnorm(x)
+  polygon(c(x[1],x,crit),c(0,y,0),
+          col=ifelse(colour,emphColLight,emphGrey),
+          density=10)
+  
+  x <- seq(-3,3,.01)
+  y <- dnorm(x)
+  lines(x,y,lwd=3,col="black")
+  axis(1,at=round(c(-3,crit,0,-crit,3),2),
+       labels=c("",round(crit,2),"0",round(-crit,2),""))
+  title(xlab="Vrijednost z statistike", main="Dvostrani test", font.main=1)
+```
+
+.footnote[[*]Kritičke regije za dvostrani z-test]
+
+---
+
+.hi[**Prikaz kritičkih garnica za dvostrani test**]
+
+
+```{r ztest1, fig.cap="", echo=FALSE, fig.height=4}
+  plot.new()
+  plot.window( xlim=c(-3,3), ylim=c(0,.4) )
+  
+  crit <- qnorm(.95)
+  x<-c(seq(crit,3,.01),3)
+  y<-dnorm(x)
+  polygon(c(x[1],x,3),c(0,y,0),
+          col=ifelse(colour,emphColLight,emphGrey),
+          density=10)
+  
+  x <- seq(-3,3,.01)
+  y <- dnorm(x)
+  lines(x,y,lwd=3,col="black")
+  
+  axis(1,at=round(c(-3,0,crit,3),2),
+       labels=c("","0",round(crit,2),""))
+  title(xlab="Vrijednost z statistike", main="Jednostrani test", font.main=1)
+```
+
+.footnote[[*]Kritičke regije za jednostrani z-test]
+
+---
+
+.hi[**Izvedi test u R (korak po korak)**]
+
+```{r}
+# Definiraj varijablu sa prosjekom ocjena u uzorku
+sample.mean <- mean( grades )
+print( sample.mean ) # Pogledaj podatke
+```
+
+```{r}
+# Definiraj pretpostavljeni prosjek populacije
+mu.null <- 67.5
+# Definiraj pretpostavljenu standardnu devijaciju populacije
+sd.true <- 9.5
+``` 
+
+```{r}
+# Definiraj veličinu uzorka
+N <- length( grades )
+print( N ) # Pogledaj podatke
+```
+
+---
+
+.hi[**Izvedi test u R (korak po korak)**]
+
+```{r}
+# Definiraj standardnu pogrešku sampling distribucije prosjeka (uzorka)
+sem.true <- sd.true / sqrt(N)
+print(sem.true) # Pogledaj podatke
+```
+
+```{r}
+# Spremi testnu statistiku u varijablu 
+z.score <- (sample.mean - mu.null) / sem.true
+print( z.score ) # Pogledaj podatke
+
+```
+
+---
+
+.hi[**Izračun pripadajuće p-vrijednosti testa**]
+
+```{r}
+# Vjerojatnost u gornjem dijelu distribucije
+upper.area <- pnorm( q = z.score, lower.tail = FALSE )
+print( upper.area ) # Pogledaj podatke
+``` 
+
+
+```{r}
+# Vjerojatnost u donjem dijelu distribucije
+lower.area <- pnorm( q = -z.score, lower.tail = TRUE )
+print( lower.area ) # Pogledaj podatke
+``` 
+
+
+```{r}
+# Izračunaj p-vrijednost
+p.value <- lower.area + upper.area
+print( p.value ) # Pogledaj podatke
+```
+
+---
+<br>
+<br>
+
+.hi[**Pretpostavke z testa**]
+<br>
+<br>
+1. Normalnost distribucije
+<br>
+2. Nezavisnost podataka u uzorku
+<br>
+3. Poznata standardna devijacija
+
+
+---
+layout:false
+class: middle, inverse
+# t test 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Realnija varijanta...)
+---
+
+layout:true
+# t test
+
+---
+
+.hi[**grafički prikaži nultu i alternativnu hipotezu kod t testa**]
+
+```{r ttesthyp_onesample, fig.cap="", echo=FALSE, fig.height=4}
+width <- 12
+	height <- 4
+	
+	plotOne <- function( sigEx ) {
+		x <- seq(-4,4,.1)
+		y <- dnorm(x,0,1)
+		plot.new()
+		
+		old <- par( no.readonly = TRUE )
+		par( mfcol= c(1,2), mfg = c(1,1))
+		plot.window( xlim = range(x), 
+	             	ylim = range(y)*1.2)
+		# plot density
+		lines( x ,y, lw =2 )
+		# lines and mean
+		lines(x=c(0,0), y = c(0,max(y)))
+		text(x=0, y = max(y)*1.1, 
+	     	labels= expression(mu == mu[0])
+		)    
+		# sd lines and text
+		tmp <- dnorm(-1,0,1)
+		lines(x=c(-1,0), y = rep(tmp,2))
+		text(x=-2.25, y = tmp, 
+	     	labels= sigEx
+	     )
+		axis(side = 1, labels = F)
+		title( main = "nulta hipoteza", font.main = 1)
+		title( xlab = "vrijednost X", mgp = c(1,1,0))
+		par( mfg = c(1,2))
+		plot.window( xlim = range(x), 
+	             ylim = range(y)*1.2)
+				y <- dnorm(x,-.75,1)
+		# plot density
+		lines( x ,y, lw =2 )
+		# lines and mean
+		lines(x=c(0,0), y = c(0,max(y)))
+		text(x=0, y = max(y)*1.1, 
+	     	labels= expression(mu != mu[0])
+	     )    
+		# sd lines and text
+		tmp <- dnorm(-1,0,1)
+		lines(x=c(-1.75,-.75), y = rep(tmp,2))
+		text(x=-3, y = tmp, 
+	     	labels= sigEx
+	     )
+		axis(side = 1, labels = F)
+		title( main = "alternativna hipoteza", font.main = 1)
+		title( xlab = "vrijednost X", mgp = c(1,1,0))
+		par(old)
+	}
+	
+	# one sample t-test
+	sigEx <- expression(sigma == "??")
+	plotOne( sigEx )
+	
+```
+
+.footnote[[*]Grafički prikaz nulte i alternativne hipoteze kod t testa. Primijeti sličnosti u usporedbi sa z testom. Pod nultom hipotezom je prosjek populacije mu jednak nekoj apriori specificiranoj vrijednosti mu_0, a pod alternativnom nije tako. Kao kod z testa prtpostavljamo standardnu distribuciju; razlika se odnosi na to da kod t-testa(distribucije) ne pretpostavljamo da je standardna devijacija sigma unaprijed poznata.]
+
+---
+
+.hi[Što ako ne znamo standardnu devijaciju populacije?]
+
+
+```{r}
+# Provjeri standardnu devijaciju uzorka na našem primjeru
+sd( grades )
+```
+
+.hi[Distribucija t statistike]
+
+$$t = \frac{\bar{X} - \mu}{\hat{\sigma}/\sqrt{N} }$$
+.hi[Prikaži distribuciju grafički]
+
+```{r ttestdist, fig.cap="", echo=FALSE}
+knitr::include_graphics(file.path("../Foto/t_dist.png"))
+```
+
+.footnote[[*]t distribucija sa 2 stupnja slobode(l) i 10 stupnjeva slobode(d) i standardna distribucija(prosjek 0, i st_dev 1) prikazana isprekidanom linijom. t distribucija ima deblje repove(viša asimetričnost) od standardne distribucije. Ova razlika je izražena kod malog broja stupnjeva slobode ali zanemariva za više vrijednosti stupnjeva slobode. Za veći broj stupnjeva slobode je t distribucija skoro identična normalnoj distribuciji.]
+
+---
+
+.hi[**Provedi test u R**]
+
+```{r}
+library(lsr) # Učitaj paket
+# Provedi test
+lsr::oneSampleTTest( x=grades, mu=67.5 )
+```
+---
+
+.hi[**Zapis rezultata testa**]
+
+> $t(19) = 2.25$, $p<.05$, CI$_{95} = [67.8, 76.8]$
+
+
+.hi[**Pretpostavke t testa**]
+
+1. Normalnost distribucije
+<br>
+2. Nezavisnost
+
+---
+
+
+layout:false
+class: middle, inverse
+# t test ZA NEZAVISNE UZORKE (Student) 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Realnija varijanta...)
+---
+
+layout:true
+# t test ZA NEZAVISNE UZORKE (Student)
+---h
+
+```{r}
+load (file.path("./harpo.Rdata" )) # Učitaj podatke
+str(harpo) # Pregledaj podatke
+```
+
+```{r}
+head( harpo ) # Pregledaj podatke
+```
+
+
+```{r echo=FALSE}
+knitr::kable(
+  tibble::tribble(
+      ~V1,       ~V2,         ~V3,    ~V4,
+   "Anastasia ", "74.53",    "9.00", "15",
+   "Bernadette", "69.06",    "5.77",  "18"),
+   col.names = c("",  "Prosjek", "std dev",  "N"), align="lccc")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

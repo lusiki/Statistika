@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>PRIMJENJENA STATISTIKA</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Luka Sikic, PhD" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
+    <link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+    <script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# PRIMJENJENA STATISTIKA
+## Predavanje 9: Usporedba prosjeka
+### Luka Sikic, PhD
+### Fakultet hrvatskih studija | <a href="https://github.com/BrbanMiro/Statistika">Github PS</a>
+
+---
+
+
+
+
+
+
+
+
+class: inverse, middle
+# PREGLED PREDAVANJA
+
+---
+layout: true
+# PREGLED PREDAVANJA
+---
+&lt;br&gt;
+
+## CILJEVI 
+
+- z-test
+- t-test
+- t-test u nezavisnim uzorcima
+- t-test u zavisnim uzorcima
+- Jednostrani testovi
+- Izvođenje t-testova u R
+- Efekt veličine
+- Provjera normalnosti distribucije
+
+---
+
+layout:false
+class: middle, inverse
+# z test 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Da li podatci pripadju hipotetičkoj distribuciji?)
+---
+
+layout:true
+# z test
+
+---
+
+
+```r
+# Učitaj podatke
+load( file.path( "../Podatci/zeppo.Rdata" )) 
+print( grades ) # Pregledaj podatke
+```
+
+```
+#&gt;  [1] 50 60 60 64 66 66 67 69 70 74 76 76 77 79 79 79 81 82 82 89
+```
+
+
+
+```r
+# Izračunaj prosjek
+mean(grades)
+```
+
+```
+#&gt; [1] 72.3
+```
+
+.hi[**Postavi hipoteze**]
+
+- Da li su ocjene studenata sociologije više od prosjeka na fakultetu?
+
+
+`$$\begin{array}{ll}
+H_0: &amp; \mu = 67.5 \\
+H_1: &amp; \mu \neq 67.5
+\end{array}$$`
+---
+
+
+.hi[Prikaži hipoteze grafički]
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/ztesthyp-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Grafički prikaz nulte i alternativne hipoteze pod pretpostvkom jednostranog z- testa. Nulta i alternativna hipoteza pretpostavljaju da populacija (podatci) prati standarnu distribuciju i da je standardna devijacija poznata (sigma_0). Pod nultom hipotezom je prosjek populacije mu jednak apriori definiranoj vrijednosti mu_0. Pod alternativnom hipotezom prosjek populacije nije jednak tako definiranoj vrijednosti, mu neq mu_0.]
+
+---
+
+.hi[Prikaži podatke grafički]
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/zeppo-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Puna linija predstavlja teoretsku distribuciju pod nultom hipotezom iz koje su "generirane" ocjene studenata sociologije.]
+
+---
+
+.hi[Konstruiraj testnu statistiku] 
+
+
+-  
+
+`$$\bar{X} - \mu_0$$`
+
+- 
+
+`$$X \sim \mbox{Normal}(\mu_0,\sigma^2)$$`
+
+- 
+
+`$$\mbox{SE}({\bar{X}}) = \frac{\sigma}{\sqrt{N}}$$`
+
+-
+
+`$$\bar{X} \sim \mbox{Normal}(\mu_0,\mbox{SE}({\bar{X}}))$$`
+
+---
+
+-
+
+`$$z_{\bar{X}} = \frac{\bar{X} - \mu_0}{\mbox{SE}({\bar{X}})}$$`
+-
+
+`$$z_{\bar{X}} =  \frac{\bar{X} - \mu_0}{\sigma / \sqrt{N}}$$`
+
+-
+
+`$$z_{\bar{X}} \sim \mbox{Normal}(0,1)$$`
+---
+
+
+
+.hi[**Prikaz kritičkih garnica za jednostrani test**]
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/ztest2-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Kritičke regije za dvostrani z-test]
+
+---
+
+.hi[**Prikaz kritičkih garnica za dvostrani test**]
+
+
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/ztest1-1.svg" style="display: block; margin: auto;" /&gt;
+
+.footnote[[*]Kritičke regije za jednostrani z-test]
+
+---
+
+.hi[**Izvedi test u R (korak po korak)**]
+
+
+```r
+# Definiraj varijablu sa prosjekom ocjena u uzorku
+sample.mean &lt;- mean( grades )
+print( sample.mean ) # Pogledaj podatke
+```
+
+```
+#&gt; [1] 72.3
+```
+
+
+```r
+# Definiraj pretpostavljeni prosjek populacije
+mu.null &lt;- 67.5
+# Definiraj pretpostavljenu standardnu devijaciju populacije
+sd.true &lt;- 9.5
+```
+
+
+```r
+# Definiraj veličinu uzorka
+N &lt;- length( grades )
+print( N ) # Pogledaj podatke
+```
+
+```
+#&gt; [1] 20
+```
+
+---
+
+.hi[**Izvedi test u R (korak po korak)**]
+
+
+```r
+# Definiraj standardnu pogrešku sampling distribucije prosjeka (uzorka)
+sem.true &lt;- sd.true / sqrt(N)
+print(sem.true) # Pogledaj podatke
+```
+
+```
+#&gt; [1] 2.124265
+```
+
+
+```r
+# Spremi testnu statistiku u varijablu 
+z.score &lt;- (sample.mean - mu.null) / sem.true
+print( z.score ) # Pogledaj podatke
+```
+
+```
+#&gt; [1] 2.259606
+```
+
+---
+
+.hi[**Izračun pripadajuće p-vrijednosti testa**]
+
+
+```r
+# Vjerojatnost u gornjem dijelu distribucije
+upper.area &lt;- pnorm( q = z.score, lower.tail = FALSE )
+print( upper.area ) # Pogledaj podatke
+```
+
+```
+#&gt; [1] 0.01192287
+```
+
+
+
+```r
+# Vjerojatnost u donjem dijelu distribucije
+lower.area &lt;- pnorm( q = -z.score, lower.tail = TRUE )
+print( lower.area ) # Pogledaj podatke
+```
+
+```
+#&gt; [1] 0.01192287
+```
+
+
+
+```r
+# Izračunaj p-vrijednost
+p.value &lt;- lower.area + upper.area
+print( p.value ) # Pogledaj podatke
+```
+
+```
+#&gt; [1] 0.02384574
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

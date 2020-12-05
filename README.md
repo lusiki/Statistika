@@ -185,7 +185,7 @@ Koristiti ćemo tri knjige.
 </div>
 
 
-<b>Format predavanja:</b> <a href="/Moduli/09_USPOREDBA PROSJEKA.html">.html</a> | <a href="/Moduli/09_USPOREDBA PROSJEKA.Rmd">.Rmd</a>
+<b>Format predavanja:</b> <a href="/Moduli/09_USPOREDBA_PROSJEKA.html">.html</a> | <a href="/Moduli/09_USPOREDBA_PROSJEKA.Rmd">.Rmd</a>
 <br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 13.</a>
 
 

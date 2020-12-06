@@ -54,7 +54,7 @@ layout:false
 class: middle, inverse
 # z test 
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
-(Da li podatci pripadju hipotetičkoj distribuciji?)
+(Zagrijavanje za t test!)
 ---
 
 layout:true
@@ -147,15 +147,15 @@ H_1: &amp; \mu \neq 67.5
 
 
 
-.hi[**Prikaz kritičkih garnica za jednostrani test**]
+.hi[**Prikaz kritičkih garnica za dvostrani test**]
 
 &lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/ztest2-1.svg" style="display: block; margin: auto;" /&gt;
 
-.footnote[[*]Kritičke regije za dvostrani z-test]
+.footnote[[*]Kritičke regije za dvostrani z-test.]
 
 ---
 
-.hi[**Prikaz kritičkih garnica za dvostrani test**]
+.hi[**Prikaz kritičkih garnica za jednostrani test**]
 
 
 &lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/ztest1-1.svg" style="display: block; margin: auto;" /&gt;
@@ -265,7 +265,7 @@ print( p.value ) # Pogledaj podatke
 &lt;br&gt;
 &lt;br&gt;
 
-.hi[**Pretpostavke z testa**]
+.hi[**Pretpostavke testa**]
 &lt;br&gt;
 &lt;br&gt;
 1. Normalnost distribucije
@@ -288,7 +288,7 @@ layout:true
 
 ---
 
-.hi[**grafički prikaži nultu i alternativnu hipotezu kod t testa**]
+.hi[**Grafički prikaži nultu i alternativnu hipotezu kod t testa**]
 
 &lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/ttesthyp_onesample-1.svg" style="display: block; margin: auto;" /&gt;
 
@@ -309,10 +309,13 @@ sd( grades )
 #&gt; [1] 9.520615
 ```
 
-.hi[Distribucija t statistike]
+.hi[**Distribucija t statistike**]
 
 `$$t = \frac{\bar{X} - \mu}{\hat{\sigma}/\sqrt{N} }$$`
-.hi[Prikaži distribuciju grafički]
+
+---
+
+.hi[**Prikaži distribuciju grafički**]
 
 &lt;img src="../Foto/t_dist.png" width="2665" style="display: block; margin: auto;" /&gt;
 
@@ -322,6 +325,7 @@ sd( grades )
 
 .hi[**Provedi test u R**]
 
+.mid[
 
 ```r
 library(lsr) # Učitaj paket
@@ -353,6 +357,7 @@ lsr::oneSampleTTest( x=grades, mu=67.5 )
 #&gt;    two-sided 95% confidence interval:  [67.844, 76.756] 
 #&gt;    estimated effect size (Cohen's d):  0.504
 ```
+]
 ---
 &lt;br&gt;
 &lt;br&gt;
@@ -379,7 +384,7 @@ layout:false
 class: middle, inverse
 # t test ZA NEZAVISNE UZORKE (Student) 
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
-(Realnija varijanta...)
+(Studentovo rješenje...)
 ---
 
 layout:true
@@ -412,7 +417,8 @@ head( harpo,4 ) # Pregledaj podatke
 ```
 
 ---
-
+&lt;br&gt;
+&lt;br&gt;
 
 ```r
 # Deskriptivna statistika
@@ -435,20 +441,20 @@ harpo %&gt;%
 
 ---
 
-.hi[**histogram ocjena**]
+.hi[**Histogram ocjena**]
 
 &lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/harpohistanastasia-1.svg" style="display: block; margin: auto;" /&gt;
 
-.footnote[[*]Histogram prikazuje distribuciju ocjena u Anastasijnom razredu]
+.footnote[[*]Histogram prikazuje distribuciju ocjena u Anastasijnom razredu.]
 
 ---
 
-.hi[**histogram ocjena**]
+.hi[**Histogram ocjena**]
 
 
 &lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/harpohistbernadette-1.svg" style="display: block; margin: auto;" /&gt;
 
-.footnote[[*]Histogram prikazuje distribuciju ocjena u Bernadettinom razredu]
+.footnote[[*]Histogram prikazuje distribuciju ocjena u Bernadettinom razredu.]
 
 ---
 
@@ -461,9 +467,9 @@ H_1: &amp; \mu_1 \neq \mu_2
 
 .hi[**Prikaži test grafički**]
 
-
+.tiny[
 &lt;img src="../Foto/t_promjena.png" width="2667" style="display: block; margin: auto;" /&gt;
-
+]
 ---
 
 .hi[**Testna statistika**]
@@ -523,7 +529,7 @@ w_2 &amp;=&amp; N_2 - 1
 ---
 
 .hi[**Drugačiji način**]
-
+&lt;br&gt;
 - Izračunaj standardnu pogrešku razlike prosjeka
 
 `$$\mbox{SE}({\bar{X}_1 - \bar{X}_2}) = \hat\sigma \sqrt{\frac{1}{N_1} + \frac{1}{N_2}}$$`
@@ -534,6 +540,8 @@ w_2 &amp;=&amp; N_2 - 1
 ---
 
 .hi[**Izvođenje testa u R**]
+&lt;br&gt;
+&lt;br&gt;
 
 
 ```r
@@ -555,6 +563,7 @@ head( harpo )
 
 .hi[**Izvođenje testa u R**]
 
+.tiny[
 
 ```r
 # Izvedi test
@@ -590,13 +599,14 @@ independentSamplesTTest(
 #&gt;    two-sided 95% confidence interval:  [0.197, 10.759] 
 #&gt;    estimated effect size (Cohen's d):  0.74
 ```
-
+]
 
 ---
 
 
 .hi[**Sažeti statistički zapis rezultata testa**]
-
+&lt;br&gt;
+&lt;br&gt;
 &gt; t(31) = 2.1, p&lt;.05, CI_{95} = [0.2, 10.8], d = .74
 
 &lt;br&gt;
@@ -616,9 +626,9 @@ independentSamplesTTest(
 ---
 layout:false
 class: middle, inverse
-# t test ZA NEZAVISNE UZORKE (Student) 
+# t test ZA NEZAVISNE UZORKE (Welch) 
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
-(Realnija varijanta...za nezavisne uzorke)
+(Welch-eva varijanta...)
 ---
 
 layout:true
@@ -653,6 +663,7 @@ layout:true
 
 .hi[**Izvedi test u R**]
 
+.tiny[
 
 ```r
 independentSamplesTTest( 
@@ -685,7 +696,7 @@ independentSamplesTTest(
 #&gt;    two-sided 95% confidence interval:  [-0.092, 11.048] 
 #&gt;    estimated effect size (Cohen's d):  0.724
 ```
-
+]
 ---
 &lt;br&gt;
 .hi[**Pretpostavke testa**]
@@ -700,7 +711,7 @@ layout:false
 class: middle, inverse
 # t test ZA ZAVISNE UZORKE 
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
-(Realnija varijanta...za zavisne uzorke)
+(U zavisnim uzorcima...)
 ---
 
 layout:true
@@ -846,9 +857,10 @@ H_1: &amp; \mu_D \neq 0
 
 I. način
 
+.tiny[
 
 ```r
-oneSampleTTest( chico$improvement, mu=0 )
+lsr::oneSampleTTest( chico$improvement, mu=0 )
 ```
 
 ```
@@ -875,15 +887,17 @@ oneSampleTTest( chico$improvement, mu=0 )
 #&gt;    two-sided 95% confidence interval:  [0.951, 1.859] 
 #&gt;    estimated effect size (Cohen's d):  1.448
 ```
+]
 ---
 
 .hi[**Izvođenje testa u R**]
 
 II. način
 
+.tiny[
 
 ```r
-pairedSamplesTTest( 
+lsr::pairedSamplesTTest( 
      formula = ~ grade_test2 + grade_test1, # Formula za definiranje zavisnih i nezavisnih varijabli
      data = chico                           # Podatci 
   )
@@ -913,7 +927,7 @@ pairedSamplesTTest(
 #&gt;    two-sided 95% confidence interval:  [0.951, 1.859] 
 #&gt;    estimated effect size (Cohen's d):  1.448
 ```
-
+]
 ---
 
 .hi[**Izvođenje testa u R**]
@@ -960,11 +974,11 @@ head( chico2 ) # Pregledaj podatke
 ---
 
 II. način
-
+.tiny[
 
 ```r
 # Provedi test
-pairedSamplesTTest( 
+lsr::pairedSamplesTTest( 
      formula = grade ~ time,  # Definiraj formulu
      data = chico2,           # Podatci
      id = "id"                # Naziv id
@@ -997,7 +1011,7 @@ pairedSamplesTTest(
 #&gt;    two-sided 95% confidence interval:  [-1.859, -0.951] 
 #&gt;    estimated effect size (Cohen's d):  1.448
 ```
-
+]
 ---
 
 .hi[**Alternativna specifikacija testa**]
@@ -1022,7 +1036,7 @@ layout:false
 class: middle, inverse
 # JEDNOSTRANI TESTOVI 
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
-(Realnija varijanta...za zavisne uzorke)
+(...)
 ---
 
 layout:true
@@ -1041,6 +1055,9 @@ lsr::oneSampleTTest( x = grades,
                 one.sided = "greater" # Gornja granica
                 ) 
 ```
+
+---
+.tiny[
 
 ```
 #&gt; 
@@ -1066,10 +1083,11 @@ lsr::oneSampleTTest( x = grades,
 #&gt;    one-sided 95% confidence interval:  [68.619, Inf] 
 #&gt;    estimated effect size (Cohen's d):  0.504
 ```
+]
 
 ---
 
-
+.tiny[
 
 ```r
 # Provedi test na drugi način
@@ -1105,9 +1123,9 @@ lsr::independentSamplesTTest(
 #&gt;    one-sided 95% confidence interval:  [0.863, Inf] 
 #&gt;    estimated effect size (Cohen's d):  0.724
 ```
-
+]
 ---
-
+.tiny[
 
 ```r
 # Provedi test na treći način
@@ -1142,9 +1160,8 @@ pairedSamplesTTest(
 #&gt;    one-sided 95% confidence interval:  [1.03, Inf] 
 #&gt;    estimated effect size (Cohen's d):  1.448
 ```
-
+]
 ---
-&lt;br&gt;
 &lt;br&gt;
 
 ```r
@@ -1259,12 +1276,13 @@ layout:true
 .hi[**Osnovna ideja**]
 
 `$$d = \frac{\mbox{(prosjek 1)} - \mbox{(prosjek 2)}}{\mbox{std dev}}$$`
+.hi[**Interpretacija**]
 
 &lt;table&gt;
  &lt;thead&gt;
   &lt;tr&gt;
    &lt;th style="text-align:left;"&gt; `\(d\)`-vrijednost &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; okvirna interpretsacija &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; okvirna interpretacija &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
@@ -1469,7 +1487,7 @@ hist( x = normal.data )          # Napravi histogram
 qqnorm( y = normal.data )        # Napravi QQ grafikon
 ```
 
-&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/unnamed-chunk-45-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/unnamed-chunk-46-1.svg" style="display: block; margin: auto;" /&gt;
 
 ```r
 par(mfrow=c(1,1))                # Resetiraj grid za prikaz grafikona

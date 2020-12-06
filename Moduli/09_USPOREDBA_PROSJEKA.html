@@ -1049,6 +1049,8 @@ pairedSamplesTTest(
      data = chico2
   )
   
+ili  
+  
 ```
 
 ```
@@ -1061,7 +1063,7 @@ layout:false
 class: middle, inverse
 # JEDNOSTRANI TESTOVI 
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
-(...)
+(U slučaju kada znamo smjer odnosa...)
 ---
 
 layout:true
@@ -1070,6 +1072,7 @@ layout:true
 
 .hi[**Provedi test sa pretpostavkom da je prosjek uzorka veći od pretpostavljenog prosjeka populacije**]
 
+.tiny[
 
 ```r
 library(psych)
@@ -1080,9 +1083,6 @@ lsr::oneSampleTTest( x = grades,
                 one.sided = "greater" # Gornja granica
                 ) 
 ```
-
----
-.tiny[
 
 ```
 #&gt; 
@@ -1149,7 +1149,9 @@ lsr::independentSamplesTTest(
 #&gt;    estimated effect size (Cohen's d):  0.724
 ```
 ]
+
 ---
+
 .tiny[
 
 ```r
@@ -1186,7 +1188,9 @@ pairedSamplesTTest(
 #&gt;    estimated effect size (Cohen's d):  1.448
 ```
 ]
+
 ---
+
 &lt;br&gt;
 
 ```r
@@ -1512,7 +1516,7 @@ hist( x = normal.data )          # Napravi histogram
 qqnorm( y = normal.data )        # Napravi QQ grafikon
 ```
 
-&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/unnamed-chunk-47-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="09_USPOREDBA_PROSJEKA_files/figure-html/unnamed-chunk-46-1.svg" style="display: block; margin: auto;" /&gt;
 
 ```r
 par(mfrow=c(1,1))                # Resetiraj grid za prikaz grafikona
@@ -1543,13 +1547,13 @@ shapiro.test( x = normal.data )
 ---
 layout:false
 class: middle, inverse
-# TESTIRANJE NE-NORMALNO DISTRIBUIRANIH PODATAKA 
+# NE-NORMALNO DISTRIBUIRANI PODATCI 
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
-(Jesu li zadovoljene pretpostavke?)
+(Kada nisu zadovoljene pretpostavke...)
 ---
 
 layout:true
-# TESTIRANJE NE-NORMALNO DISTRIBUIRANIH PODATAKA
+# NE-NORMALNO DISTRIBUIRANI PODATCI
 ---
 
 .hi[**Wilcoxson test za dva uzorka**]

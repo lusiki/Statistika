@@ -1206,6 +1206,8 @@ pairedSamplesTTest(
      data = chico2
   )
   
+ili  
+  
 ```
 
 ```
@@ -1218,7 +1220,7 @@ layout:false
 class: middle, inverse
 # JEDNOSTRANI TESTOVI 
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
-(...)
+(U slučaju kada znamo smjer odnosa...)
 ---
 
 layout:true
@@ -1227,19 +1229,8 @@ layout:true
 
 .hi[**Provedi test sa pretpostavkom da je prosjek uzorka veći od pretpostavljenog prosjeka populacije**]
 
-```{r echo=T, eval=F}
-library(psych)
-library(lsr)
- # Provedi test
-lsr::oneSampleTTest( x = grades,
-                mu = 67.5,
-                one.sided = "greater" # Gornja granica
-                ) 
-```
-
----
 .tiny[
-```{r echo=F, eval=T}
+```{r echo=T, eval=T}
 library(psych)
 library(lsr)
  # Provedi test
@@ -1263,7 +1254,9 @@ lsr::independentSamplesTTest(
 
 ```
 ]
+
 ---
+
 .tiny[
 ```{r}
 # Provedi test na treći način
@@ -1274,7 +1267,9 @@ pairedSamplesTTest(
   )
 ```
 ]
+
 ---
+
 <br>
 ```{r eval=FALSE}
 # Alternativne specifikacije testa
@@ -1437,7 +1432,7 @@ layout:true
 # PROVJERA NORMALNOSTI DISTRIBUCIJE
 ---
 
-```{r qq1a, fig.cap="", echo=FALSE, fig.height=2, fig.width=6}
+```{r qq1a, fig.cap="", echo=FALSE, fig.height=3, fig.width=6}
   width <- 5
   height <- 5
   
@@ -1543,13 +1538,13 @@ shapiro.test( x = normal.data )
 ---
 layout:false
 class: middle, inverse
-# TESTIRANJE NE-NORMALNO DISTRIBUIRANIH PODATAKA 
+# NE-NORMALNO DISTRIBUIRANI PODATCI 
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
-(Jesu li zadovoljene pretpostavke?)
+(Kada nisu zadovoljene pretpostavke...)
 ---
 
 layout:true
-# TESTIRANJE NE-NORMALNO DISTRIBUIRANIH PODATAKA
+# NE-NORMALNO DISTRIBUIRANI PODATCI
 ---
 
 .hi[**Wilcoxson test za dva uzorka**]

@@ -7,16 +7,16 @@
 
 # Primjena statistike u društvenim istraživanjima
 
-Dobrodošli na stranice kolegija <b>Primjena statistike u društvenim istraživanjima</b> koji u zimskom semestru, 2020/21 izvodi Luka Šikić, PhD na Fakultetu hrvatskih studija u Zagrebu. Kolegij je prvenstveno namijenjen studentima sociologije na preddiplomskoj razini, a kompatibilan svim studentima društvenih i humanističkih smjerova koji su upoznati sa osnovama statistike.
+Dobrodošli na stranice kolegija <b>Primjena statistike u društvenim istraživanjima</b> koji u zimskom semestru, 2020/21 izvodi Luka Šikić, PhD na Fakultetu hrvatskih studija u Zagrebu. Kolegij je prvenstveno namijenjen studentima sociologije na preddiplomskoj razini, a može koristiti svim studentima društvenih i humanističkih smjerova koji su upoznati sa osnovama statistike.
 
 U kolegiju se obrađuju osnove statistike organizirane u tri cjeline:
-1. deskriptivna statistika
+1. deskriptivna statistika i vizualizacija
 2. statistička teorija
 3. inferencijalna statistika *(statistički modeli)*.
 
 Primjenjeni aspekt kolegija odnosi na provedbu statističkih koncepata u programskom jeziku R. Pri tome je naglasak na osnovnoj `base::` sintaksi programskog jezika R, a manje na korištenju specifičnih paketa.  
 
-Cilj kolegija je dvojak: 1) obrada i utvrđivanje osnovnih statističkih koncepata, 2) osposobljavanje za rad s podatcima i samostalnu provedbu statističke analize u programskom jeziku R. Pri tome je veći naglasak na praktičnim primjenama statističkih koncepata nego na statističkoj teoriji. Kolegij će studentima društvenih znanosti omogućiti uključivanje u modernu paradigmu rada sa podatcima i otvoriti perspektivu rada sa *Data Science* i *Big Data* tehnologijama. Na taj način kolegij studentima otvara priliku produbljenja akademskih vještina (*provedba kvantitativne empirijske analize*), povećanju mogućnosti zaposlenja (*na strani analitike ili pojektnog IT menadzmenta*) i općenito, smanjenju STEM jaza. 
+Cilj kolegija je dvojak: 1) obrada i utvrđivanje osnovnih statističkih koncepata, 2) osposobljavanje za rad s podatcima i samostalnu provedbu statističke analize u programskom jeziku R pri čemu je veći naglasak stavljen na praktičnu primjenu statističkih koncepata nego na statističkou teoriju. Kolegij će studentima društvenih znanosti omogućiti uključivanje u modernu paradigmu rada sa podatcima i otvoriti perspektivu rada sa *Data Science* i *Big Data* tehnologijama. Na taj način kolegij studentima otvara priliku produbljenja akademskih vještina (*provedba kvantitativne empirijske analize*), povećava mogućnosti zaposlenja (*na strani analitike ili pojektnog IT menadzmenta*) i općenito, smanjenju STEM jaza. Materijali u ovom repozitoriju su *Open Source*.
 
 # Raspored
 

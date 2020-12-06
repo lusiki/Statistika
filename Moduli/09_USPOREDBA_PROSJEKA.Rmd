@@ -152,39 +152,6 @@ tidy_table <- function(x, terms, highlight_row = 1, highlight_color = "black", h
 }
 ```
 
-```{css, echo = F, eval = F}
-@media print {
-  .has-continuation {
-    display: block !important;
-  }
-}
-
-
-remark-slide-content {
-  font-size: 22px;
-  padding: 20px 80px 20px 80px;
-}
-.remark-code, .remark-inline-code {
-  background: #f0f0f0;
-}
-.remark-code {
-  font-size: 16px;
-}
-.huge .remark-code { /*Change made here*/
-  font-size: 200% !important;
-}
-
-.mid .remark-code { /*Change made here*/
-  font-size: 70% !important;
-}
-
-.tiny .remark-code { /*Change made here*/
-  font-size: 50% !important;
-}
-
-```
-
-
 class: inverse, middle
 # PREGLED PREDAVANJA
 
@@ -218,6 +185,39 @@ layout:true
 # z test
 
 ---
+
+```{css, echo = F, eval = T}
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+
+
+remark-slide-content {
+  font-size: 22px;
+  padding: 20px 80px 20px 80px;
+}
+.remark-code, .remark-inline-code {
+  background: #f0f0f0;
+}
+.remark-code {
+  font-size: 16px;
+}
+.huge .remark-code { /*Change made here*/
+  font-size: 200% !important;
+}
+
+.mid .remark-code { /*Change made here*/
+  font-size: 70% !important;
+}
+
+.tiny .remark-code { /*Change made here*/
+  font-size: 50% !important;
+}
+
+```
+
 
 ```{r}
 # Učitaj podatke
@@ -601,7 +601,7 @@ $$t = \frac{\bar{X} - \mu}{\hat{\sigma}/\sqrt{N} }$$
 
 .hi[**Prikaži distribuciju grafički**]
 
-```{r ttestdist, fig.cap="", echo=FALSE, fig.height=4}
+```{r ttestdist, fig.cap="", echo=FALSE, fig.height=3}
 knitr::include_graphics(file.path("../Foto/t_dist.png"))
 ```
 
@@ -611,7 +611,7 @@ knitr::include_graphics(file.path("../Foto/t_dist.png"))
 
 .hi[**Provedi test u R**]
 
-.mid[
+.tiny[
 ```{r}
 library(lsr) # Učitaj paket
 # Provedi test
@@ -788,7 +788,9 @@ $$t = \frac{\bar{X}_1 - \bar{X}_2}{\mbox{SE}}$$
 
 .footnote[[*] Grafički prikaz nulte i alternativne hipoteze kod Studentovog t testa. Nulta hipoteza pretpostavlja da obje grupe imaju jednak prosjek mu_1 i mu_2 dok su ti prosjeci pod alternativnom hipotezom različiti. Primijeti pretpostavku da su populacijske distribucije normalne i da imaju jednaku standardnu devijaciju.]
 
----
+
+```{r eval = F, include=F}
+
 
 .hi[**Zapis**]
 
@@ -796,6 +798,9 @@ $$\mu_1 - \mu_2 = 0$$
 
 
 $$\bar{X}_1 - \bar{X}_2$$
+
+```
+
 ---
 
 .hi[**Procjena udružene standardne devijacije**]
@@ -858,7 +863,7 @@ head( harpo )
 .hi[**Izvođenje testa u R**]
 
 .tiny[
-```{r}
+```{r eval=T, echo=T}
 # Izvedi test
 independentSamplesTTest( 
       formula = grade ~ tutor,  # Formula za zavisnu i nezavisnu varijablu

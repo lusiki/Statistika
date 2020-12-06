@@ -604,7 +604,8 @@ $$t = \frac{\bar{X} - \mu}{\hat{\sigma}/\sqrt{N} }$$
 ```{r ttestdist, fig.cap="", echo=FALSE, fig.height=3}
 knitr::include_graphics(file.path("../Foto/t_dist.png"))
 ```
-
+<br>
+<br>
 .footnote[[*]t distribucija sa 2 stupnja slobode(l) i 10 stupnjeva slobode(d) i standardna distribucija(prosjek 0, i st_dev 1) prikazana isprekidanom linijom. t distribucija ima deblje repove(viša asimetričnost) od standardne distribucije. Ova razlika je izražena kod malog broja stupnjeva slobode ali zanemariva za više vrijednosti stupnjeva slobode. Za veći broj stupnjeva slobode je t distribucija skoro identična normalnoj distribuciji.]
 
 ---
@@ -1432,7 +1433,7 @@ layout:true
 # PROVJERA NORMALNOSTI DISTRIBUCIJE
 ---
 
-```{r qq1a, fig.cap="", echo=FALSE, fig.height=3, fig.width=6}
+```{r qq1a, fig.cap="", echo=FALSE, fig.height=4, fig.width=6}
   width <- 5
   height <- 5
   
@@ -1538,13 +1539,13 @@ shapiro.test( x = normal.data )
 ---
 layout:false
 class: middle, inverse
-# NE-NORMALNO DISTRIBUIRANI PODATCI 
+# NE-STANDARDNA DISTRIBUCIJA  
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
 (Kada nisu zadovoljene pretpostavke...)
 ---
 
 layout:true
-# NE-NORMALNO DISTRIBUIRANI PODATCI
+# NE-STANDARDNA DISTRIBUCIJA
 ---
 
 .hi[**Wilcoxson test za dva uzorka**]
@@ -1614,7 +1615,7 @@ wilcox.test( x = happiness$after,
 
 layout:false
 class: middle, inverse
-# HVALA NA PAŽNJI! 
+# Hvala na pažnji! 
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
 (Sljedeće predavanje: Usporedba više od dva prosjeka.)
 

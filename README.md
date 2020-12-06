@@ -16,7 +16,7 @@ U kolegiju se obrađuju osnove statistike organizirane u tri cjeline:
 
 Primjenjeni aspekt kolegija odnosi na provedbu statističkih koncepata u programskom jeziku R. Pri tome je naglasak na osnovnoj `base::` sintaksi programskog jezika R, a manje na korištenju specifičnih paketa.  
 
-Cilj kolegija je dvojak: 1) obrada i utvrđivanje osnovnih statističkih koncepata, 2) osposobljavanje za rad s podatcima i samostalnu provedbu statističke analize u programskom jeziku R. Pri tome je veći naglasak na praktičnim primjenama statističkih koncepata nego na statističkoj teoriji. Kolegij će studentima društvenih znanosti omogućiti uključivanje u modernu paradigmu rada sa potacima i otvoriti perspektivu rada sa *Data Science* i *Big Data* tehnologijama.
+Cilj kolegija je dvojak: 1) obrada i utvrđivanje osnovnih statističkih koncepata, 2) osposobljavanje za rad s podatcima i samostalnu provedbu statističke analize u programskom jeziku R. Pri tome je veći naglasak na praktičnim primjenama statističkih koncepata nego na statističkoj teoriji. Kolegij će studentima društvenih znanosti omogućiti uključivanje u modernu paradigmu rada sa podatcima i otvoriti perspektivu rada sa *Data Science* i *Big Data* tehnologijama. Na taj način kolegij studentima otvara priliku produbljenja akademskih vještina (*provedba kvantitativne empirijske analize*), povećanju mogućnosti zaposlenja (*na strani analitike ili pojektnog IT menadzmenta*) i općenito, smanjenju STEM jaza. 
 
 # Raspored
 

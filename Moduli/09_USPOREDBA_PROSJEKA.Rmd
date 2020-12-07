@@ -1460,7 +1460,7 @@ layout:true
   plotOne( normal.data, "Normalno distribuirani podatci" )
 ```
 
-
+<br>
 .footnote[[*]Histogram normalno distribuiranih podataka; prikaz se odnosi na simulaciju 100 opservacija.]
 
 ---

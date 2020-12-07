@@ -606,6 +606,7 @@ knitr::include_graphics(file.path("../Foto/t_dist.png"))
 ```
 <br>
 <br>
+<br>
 .footnote[[*]t distribucija sa 2 stupnja slobode(l) i 10 stupnjeva slobode(d) i standardna distribucija(prosjek 0, i st_dev 1) prikazana isprekidanom linijom. t distribucija ima deblje repove(viša asimetričnost) od standardne distribucije. Ova razlika je izražena kod malog broja stupnjeva slobode ali zanemariva za više vrijednosti stupnjeva slobode. Za veći broj stupnjeva slobode je t distribucija skoro identična normalnoj distribuciji.]
 
 ---

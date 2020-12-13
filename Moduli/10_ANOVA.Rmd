@@ -1,7 +1,7 @@
 ---
 title: "PRIMJENJENA STATISTIKA"
 # subtitle: "<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>"
-subtitle: "Predavanje 9: Usporedba prosjeka"
+subtitle: "Predavanje 10: ANOVA"
 author: "Luka Sikic, PhD"
 date: "Fakultet hrvatskih studija | [Github PS](https://github.com/BrbanMiro/Statistika)" #"`r format(Sys.time(), '%d %B %Y')`"
 output:

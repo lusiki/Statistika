@@ -199,7 +199,7 @@ Koristiti ćemo tri knjige.
 
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="">Predavanje 10: ANOVA</a>
+<a href="https://raw.githack.com/BrbanMiro/Statistika/main/Moduli/10_ANOVA.html">Predavanje 10: ANOVA</a>
 
 <ul>
 <li> ANOVA</li>

@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>PRIMJENJENA STATISTIKA</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Luka Sikic, PhD" />
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/metropolis-fonts.css" rel="stylesheet" />
+    <link href="libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+    <script src="libs/anchor-sections-1.0/anchor-sections.js"></script>
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# PRIMJENJENA STATISTIKA
+## Predavanje 9: Usporedba prosjeka
+### Luka Sikic, PhD
+### Fakultet hrvatskih studija | <a href="https://github.com/BrbanMiro/Statistika">Github PS</a>
+
+---
+
+
+
+
+
+class: inverse, middle
+# PREGLED PREDAVANJA
+
+---
+layout: true
+# PREGLED PREDAVANJA
+---
+&lt;br&gt;
+
+## CILJEVI 
+
+- Pregled podataka
+- ANOVA
+- ANOVA u R
+- Efekt veličine
+- Post hoc testovi
+- Pretpostavke jednostrane ANOVA-e
+- Homogenost varijance
+- Normalnost distribucije
+
+---
+
+&lt;style type="text/css"&gt;
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+
+
+remark-slide-content {
+  font-size: 22px;
+  padding: 20px 80px 20px 80px;
+}
+.remark-code, .remark-inline-code {
+  background: #f0f0f0;
+}
+.remark-code {
+  font-size: 16px;
+}
+.huge .remark-code { /*Change made here*/
+  font-size: 200% !important;
+}
+
+.mid .remark-code { /*Change made here*/
+  font-size: 70% !important;
+}
+
+.tiny .remark-code { /*Change made here*/
+  font-size: 50% !important;
+}
+
+&lt;/style&gt;
+
+.hi[**Pregled podataka**]
+
+
+```r
+load(file.path("../Podatci/clinicaltrial.Rdata")) # Učitaj podatke
+str(clin.trial)     # Pregledaj podatke  
+```
+
+```
+#&gt; 'data.frame':	18 obs. of  3 variables:
+#&gt;  $ drug     : Factor w/ 3 levels "placebo","anxifree",..: 1 1 1 2 2 2 3 3 3 1 ...
+#&gt;  $ therapy  : Factor w/ 2 levels "no.therapy","CBT": 1 1 1 1 1 1 1 1 1 2 ...
+#&gt;  $ mood.gain: num  0.5 0.3 0.1 0.6 0.4 0.2 1.4 1.7 1.3 0.6 ...
+```
+
+```r
+head(clin.trial, 8)   # Pregledaj podatke
+```
+
+```
+#&gt;       drug    therapy mood.gain
+#&gt; 1  placebo no.therapy       0.5
+#&gt; 2  placebo no.therapy       0.3
+#&gt; 3  placebo no.therapy       0.1
+#&gt; 4 anxifree no.therapy       0.6
+#&gt; 5 anxifree no.therapy       0.4
+#&gt; 6 anxifree no.therapy       0.2
+#&gt; 7 joyzepam no.therapy       1.4
+#&gt; 8 joyzepam no.therapy       1.7
+```
+
+---
+
+.hi[**Deskriptivna statistika**]
+
+
+```r
+summary(clin.trial)
+```
+
+```
+#&gt;        drug         therapy    mood.gain     
+#&gt;  placebo :6   no.therapy:9   Min.   :0.1000  
+#&gt;  anxifree:6   CBT       :9   1st Qu.:0.4250  
+#&gt;  joyzepam:6                  Median :0.8500  
+#&gt;                              Mean   :0.8833  
+#&gt;                              3rd Qu.:1.3000  
+#&gt;                              Max.   :1.8000
+```
+
+```r
+# Tabuliraj podatke
+xtabs( ~drug, clin.trial )
+```
+
+```
+#&gt; drug
+#&gt;  placebo anxifree joyzepam 
+#&gt;        6        6        6
+```
+
+---
+
+.hi[**Deskriptivna statistika**]
+
+
+```r
+# Agregiraj podatke po primjenjenom ljeku
+aggregate( mood.gain ~ drug, clin.trial, mean ) # Prosjek
+```
+
+```
+#&gt;       drug mood.gain
+#&gt; 1  placebo 0.4500000
+#&gt; 2 anxifree 0.7166667
+#&gt; 3 joyzepam 1.4833333
+```
+
+```r
+aggregate( mood.gain ~ drug, clin.trial, sd )   # Standardna devijacija
+```
+
+```
+#&gt;       drug mood.gain
+#&gt; 1  placebo 0.2810694
+#&gt; 2 anxifree 0.3920034
+#&gt; 3 joyzepam 0.2136976
+```
+---
+
+.hi[**Vizualizacija**]
+
+
+```r
+library(gplots) # Učitaj paket
+plotmeans(  formula = mood.gain ~ drug,   # Porast raspoloženja vs. ljek
+             data = clin.trial,           # Podatci
+             xlab = "Primjenjeni ljek",  
+             ylab = "Rast raspoloženja",          
+             n.label = FALSE              # Ne prikazuj veličinu uzorka
+ )
+```
+
+&lt;img src="10_ANOVA_files/figure-html/unnamed-chunk-5-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+layout:false
+class: middle, inverse
+# ANOVA 
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Usporedba više prosjeka!)
+---
+
+layout:true
+# ANOVA
+---
+
+.hi[**Hipoteze kod ANOVA-e**]
+
+`$$\begin{array}{rcl}
+H_0 &amp;:&amp; \mbox{točno je } \mu_P = \mu_A = \mu_J
+\end{array}$$`
+
+`$$\begin{array}{rcl}
+H_1 &amp;:&amp; \mbox{nije točno } \mu_P = \mu_A = \mu_J
+\end{array}$$`
+
+.hi[**Izračun varijance kod ANOVA-e**]
+
+`$$\mbox{Var}(Y) = \frac{1}{N} \sum_{k=1}^G \sum_{i=1}^{N_k} \left(Y_{ik} - \bar{Y} \right)^2$$`
+---
+
+.hi[**Praktični primjer**]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; ime &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; osoba (p) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; grupa &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; broj grupe (k) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; index grupe (i) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; raspolozenje (Y_ik ili Y_p) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Ann &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; cool &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Ben &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; cool &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 55 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Cat &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; cool &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 21 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Dan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; uncool &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 91 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Egg &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; uncool &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 22 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+
+.hi[**Usporedi sa formulom za varijancu**] 
+
+`$$\mbox{Var}(Y) = \frac{1}{N} \sum_{p=1}^N  \left(Y_{p} - \bar{Y} \right)^2$$`
+---
+
+.hi[**Od varijance do sume kvadrata odstupanja**]
+
+`$$\mbox{SS}_{tot} = \sum_{k=1}^G \sum_{i=1}^{N_k} \left(Y_{ik} - \bar{Y} \right)^2$$` 
+
+.hi[**Suma kvadrata odstupanja unutar grupe**]
+
+`$$\mbox{SS}_w = \sum_{k=1}^G \sum_{i=1}^{N_k} \left( Y_{ik} - \bar{Y}_k \right)^2$$`
+
+.hi[**Suma kvadrata odstupanja među grupama**]
+
+`$$\begin{array}{rcl}
+\mbox{SS}_{b} &amp;=&amp; \sum_{k=1}^G \sum_{i=1}^{N_k} \left( \bar{Y}_k - \bar{Y} \right)^2
+ \\
+&amp;=&amp; \sum_{k=1}^G N_k \left( \bar{Y}_k - \bar{Y} \right)^2
+\end{array}$$`
+
+.hi[**Ukupna varijacija**]
+
+`$$\mbox{SS}_w  + \mbox{SS}_{b} = \mbox{SS}_{tot}$$`
+
+
+---
+
+.hi[**Varijacija među grupama**]
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="10_ANOVA_files/figure-html/anovavara-1.svg" alt="Prikaz varijacije između grupa."  /&gt;
+&lt;p class="caption"&gt;Prikaz varijacije između grupa.&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+.hi[**Varijacija unutar grupa**]
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="10_ANOVA_files/figure-html/anovavarb-1.svg" alt="Prikaz varijacije unutar grupa."  /&gt;
+&lt;p class="caption"&gt;Prikaz varijacije unutar grupa.&lt;/p&gt;
+&lt;/div&gt;
+
+---
+
+.hi[**Od sume kvadrata odstupanja do F-testa**]
+
+- Stupnjevi slobode
+
+`$$\begin{array}{lcl}
+\mbox{df}_b &amp;=&amp; G-1 \\
+\mbox{df}_w &amp;=&amp; N-G \\
+\end{array}$$`
+
+- Kvadrati odstupanja od prosjeka
+
+`$$\begin{array}{lcl}
+\mbox{MS}_b &amp;=&amp; \displaystyle\frac{\mbox{SS}_b }{ \mbox{df}_b} \\
+\mbox{MS}_w &amp;=&amp; \displaystyle\frac{\mbox{SS}_w }{ \mbox{df}_w} 
+\end{array}$$`
+
+- F-statistika
+
+`$$F = \frac{\mbox{MS}_b }{ \mbox{MS}_w }$$`
+---
+
+.hi[**Sažeti prikaz u tablici**]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; df &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; suma kvadrata &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; kvadrati odstpanja od prosjeka &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; F statistika &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p vrijednost &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; izmedju grupa &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; df_b = G-1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SS_b = \displaystyle\sum_{k=1}^G N_k (\bar{Y}_k - \bar{Y})^2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; MS_b = SS_bdf_b} &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; F = MS_b /MS_w } &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; [komplicirano] &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; unutar grupa &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; f_w = N-G &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SS_w = \sum_{k=1}^G \sum_{i = 1}^{N_k} ( {Y}_{ik} - \bar{Y}_k)^2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; MS_w =  SS_w df_w} &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; - &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; - &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.hi[**Izračun ANOVA-e korak po korak**]
+
+- Pregled podataka u tablici 
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Grupa (k) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Ishod (Y_ik) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; placebo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.5 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; placebo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; placebo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; anxifree &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.6 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; anxifree &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.4 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+- Dodaj grupni prosjek
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Grupa (k) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Ishod (Y_ik) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Grupni prosjek (Y_k) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; placebo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.45 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; placebo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.45 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; placebo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.45 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; anxifree &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.72 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; anxifree &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.72 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+- Odstupanja od grupnog prosjeka i kvadrati odstupanja
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Grupa (k) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Ishod (Y_ik) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Grupni prosjek (Y_k) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; dodstupanje od gr. prosjeka (Y_ik - Y_k) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Kvadrat odstupanja (Y_ik - Y_k)^2) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; placebo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.45 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0025 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; placebo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.45 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.15 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0225 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; placebo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.45 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.35 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.1225 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; anxifree &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.72 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.12 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.0136 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; anxifree &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.72 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.32 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.1003 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+- Izračunaj sumu kvadrata odstupanja unutar grupa
+
+`$$\begin{array}{rcl}
+\mbox{SS}_w &amp;=&amp; 0.0025 + 0.0225 + 0.1225 + 0.0136 + 0.1003 \\
+&amp;=&amp; 0.2614
+\end{array}$$`
+
+---
+
+.hi[**Izračun u R-u korak po korak**]
+
+
+```r
+# Definiraj varijable
+outcome &lt;- clin.trial$mood.gain
+group &lt;- clin.trial$drug
+gp.means &lt;- tapply(outcome,group,mean)
+gp.means &lt;- gp.means[group]
+dev.from.gp.means &lt;- outcome - gp.means
+squared.devs &lt;- dev.from.gp.means ^2
+# Poveži u Data Frame
+Y &lt;- data.frame( group, outcome, gp.means,
+                  dev.from.gp.means, squared.devs )
+```
+
+---
+
+
+```r
+print(head(Y,6), digits = 2)
+```
+
+```
+#&gt;      group outcome gp.means dev.from.gp.means squared.devs
+#&gt; 1  placebo     0.5     0.45              0.05       0.0025
+#&gt; 2  placebo     0.3     0.45             -0.15       0.0225
+#&gt; 3  placebo     0.1     0.45             -0.35       0.1225
+#&gt; 4 anxifree     0.6     0.72             -0.12       0.0136
+#&gt; 5 anxifree     0.4     0.72             -0.32       0.1003
+#&gt; 6 anxifree     0.2     0.72             -0.52       0.2669
+```
+
+
+```r
+# Izračunaj sumu kvadrata odstupanja
+SSw &lt;- sum( squared.devs )
+print( SSw )
+```
+
+```
+#&gt; [1] 1.391667
+```
+---
+
+.hi[**Izračunaj grupna odstupanja od "master" prosjeka**]
+
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Grupa (k) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Group mean (Y_k) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Grand mean (Y) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; devijacija (Y_k - Y) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Kvadrirane devijacije (Y_k - Y)^2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; placebo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.45 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.88 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.43 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.18 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; anxifree &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.72 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.88 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -0.16 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.03 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; joyzepam &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1.48 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.88 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.60 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.36 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.hi[**Pomnoži sa veličinom uzorka**]
+
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; Grupa (k) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Kvadrirane devijacije (Y_k - Y)^2 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Veličina uzorka (N_k) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Ponderirani kv. odst. N_k*(Y_k - Y)^2 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; placebo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.18 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1.11 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; anxifree &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.03 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.16 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; joyzepam &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.36 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2.18 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+.hi[**Zbroji kvadrate odstupanja između grupa**]
+
+`$$\begin{array}{rcl}
+\mbox{SS}_{b} &amp;=&amp; 1.11 + 0.16 + 2.18 \\
+&amp;=&amp; 3.45
+\end{array}$$`
+
+---
+
+.hi[**Provedi proceduru u R**]
+
+
+```r
+# Definiraj varijable
+gp.means &lt;- tapply(outcome,group,mean)
+grand.mean &lt;- mean(outcome)
+dev.from.grand.mean &lt;- gp.means - grand.mean
+squared.devs &lt;- dev.from.grand.mean ^2
+gp.sizes &lt;- tapply(outcome,group,length)
+wt.squared.devs &lt;- gp.sizes * squared.devs
+# Poveži u DF
+Y &lt;- data.frame( gp.means, grand.mean, dev.from.grand.mean, 
+                  squared.devs, gp.sizes, wt.squared.devs )
+```
+
+---
+
+
+```r
+print(head(Y,6), digits = 2)
+```
+
+```
+#&gt;          gp.means grand.mean dev.from.grand.mean squared.devs gp.sizes
+#&gt; placebo      0.45       0.88               -0.43        0.188        6
+#&gt; anxifree     0.72       0.88               -0.17        0.028        6
+#&gt; joyzepam     1.48       0.88                0.60        0.360        6
+#&gt;          wt.squared.devs
+#&gt; placebo             1.13
+#&gt; anxifree            0.17
+#&gt; joyzepam            2.16
+```
+
+---
+
+
+```r
+# Izračunaj sumu kvadrata odstupanja
+SSb &lt;- sum( wt.squared.devs )
+print( SSb )
+```
+
+```
+#&gt; [1] 3.453333
+```
+---
+
+.hi[**Izračunaj stupnjeve slobode**]
+
+`$$\begin{array}{lclcl}
+\mbox{df}_b &amp;=&amp; G - 1 &amp;=&amp; 2 \\
+\mbox{df}_w &amp;=&amp; N - G &amp;=&amp; 15 
+\end{array}$$`
+
+
+.hi[**Izračunaj MS statistike**]
+
+`$$\begin{array}{lclclcl}
+\mbox{MS}_b &amp;=&amp; \displaystyle\frac{\mbox{SS}_b }{  \mbox{df}_b } &amp;=&amp; \displaystyle\frac{3.45}{ 2}  &amp;=&amp; 1.73
+\end{array}$$`
+
+`$$\begin{array}{lclclcl}
+\mbox{MS}_w &amp;=&amp; \displaystyle\frac{\mbox{SS}_w }{  \mbox{df}_w } &amp;=&amp; \displaystyle\frac{1.39}{15} &amp;=&amp; 0.09
+\end{array}$$`
+---
+
+.hi[**Izračunaj F-statistiku**]
+
+`$$F \ = \ \frac{\mbox{MS}_b }{ \mbox{MS}_w } \ = \ \frac{1.73}{0.09} \ = \ 18.6$$`
+
+
+.hi[**Provjeri p-vrijednost**]
+
+
+```r
+pf( 18.6, df1 = 2, df2 = 15, lower.tail = FALSE)
+```
+
+```
+#&gt; [1] 8.672727e-05
+```
+
+---
+
+.hi[**Prikaži rezultate u tablici**]
+
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; df &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; suma kvadrata &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; srednji kvadrati &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; F-statistika &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; p-vrijednost &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; between groups &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3.45 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1.73 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 18.6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 8.67 * 10^{-5} &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; within groups &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1.39 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0.09 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; - &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; - &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+layout:false
+class: middle, inverse
+# ANOVA U R
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Četiri načina!)
+---
+
+layout:true
+# ANOVA U R
+---
+
+.hi[**Opcije**]
+
+
+```r
+# Različiti načini za provođenje ANOVA postupka
+aov( formula = mood.gain ~ drug, data = clin.trial ) # Puna specifikacija
+aov( clin.trial$mood.gain ~ clin.trial$drug )        # Definiranje varijabli
+aov( mood.gain ~ drug, clin.trial )                  # Skarćeno;definirani df
+```
+
+
+---
+
+
+```r
+# Provjeri klasu objekta
+class( my.anova )
+```
+
+```
+#&gt; [1] "aov" "lm"
+```
+
+
+```r
+# Provjeri što sadrži objekt
+names( my.anova )
+```
+
+```
+#&gt;  [1] "coefficients"  "residuals"     "effects"       "rank"         
+#&gt;  [5] "fitted.values" "assign"        "qr"            "df.residual"  
+#&gt;  [9] "contrasts"     "xlevels"       "call"          "terms"        
+#&gt; [13] "model"
+```
+---
+
+
+```r
+# Prikaži objekt
+print( my.anova )
+```
+
+```
+#&gt; Call:
+#&gt;    aov(formula = mood.gain ~ drug, data = clin.trial)
+#&gt; 
+#&gt; Terms:
+#&gt;                     drug Residuals
+#&gt; Sum of Squares  3.453333  1.391667
+#&gt; Deg. of Freedom        2        15
+#&gt; 
+#&gt; Residual standard error: 0.3045944
+#&gt; Estimated effects may be unbalanced
+```
+---
+
+.hi[**Testiranje ANOVA hipoteza**]
+
+
+```r
+# Prikaži deskriptivnu statistiku
+summary( my.anova )
+```
+
+```
+#&gt;             Df Sum Sq Mean Sq F value   Pr(&gt;F)    
+#&gt; drug         2  3.453  1.7267   18.61 8.65e-05 ***
+#&gt; Residuals   15  1.392  0.0928                     
+#&gt; ---
+#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+```
+
+---
+layout:false
+class: middle, inverse
+# EFEKT VELIČINE
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Snaga odnosa)
+---
+
+layout:true
+# EFEKT VELIČINE
+---
+
+.hi[**Formula**]
+
+`$$\eta^2 = \frac{\mbox{SS}_b}{\mbox{SS}_{tot}}$$`
+
+.hi[**Izračun**]
+
+`$$\eta^2 = \frac{3.45}{4.84} = 0.71$$`
+
+.hi[**Makni korjen**]
+
+
+`$$\eta= \sqrt{\frac{\mbox{SS}_b}{\mbox{SS}_{tot}}}$$`
+---
+
+.hi[**Napravi procjenitelj u R**]
+
+
+```r
+SStot &lt;- SSb + SSw          # Ukupna suma kvadrata
+eta.squared &lt;- SSb / SStot  # Eta kvadrat
+print( eta.squared )        # Prikaži rezultate
+```
+
+```
+#&gt; [1] 0.7127623
+```
+
+
+
+```r
+library(lsr)
+# Izračunaj pomoću funkcije
+etaSquared( x = my.anova )
+```
+
+```
+#&gt;         eta.sq eta.sq.part
+#&gt; drug 0.7127623   0.7127623
+```
+
+---
+layout:false
+class: middle, inverse
+# PRETPOSTAVKE JEDNOSTRANE ANOVA-e
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Robusnost...)
+---
+
+layout:true
+# PRETPOSTAVKE JEDNOSTRANE ANOVA-e
+---
+
+.hi[**Statistički model ANOVA-e**]
+
+`$$\begin{array}{lrcl}
+H_0: &amp; Y_{ik} &amp;=&amp; \mu + \epsilon_{ik} \\
+H_1: &amp; Y_{ik} &amp;=&amp; \mu_k + \epsilon_{ik} 
+\end{array}$$`
+
+.hi[**Pretpostavka o rezidualnoj strukturi**]
+
+`$$\epsilon_{ik} \sim \mbox{Normal}(0, \sigma^2)$$`
+
+.hi[**Pretpostavke**]
+
+- Normalnost distribucije
+- Homogenost varijance
+- Nezavisnost
+
+
+---
+layout:false
+class: middle, inverse
+# HOMOGENOST VARIJANCE
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Kruške ili jabuke!?)
+---
+
+layout:true
+# HOMOGENOST VARIJANCE
+---
+
+
+
+.hi[**Provjera homogenosti Leven-ovim testom**]
+
+`$$Z_{ik} = \left| Y_{ik} - \bar{Y}_k \right|$$`
+
+.hi[**Provjera homogenosti Brown-Forsythe testom**]
+
+`$$Z_{ik} = \left| Y_{ik} - \mbox{median}_k(Y) \right|$$`
+---
+
+.hi[**Provedi test u R**]
+
+
+```r
+library( car )  # Učitaj paket
+leveneTest( my.anova ) # Provedi Levene test
+```
+
+```
+#&gt; Levene's Test for Homogeneity of Variance (center = median)
+#&gt;       Df F value Pr(&gt;F)
+#&gt; group  2  1.4672 0.2618
+#&gt;       15
+```
+
+```r
+leveneTest( y = my.anova, center = mean ) # Provedi B-F test 
+```
+
+```
+#&gt; Levene's Test for Homogeneity of Variance (center = mean)
+#&gt;       Df F value Pr(&gt;F)
+#&gt; group  2  1.4497 0.2657
+#&gt;       15
+```
+---
+
+
+```r
+# Provedi test korak po korak
+Y &lt;- clin.trial $ mood.gain    # Ishod
+G &lt;- clin.trial $ drug         # Grupa
+gp.mean &lt;- tapply(Y, G, mean)  # Izračunaj grupne prosjeke
+Ybar &lt;- gp.mean[G]             # Izvadi grupne prosjeke vezane uz svaku ops
+Z &lt;- abs(Y - Ybar)             # Transformirana varijabla
+summary( aov(Z ~ G) )          # Izvrši ANOVA-u 
+```
+
+```
+#&gt;             Df Sum Sq Mean Sq F value Pr(&gt;F)
+#&gt; G            2 0.0616 0.03080    1.45  0.266
+#&gt; Residuals   15 0.3187 0.02125
+```
+
+---
+
+.hi[**Ukoliko su varijance heterogene**] 
+
+
+```r
+# Welch-ev test za ANOVA-u
+oneway.test(mood.gain ~ drug, data = clin.trial)
+```
+
+```
+#&gt; 
+#&gt; 	One-way analysis of means (not assuming equal variances)
+#&gt; 
+#&gt; data:  mood.gain and drug
+#&gt; F = 26.322, num df = 2.0000, denom df = 9.4932, p-value = 0.000134
+```
+
+
+```r
+# Usporedi sa rezultatima testa za jednake varijance
+oneway.test(mood.gain ~ drug, data = clin.trial, var.equal = TRUE)
+```
+
+```
+#&gt; 
+#&gt; 	One-way analysis of means
+#&gt; 
+#&gt; data:  mood.gain and drug
+#&gt; F = 18.611, num df = 2, denom df = 15, p-value = 8.646e-05
+```
+
+
+
+---
+layout:false
+class: middle, inverse
+# NORMALNOST DISTRIBUCIJE
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Vizualizacija i formalni test!)
+---
+
+layout:true
+#  NORMALNOST DISTRIBUCIJE
+---
+
+.hi[**Provjera normalnosti distribucije**]
+
+
+```r
+my.anova.residuals &lt;- residuals( object = my.anova )   # Izvadi reziduale
+```
+
+
+```r
+hist( x = my.anova.residuals )           # Napravi histogram reziduala
+```
+
+&lt;img src="10_ANOVA_files/figure-html/unnamed-chunk-33-1.svg" style="display: block; margin: auto;" /&gt;
+
+---
+
+
+```r
+qqnorm( y = my.anova.residuals )         # Napravi QQ plot
+```
+
+&lt;img src="10_ANOVA_files/figure-html/unnamed-chunk-34-1.svg" style="display: block; margin: auto;" /&gt;
+
+
+```r
+shapiro.test( x = my.anova.residuals )   # Provedi Shapiro-Wilk test
+```
+
+```
+#&gt; 
+#&gt; 	Shapiro-Wilk normality test
+#&gt; 
+#&gt; data:  my.anova.residuals
+#&gt; W = 0.96019, p-value = 0.6053
+```
+
+---
+
+.hi[**Kruskal-Wallis test**]
+
+- Izračunaj prosječni rank vezan uz svaku grupu
+
+`$$\bar{R}_k = \frac{1}{N_K} \sum_{i} R_{ik}$$`
+
+- Izračunaj rank grand prosjeka
+
+`$$\bar{R} = \frac{1}{N} \sum_{i} \sum_{k} R_{ik}$$`
+
+- Izračunaj sumu kvadrata ukupnih rank-odstupanja
+
+`$$\mbox{RSS}_{tot} = \sum_k \sum_i ( R_{ik} - \bar{R} )^2$$`
+
+---
+
+.hi[**Kruskal-Wallis test**]
+
+
+- Izračunaj sumu kvadrata rank-odstupanja među grupama
+
+`$$\begin{array}{rcl}
+\mbox{RSS}_{b} &amp;=&amp; \sum_k \sum_i ( \bar{R}_k  - \bar{R} )^2 \\
+&amp;=&amp; \sum_k N_k ( \bar{R}_k  - \bar{R} )^2 
+\end{array}$$`
+
+- Izračunaj Kruskal-Wallis statistiku 
+
+`$$K = (N - 1) \times \frac{\mbox{RSS}_b}{\mbox{RSS}_{tot}}$$`
+
+- Drugi način za izračun K-W statistike
+
+`$$K = \frac{12}{N(N-1)} \sum_k N_k {\bar{R}_k}^2    -  3(N+1)$$`
+---
+
+.hi[**Kruskal-Wallis test**]
+
+- Prikaži rangirane podatke 
+
+
+```r
+f &lt;- table( clin.trial$mood.gain )   # Tabuliraj i spremi u varijablu
+print(f)                             # Prikaži
+```
+
+```
+#&gt; 
+#&gt; 0.1 0.2 0.3 0.4 0.5 0.6 0.8 0.9 1.1 1.2 1.3 1.4 1.7 1.8 
+#&gt;   1   1   2   1   1   2   1   1   1   1   2   2   1   1
+```
+
+- Izvrši K-W test u R
+
+
+
+```r
+# Prvi način
+kruskal.test(mood.gain ~ drug, data = clin.trial)
+```
+
+```
+#&gt; 
+#&gt; 	Kruskal-Wallis rank sum test
+#&gt; 
+#&gt; data:  mood.gain by drug
+#&gt; Kruskal-Wallis chi-squared = 12.076, df = 2, p-value = 0.002386
+```
+
+---
+
+.hi[**Kruskal-Wallis test**]
+
+
+```r
+# Drugi način
+kruskal.test(x = clin.trial$mood.gain, g = clin.trial$drug)
+```
+
+```
+#&gt; 
+#&gt; 	Kruskal-Wallis rank sum test
+#&gt; 
+#&gt; data:  clin.trial$mood.gain and clin.trial$drug
+#&gt; Kruskal-Wallis chi-squared = 12.076, df = 2, p-value = 0.002386
+```
+
+
+```r
+# Treći način
+mood.gain &lt;- list( placebo, joyzepam, anxifree ) # Spremi serije u listu
+kruskal.test( x = mood.gain )                    # Provedi test
+```
+
+
+
+---
+layout:false
+class: middle, inverse
+# ANOVA vs STUDENTOV t-test
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Postoji li razlika?!)
+---
+
+layout:true
+# ANOVA vs STUDENTOV t-test
+---
+
+
+```r
+# Provedi ANOVA test
+summary( aov( mood.gain ~ therapy, data = clin.trial ))
+```
+
+```
+#&gt;             Df Sum Sq Mean Sq F value Pr(&gt;F)
+#&gt; therapy      1  0.467  0.4672   1.708   0.21
+#&gt; Residuals   16  4.378  0.2736
+```
+
+---
+
+
+```r
+# Provedi studentov t-test
+t.test( mood.gain ~ therapy, data = clin.trial, var.equal = TRUE )
+```
+
+```
+#&gt; 
+#&gt; 	Two Sample t-test
+#&gt; 
+#&gt; data:  mood.gain by therapy
+#&gt; t = -1.3068, df = 16, p-value = 0.2098
+#&gt; alternative hypothesis: true difference in means is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  -0.8449518  0.2005073
+#&gt; sample estimates:
+#&gt; mean in group no.therapy        mean in group CBT 
+#&gt;                0.7222222                1.0444444
+```
+
+
+```r
+# Kvadriraj za F-statistiku
+1.3068 ^ 2
+```
+
+```
+#&gt; [1] 1.707726
+```
+
+
+
+---
+layout:false
+class: middle, inverse
+# Hvala na pažnji!
+&lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
+(Sljedeće predavanje: Linearna regresija.)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

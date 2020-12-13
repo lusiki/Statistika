@@ -1,0 +1,1018 @@
+---
+title: "PRIMJENJENA STATISTIKA"
+# subtitle: "<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>"
+subtitle: "Predavanje 9: Usporedba prosjeka"
+author: "Luka Sikic, PhD"
+date: "Fakultet hrvatskih studija | [Github PS](https://github.com/BrbanMiro/Statistika)" #"`r format(Sys.time(), '%d %B %Y')`"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts] 
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      beforeInit: "macros.js"
+---
+
+
+```{R, setup, include = F}
+# devtools::install_github("dill/emoGG")
+library(pacman)
+p_load(
+  broom, tidyverse,
+  latex2exp, ggplot2, ggthemes, ggforce, viridis, extrafont, gridExtra,
+  kableExtra, snakecase, janitor,
+  data.table, dplyr, estimatr,
+  lubridate, knitr, parallel,
+  lfe,
+  here, magrittr
+)
+# Define pink color
+red_pink <- "#e64173"
+turquoise <- "#20B2AA"
+orange <- "#FFA500"
+red <- "#fb6107"
+blue <- "#2b59c3"
+green <- "#8bb174"
+grey_light <- "grey70"
+grey_mid <- "grey50"
+grey_dark <- "grey20"
+purple <- "#6A5ACD"
+slate <- "#314f4f"
+# Dark slate grey: #314f4f
+# Knitr options
+opts_chunk$set(
+  comment = "#>",
+  fig.align = "center",
+  fig.height = 7,
+  fig.width = 10.5,
+  warning = F,
+  message = F
+)
+opts_chunk$set(dev = "svg")
+options(device = function(file, width, height) {
+  svg(tempfile(), width = width, height = height)
+})
+options(crayon.enabled = F)
+options(knitr.table.format = "html")
+# A blank theme for ggplot
+theme_empty <- theme_bw() + theme(
+  line = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  plot.margin = structure(c(0, 0, -0.5, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_simple <- theme_bw() + theme(
+  line = element_blank(),
+  panel.grid = element_blank(),
+  rect = element_blank(),
+  strip.text = element_blank(),
+  axis.text.x = element_text(size = 18, family = "STIXGeneral"),
+  axis.text.y = element_blank(),
+  axis.ticks = element_blank(),
+  plot.title = element_blank(),
+  axis.title = element_blank(),
+  # plot.margin = structure(c(0, 0, -1, -1), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_math <- theme_void() + theme(
+  text = element_text(family = "MathJax_Math"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes_serif <- theme_void() + theme(
+  text = element_text(family = "MathJax_Main"),
+  axis.title = element_text(size = 22),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = "grey70",
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_axes <- theme_void() + theme(
+  text = element_text(family = "Fira Sans Book"),
+  axis.title = element_text(size = 18),
+  axis.title.x = element_text(hjust = .95, margin = margin(0.15, 0, 0, 0, unit = "lines")),
+  axis.title.y = element_text(vjust = .95, margin = margin(0, 0.15, 0, 0, unit = "lines")),
+  axis.line = element_line(
+    color = grey_light,
+    size = 0.25,
+    arrow = arrow(angle = 30, length = unit(0.15, "inches")
+  )),
+  plot.margin = structure(c(1, 0, 1, 0), unit = "lines", valid.unit = 3L, class = "unit"),
+  legend.position = "none"
+)
+theme_set(theme_gray(base_size = 20))
+# Column names for regression results
+reg_columns <- c("Term", "Est.", "S.E.", "t stat.", "p-Value")
+# Function for formatting p values
+format_pvi <- function(pv) {
+  return(ifelse(
+    pv < 0.0001,
+    "<0.0001",
+    round(pv, 4) %>% format(scientific = F)
+  ))
+}
+format_pv <- function(pvs) lapply(X = pvs, FUN = format_pvi) %>% unlist()
+# Tidy regression results table
+tidy_table <- function(x, terms, highlight_row = 1, highlight_color = "black", highlight_bold = T, digits = c(NA, 3, 3, 2, 5), title = NULL) {
+  x %>%
+    tidy() %>%
+    select(1:5) %>%
+    mutate(
+      term = terms,
+      p.value = p.value %>% format_pv()
+    ) %>%
+    kable(
+      col.names = reg_columns,
+      escape = F,
+      digits = digits,
+      caption = title
+    ) %>%
+    kable_styling(font_size = 20) %>%
+    row_spec(1:nrow(tidy(x)), background = "white") %>%
+    row_spec(highlight_row, bold = highlight_bold, color = highlight_color)
+}
+```
+
+class: inverse, middle
+# PREGLED PREDAVANJA
+
+---
+layout: true
+# PREGLED PREDAVANJA
+---
+<br>
+
+## CILJEVI 
+
+- Pregled podataka
+- ANOVA
+- ANOVA u R
+- Efekt veličine
+- Post hoc testovi
+- Pretpostavke jednostrane ANOVA-e
+- Homogenost varijance
+- Normalnost distribucije
+
+---
+
+```{css, echo = F, eval = T}
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+
+
+remark-slide-content {
+  font-size: 22px;
+  padding: 20px 80px 20px 80px;
+}
+.remark-code, .remark-inline-code {
+  background: #f0f0f0;
+}
+.remark-code {
+  font-size: 16px;
+}
+.huge .remark-code { /*Change made here*/
+  font-size: 200% !important;
+}
+
+.mid .remark-code { /*Change made here*/
+  font-size: 70% !important;
+}
+
+.tiny .remark-code { /*Change made here*/
+  font-size: 50% !important;
+}
+
+```
+
+.hi[**Pregled podataka**]
+
+```{r}
+load(file.path("../Podatci/clinicaltrial.Rdata")) # Učitaj podatke
+str(clin.trial)     # Pregledaj podatke  
+head(clin.trial, 8)   # Pregledaj podatke
+```
+
+---
+
+.hi[**Deskriptivna statistika**]
+
+```{r}
+summary(clin.trial)
+# Tabuliraj podatke
+xtabs( ~drug, clin.trial )
+```
+
+---
+
+.hi[**Deskriptivna statistika**]
+
+```{r}
+# Agregiraj podatke po primjenjenom ljeku
+aggregate( mood.gain ~ drug, clin.trial, mean ) # Prosjek
+aggregate( mood.gain ~ drug, clin.trial, sd )   # Standardna devijacija
+
+```
+---
+
+.hi[**Vizualizacija**]
+
+```{r , warning=FALSE, message=FALSE, fig.height=4}
+library(gplots) # Učitaj paket
+plotmeans(  formula = mood.gain ~ drug,   # Porast raspoloženja vs. ljek
+             data = clin.trial,           # Podatci
+             xlab = "Primjenjeni ljek",  
+             ylab = "Rast raspoloženja",          
+             n.label = FALSE              # Ne prikazuj veličinu uzorka
+ )
+```
+
+
+
+---
+layout:false
+class: middle, inverse
+# ANOVA 
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Usporedba više prosjeka!)
+---
+
+layout:true
+# ANOVA
+---
+
+.hi[**Hipoteze kod ANOVA-e**]
+
+$$\begin{array}{rcl}
+H_0 &:& \mbox{točno je } \mu_P = \mu_A = \mu_J
+\end{array}$$
+
+$$\begin{array}{rcl}
+H_1 &:& \mbox{nije točno } \mu_P = \mu_A = \mu_J
+\end{array}$$
+
+.hi[**Izračun varijance kod ANOVA-e**]
+
+$$\mbox{Var}(Y) = \frac{1}{N} \sum_{k=1}^G \sum_{i=1}^{N_k} \left(Y_{ik} - \bar{Y} \right)^2$$
+---
+
+.hi[**Praktični primjer**]
+
+```{r echo=FALSE}
+knitr::kable(tibble::tribble(
+     ~V1,      ~V2,      ~V3,          ~V4,              ~V5,                 ~V6,
+   "Ann",      "1",   "cool",          "1",              "1",                "20",
+   "Ben",      "2",   "cool",          "1",              "2",                "55",
+   "Cat",      "3",   "cool",          "1",              "3",                "21",
+   "Dan",      "4", "uncool",          "2",              "1",                "91",
+   "Egg",      "5", "uncool",          "2",              "2",                "22"
+  ), col.names = c("ime", "osoba (p)",  "grupa", "broj grupe (k)", "index grupe (i)",        "raspolozenje (Y_ik ili Y_p)"))
+```
+
+
+
+.hi[**Usporedi sa formulom za varijancu**] 
+
+$$\mbox{Var}(Y) = \frac{1}{N} \sum_{p=1}^N  \left(Y_{p} - \bar{Y} \right)^2$$
+---
+
+.hi[**Od varijance do sume kvadrata odstupanja**]
+
+$$\mbox{SS}_{tot} = \sum_{k=1}^G \sum_{i=1}^{N_k} \left(Y_{ik} - \bar{Y} \right)^2$$ 
+
+.hi[**Suma kvadrata odstupanja unutar grupe**]
+
+$$\mbox{SS}_w = \sum_{k=1}^G \sum_{i=1}^{N_k} \left( Y_{ik} - \bar{Y}_k \right)^2$$
+
+.hi[**Suma kvadrata odstupanja među grupama**]
+
+$$\begin{array}{rcl}
+\mbox{SS}_{b} &=& \sum_{k=1}^G \sum_{i=1}^{N_k} \left( \bar{Y}_k - \bar{Y} \right)^2
+ \\
+&=& \sum_{k=1}^G N_k \left( \bar{Y}_k - \bar{Y} \right)^2
+\end{array}$$
+
+.hi[**Ukupna varijacija**]
+
+$$\mbox{SS}_w  + \mbox{SS}_{b} = \mbox{SS}_{tot}$$
+
+
+---
+
+.hi[**Varijacija među grupama**]
+
+```{r anovavara, fig.cap="Prikaz varijacije između grupa.", echo=FALSE, fig.height=5}
+	width <- 7
+	height <- 4
+	# params
+	mu <- c(-4, -.25, 3.5)
+	sig <- 2
+	# data
+	x <- seq(-3,3,.1)
+	x1 <- x*sig + mu[1]
+	x2 <- x*sig + mu[2]
+	x3 <- x*sig + mu[3]
+	y1 <- dnorm( x1, mu[1], sig )
+	y2 <- dnorm( x2, mu[2], sig )
+	y3 <- dnorm( x3, mu[3], sig )
+	# set up window
+	plot.new() # create graphics device
+	plot.window(xlim = c(-10,10), ylim = c(0,.25)) # define plot area
+	axis(side = 1, # axis located below
+	     col = "gray20",  # coloured gray
+	     at = c(-10,mu,10), # tick marks located at
+	     labels = c("","Grupa 1","Grupa 2","Grupa 3","")
+	)  
+	# plot densities
+	lines(x1,y1, type = "l", col = "gray20")
+	lines(x2,y2, type = "l", col = "gray20")
+	lines(x3,y3, type = "l", col = "gray20")
+	# arrows
+	arrows(
+	  mu[1],.15, # from
+	  mu[2],.15, # to
+	  code = 3,  # arrows on both ends
+	  lwd = 2,   # thick line
+	)
+	arrows(
+	  mu[2],.125, # from
+	  mu[3],.125, # to
+	  code = 3,  # arrows on both ends
+	  lwd = 2,   # thick line
+	)
+	arrows(
+	  mu[1],.1, # from
+	  mu[3],.1, # to
+	  code = 3,  # arrows on both ends
+	  lwd = 2,   # thick line
+	)
+	# title 
+	title(main = "Varijacija među grupama\n(razlika između grupnih prosjeka)",
+	      font.main = 1)
+```
+
+---
+
+.hi[**Varijacija unutar grupa**]
+
+```{r anovavarb, fig.cap="Prikaz varijacije unutar grupa.", echo=FALSE, fig.height=5}
+width <- 7
+	height <- 4
+		# params
+	mu <- c(-4, -.25, 3.5)
+	sig <- 2
+	# data
+	x <- seq(-3,3,.1)
+	x1 <- x*sig + mu[1]
+	x2 <- x*sig + mu[2]
+	x3 <- x*sig + mu[3]
+	y1 <- dnorm( x1, mu[1], sig )
+	y2 <- dnorm( x2, mu[2], sig )
+	y3 <- dnorm( x3, mu[3], sig )
+	# set up window
+	plot.new() # create graphics device
+	plot.window(xlim = c(-10,10), ylim = c(0,.25)) # define plot area
+	axis(side = 1, # axis located below
+	     col = "gray20",  # coloured gray
+	     at = c(-10,mu,10), # tick marks located at
+	     labels = c("","Grupa 1","Grupa 2","Grupa 3","")
+	)  
+	# plot densities
+	lines(x1,y1, type = "l", col = "gray20")
+	lines(x2,y2, type = "l", col = "gray20")
+	lines(x3,y3, type = "l", col = "gray20")
+	# arrows
+	x <- 1.5
+	y <- .135
+	for (i in 1:3) {
+	  arrows(
+	    mu[i]-x,y, # from
+	    mu[i]+x,y, # to
+	    code = 3,  # arrows on both ends
+	    lwd = 2,   # thick line
+	  )  }
+	
+		# title 
+	title(main = "Varijacija unutar grupa\n(razlika između pojedinačnih opservacija i grupnog prosjeka)",
+	      font.main = 1)
+```
+
+---
+
+.hi[**Od sume kvadrata odstupanja do F-testa**]
+
+- Stupnjevi slobode
+
+$$\begin{array}{lcl}
+\mbox{df}_b &=& G-1 \\
+\mbox{df}_w &=& N-G \\
+\end{array}$$
+
+- Kvadrati odstupanja od prosjeka
+
+$$\begin{array}{lcl}
+\mbox{MS}_b &=& \displaystyle\frac{\mbox{SS}_b }{ \mbox{df}_b} \\
+\mbox{MS}_w &=& \displaystyle\frac{\mbox{SS}_w }{ \mbox{df}_w} 
+\end{array}$$
+
+- F-statistika
+
+$$F = \frac{\mbox{MS}_b }{ \mbox{MS}_w }$$
+---
+
+.hi[**Sažeti prikaz u tablici**]
+
+```{r anovatable, echo=FALSE}
+knitr::kable(data.frame(stringsAsFactors=FALSE,
+             type = c("izmedju grupa", "unutar grupa"),
+               df = c("df_b = G-1", "f_w = N-G"),
+   sum.of.squares = c("SS_b = \\displaystyle\\sum_{k=1}^G N_k (\\bar{Y}_k - \\bar{Y})^2", 
+                      "SS_w = \\sum_{k=1}^G \\sum_{i = 1}^{N_k} ( {Y}_{ik} - \\bar{Y}_k)^2
+"),
+     mean.squares = c("MS_b = SS_bdf_b}
+", "MS_w =  SS_w df_w}
+"),
+      F.statistika = c("F = MS_b /MS_w }
+", "-"),
+          p.vrijednost = c("[komplicirano]", "-")
+), col.names = c("","df", "suma kvadrata", "kvadrati odstpanja od prosjeka", "F statistika", "p vrijednost")
+)
+
+
+```
+
+---
+
+.hi[**Izračun ANOVA-e korak po korak**]
+
+- Pregled podataka u tablici 
+
+```{r echo=FALSE}
+knitr::kable(tibble::tribble(
+           ~V1,         ~V2,
+   "placebo",     "0.5",
+   "placebo",     "0.3",
+   "placebo",     "0.1",
+  "anxifree",     "0.6",
+  "anxifree",     "0.4"
+  ), col.names = c("Grupa (k)", "Ishod (Y_ik)"))
+```
+
+---
+
+- Dodaj grupni prosjek
+
+```{r echo=FALSE}
+knitr::kable(tibble::tribble(
+         ~V1,        ~V2,               ~V3,
+   "placebo",      "0.5",       "0.45",
+   "placebo",      "0.3",       "0.45",
+   "placebo",      "0.1",       "0.45",
+  "anxifree",      "0.6",       "0.72",
+  "anxifree",      "0.4",       "0.72"
+  ), col.names= c("Grupa (k)",  "Ishod (Y_ik)", "Grupni prosjek (Y_k)"))
+```
+
+---
+
+- Odstupanja od grupnog prosjeka i kvadrati odstupanja
+
+```{r echo=FALSE}
+knitr::kable(tibble::tribble(
+         ~V1,        ~V2,            ~V3,                           ~V4,                           ~V5,
+   "placebo",      "0.5",         "0.45",                   "0.05",                 "0.0025",
+   "placebo",      "0.3",         "0.45",                  "-0.15",                 "0.0225",
+   "placebo",      "0.1",         "0.45",                  "-0.35",                 "0.1225",
+  "anxifree",      "0.6",         "0.72",                  "-0.12",                 "0.0136",
+  "anxifree",      "0.4",         "0.72",                  "-0.32",                 "0.1003"), col.names = c("Grupa (k)",  "Ishod (Y_ik)",   "Grupni prosjek (Y_k)", "dodstupanje od gr. prosjeka (Y_ik - Y_k)",      "Kvadrat odstupanja (Y_ik - Y_k)^2)"))
+```
+
+
+- Izračunaj sumu kvadrata odstupanja unutar grupa
+
+$$\begin{array}{rcl}
+\mbox{SS}_w &=& 0.0025 + 0.0225 + 0.1225 + 0.0136 + 0.1003 \\
+&=& 0.2614
+\end{array}$$
+
+---
+
+.hi[**Izračun u R-u korak po korak**]
+
+```{r}
+# Definiraj varijable
+outcome <- clin.trial$mood.gain
+group <- clin.trial$drug
+gp.means <- tapply(outcome,group,mean)
+gp.means <- gp.means[group]
+dev.from.gp.means <- outcome - gp.means
+squared.devs <- dev.from.gp.means ^2
+# Poveži u Data Frame
+Y <- data.frame( group, outcome, gp.means,
+                  dev.from.gp.means, squared.devs )
+```
+
+---
+
+```{r}
+print(head(Y,6), digits = 2)
+```
+
+```{r}
+# Izračunaj sumu kvadrata odstupanja
+SSw <- sum( squared.devs )
+print( SSw )
+```
+---
+
+.hi[**Izračunaj grupna odstupanja od "master" prosjeka**]
+
+
+```{r echo=FALSE}
+knitr::kable(tibble::tribble(
+         ~V1,            ~V2,          ~V3,                         ~V4,                             ~V5,
+   "placebo",         "0.45",       "0.88",                     "-0.43",                          "0.18",
+  "anxifree",         "0.72",       "0.88",                     "-0.16",                          "0.03",
+  "joyzepam",         "1.48",       "0.88",                      "0.60",                          "0.36"
+  ), col.names = c("Grupa (k)",   "Group mean (Y_k)", "Grand mean (Y)",                 "devijacija (Y_k - Y)",            "Kvadrirane devijacije (Y_k - Y)^2"))
+```
+
+---
+
+.hi[**Pomnoži sa veličinom uzorka**]
+
+
+```{r echo=FALSE}
+knitr::kable(tibble::tribble(
+         ~V1,                             ~V2,           ~V3,                                 ~V4,
+   "placebo",                          "0.18",           "6",                              "1.11",
+  "anxifree",                          "0.03",           "6",                              "0.16",
+  "joyzepam",                          "0.36",           "6",                              "2.18"
+  ), col.names = c(     "Grupa (k)",            "Kvadrirane devijacije (Y_k - Y)^2", "Veličina uzorka (N_k)",              "Ponderirani kv. odst. N_k*(Y_k - Y)^2"))
+```
+
+.hi[**Zbroji kvadrate odstupanja između grupa**]
+
+$$\begin{array}{rcl}
+\mbox{SS}_{b} &=& 1.11 + 0.16 + 2.18 \\
+&=& 3.45
+\end{array}$$
+
+---
+
+.hi[**Provedi proceduru u R**]
+
+```{r}
+# Definiraj varijable
+gp.means <- tapply(outcome,group,mean)
+grand.mean <- mean(outcome)
+dev.from.grand.mean <- gp.means - grand.mean
+squared.devs <- dev.from.grand.mean ^2
+gp.sizes <- tapply(outcome,group,length)
+wt.squared.devs <- gp.sizes * squared.devs
+# Poveži u DF
+Y <- data.frame( gp.means, grand.mean, dev.from.grand.mean, 
+                  squared.devs, gp.sizes, wt.squared.devs )
+```
+
+---
+
+```{r}
+print(head(Y,6), digits = 2)
+```
+
+---
+
+```{r}
+# Izračunaj sumu kvadrata odstupanja
+SSb <- sum( wt.squared.devs )
+print( SSb )
+```
+---
+
+.hi[**Izračunaj stupnjeve slobode**]
+
+$$\begin{array}{lclcl}
+\mbox{df}_b &=& G - 1 &=& 2 \\
+\mbox{df}_w &=& N - G &=& 15 
+\end{array}$$
+
+
+.hi[**Izračunaj MS statistike**]
+
+$$\begin{array}{lclclcl}
+\mbox{MS}_b &=& \displaystyle\frac{\mbox{SS}_b }{  \mbox{df}_b } &=& \displaystyle\frac{3.45}{ 2}  &=& 1.73
+\end{array}$$
+
+$$\begin{array}{lclclcl}
+\mbox{MS}_w &=& \displaystyle\frac{\mbox{SS}_w }{  \mbox{df}_w } &=& \displaystyle\frac{1.39}{15} &=& 0.09
+\end{array}$$
+---
+
+.hi[**Izračunaj F-statistiku**]
+
+$$F \ = \ \frac{\mbox{MS}_b }{ \mbox{MS}_w } \ = \ \frac{1.73}{0.09} \ = \ 18.6$$
+
+
+.hi[**Provjeri p-vrijednost**]
+
+```{r}
+pf( 18.6, df1 = 2, df2 = 15, lower.tail = FALSE)
+```
+
+---
+
+.hi[**Prikaži rezultate u tablici**]
+
+```{r echo=FALSE}
+knitr::kable(tibble::tribble(
+               ~V1,  ~V2,              ~V3,            ~V4,             ~V5,                      ~V6,
+  "between groups",  "2",           "3.45",         "1.73",          "18.6", "8.67 * 10^{-5}",
+   "within groups", "15",           "1.39",         "0.09",             "-",                      "-"
+  ), col.names = c("", "df", "suma kvadrata", "srednji kvadrati", "F-statistika", "p-vrijednost"))
+```
+
+---
+layout:false
+class: middle, inverse
+# ANOVA U R
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Četiri načina!)
+---
+
+layout:true
+# ANOVA U R
+---
+
+.hi[**Opcije**]
+
+```{r eval=FALSE}
+# Različiti načini za provođenje ANOVA postupka
+aov( formula = mood.gain ~ drug, data = clin.trial ) # Puna specifikacija
+aov( clin.trial$mood.gain ~ clin.trial$drug )        # Definiranje varijabli
+aov( mood.gain ~ drug, clin.trial )                  # Skarćeno;definirani df
+```
+```{r echo=FALSE}
+# Spremi rezultate testa u objekt
+my.anova <- aov( mood.gain ~ drug, clin.trial ) 
+```
+
+---
+
+```{r}
+# Provjeri klasu objekta
+class( my.anova )
+```
+
+```{r}
+# Provjeri što sadrži objekt
+names( my.anova )
+```
+---
+
+```{r}
+# Prikaži objekt
+print( my.anova )
+```
+---
+
+.hi[**Testiranje ANOVA hipoteza**]
+
+```{r}
+# Prikaži deskriptivnu statistiku
+summary( my.anova )
+```
+
+---
+layout:false
+class: middle, inverse
+# EFEKT VELIČINE
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Snaga odnosa)
+---
+
+layout:true
+# EFEKT VELIČINE
+---
+
+.hi[**Formula**]
+
+$$\eta^2 = \frac{\mbox{SS}_b}{\mbox{SS}_{tot}}$$
+
+.hi[**Izračun**]
+
+$$\eta^2 = \frac{3.45}{4.84} = 0.71$$
+
+.hi[**Makni korjen**]
+
+
+$$\eta= \sqrt{\frac{\mbox{SS}_b}{\mbox{SS}_{tot}}}$$
+---
+
+.hi[**Napravi procjenitelj u R**]
+
+```{r}
+SStot <- SSb + SSw          # Ukupna suma kvadrata
+eta.squared <- SSb / SStot  # Eta kvadrat
+print( eta.squared )        # Prikaži rezultate
+```
+
+
+```{r}
+library(lsr)
+# Izračunaj pomoću funkcije
+etaSquared( x = my.anova )
+```
+
+---
+layout:false
+class: middle, inverse
+# PRETPOSTAVKE JEDNOSTRANE ANOVA-e
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Robusnost...)
+---
+
+layout:true
+# PRETPOSTAVKE JEDNOSTRANE ANOVA-e
+---
+
+.hi[**Statistički model ANOVA-e**]
+
+$$\begin{array}{lrcl}
+H_0: & Y_{ik} &=& \mu + \epsilon_{ik} \\
+H_1: & Y_{ik} &=& \mu_k + \epsilon_{ik} 
+\end{array}$$
+
+.hi[**Pretpostavka o rezidualnoj strukturi**]
+
+$$\epsilon_{ik} \sim \mbox{Normal}(0, \sigma^2)$$
+
+.hi[**Pretpostavke**]
+
+- Normalnost distribucije
+- Homogenost varijance
+- Nezavisnost
+
+
+---
+layout:false
+class: middle, inverse
+# HOMOGENOST VARIJANCE
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Kruške ili jabuke!?)
+---
+
+layout:true
+# HOMOGENOST VARIJANCE
+---
+
+
+
+.hi[**Provjera homogenosti Leven-ovim testom**]
+
+$$Z_{ik} = \left| Y_{ik} - \bar{Y}_k \right|$$
+
+.hi[**Provjera homogenosti Brown-Forsythe testom**]
+
+$$Z_{ik} = \left| Y_{ik} - \mbox{median}_k(Y) \right|$$
+---
+
+.hi[**Provedi test u R**]
+
+```{r}
+library( car )  # Učitaj paket
+leveneTest( my.anova ) # Provedi Levene test
+leveneTest( y = my.anova, center = mean ) # Provedi B-F test 
+
+```
+---
+
+```{r}
+# Provedi test korak po korak
+Y <- clin.trial $ mood.gain    # Ishod
+G <- clin.trial $ drug         # Grupa
+gp.mean <- tapply(Y, G, mean)  # Izračunaj grupne prosjeke
+Ybar <- gp.mean[G]             # Izvadi grupne prosjeke vezane uz svaku ops
+Z <- abs(Y - Ybar)             # Transformirana varijabla
+summary( aov(Z ~ G) )          # Izvrši ANOVA-u 
+``` 
+
+---
+
+.hi[**Ukoliko su varijance heterogene**] 
+
+```{r}
+# Welch-ev test za ANOVA-u
+oneway.test(mood.gain ~ drug, data = clin.trial)
+```
+
+```{r}
+# Usporedi sa rezultatima testa za jednake varijance
+oneway.test(mood.gain ~ drug, data = clin.trial, var.equal = TRUE)
+```
+
+
+
+---
+layout:false
+class: middle, inverse
+# NORMALNOST DISTRIBUCIJE
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Vizualizacija i formalni test!)
+---
+
+layout:true
+#  NORMALNOST DISTRIBUCIJE
+---
+
+.hi[**Provjera normalnosti distribucije**]
+
+```{r}
+my.anova.residuals <- residuals( object = my.anova )   # Izvadi reziduale
+```
+
+```{r,fig.height=5}
+hist( x = my.anova.residuals )           # Napravi histogram reziduala
+```
+
+---
+
+```{r, fig.height=4}
+qqnorm( y = my.anova.residuals )         # Napravi QQ plot
+```
+
+```{r}
+shapiro.test( x = my.anova.residuals )   # Provedi Shapiro-Wilk test
+```
+
+---
+
+.hi[**Kruskal-Wallis test**]
+
+- Izračunaj prosječni rank vezan uz svaku grupu
+
+$$\bar{R}_k = \frac{1}{N_K} \sum_{i} R_{ik}$$
+
+- Izračunaj rank grand prosjeka
+
+$$\bar{R} = \frac{1}{N} \sum_{i} \sum_{k} R_{ik}$$
+
+- Izračunaj sumu kvadrata ukupnih rank-odstupanja
+
+$$\mbox{RSS}_{tot} = \sum_k \sum_i ( R_{ik} - \bar{R} )^2$$
+
+---
+
+.hi[**Kruskal-Wallis test**]
+
+
+- Izračunaj sumu kvadrata rank-odstupanja među grupama
+
+$$\begin{array}{rcl}
+\mbox{RSS}_{b} &=& \sum_k \sum_i ( \bar{R}_k  - \bar{R} )^2 \\
+&=& \sum_k N_k ( \bar{R}_k  - \bar{R} )^2 
+\end{array}$$
+
+- Izračunaj Kruskal-Wallis statistiku 
+
+$$K = (N - 1) \times \frac{\mbox{RSS}_b}{\mbox{RSS}_{tot}}$$
+
+- Drugi način za izračun K-W statistike
+
+$$K = \frac{12}{N(N-1)} \sum_k N_k {\bar{R}_k}^2    -  3(N+1)$$
+---
+
+.hi[**Kruskal-Wallis test**]
+
+- Prikaži rangirane podatke 
+
+```{r}
+f <- table( clin.trial$mood.gain )   # Tabuliraj i spremi u varijablu
+print(f)                             # Prikaži
+```
+
+- Izvrši K-W test u R
+
+
+```{r}
+# Prvi način
+kruskal.test(mood.gain ~ drug, data = clin.trial)
+```
+
+---
+
+.hi[**Kruskal-Wallis test**]
+
+```{r}
+# Drugi način
+kruskal.test(x = clin.trial$mood.gain, g = clin.trial$drug)
+```
+
+```{r eval=FALSE}
+# Treći način
+mood.gain <- list( placebo, joyzepam, anxifree ) # Spremi serije u listu
+kruskal.test( x = mood.gain )                    # Provedi test
+```
+
+
+
+---
+layout:false
+class: middle, inverse
+# ANOVA vs STUDENTOV t-test
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Postoji li razlika?!)
+---
+
+layout:true
+# ANOVA vs STUDENTOV t-test
+---
+
+```{r}
+# Provedi ANOVA test
+summary( aov( mood.gain ~ therapy, data = clin.trial ))
+```
+
+---
+
+```{r}
+# Provedi studentov t-test
+t.test( mood.gain ~ therapy, data = clin.trial, var.equal = TRUE )
+```
+
+```{r}
+# Kvadriraj za F-statistiku
+1.3068 ^ 2
+```
+
+
+
+---
+layout:false
+class: middle, inverse
+# Hvala na pažnji!
+<html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
+(Sljedeće predavanje: Linearna regresija.)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

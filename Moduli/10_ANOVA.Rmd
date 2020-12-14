@@ -790,13 +790,18 @@ class: middle, inverse
 layout:true
 # PRETPOSTAVKE JEDNOSTRANE ANOVA-e
 ---
+<br>
+<br>
+
 .pull-left[
 .hi[**Statistički model ANOVA-e**]
 <br>
+
 $$\begin{array}{lrcl}
 H_0: & Y_{ik} &=& \mu + \epsilon_{ik} \\
 H_1: & Y_{ik} &=& \mu_k + \epsilon_{ik} 
 \end{array}$$
+
 ]
 
 .pull-right[
@@ -804,6 +809,7 @@ H_1: & Y_{ik} &=& \mu_k + \epsilon_{ik}
 <br>
 $$\epsilon_{ik} \sim \mbox{Normal}(0, \sigma^2)$$
 ]
+
 <br>
 .hi[**Pretpostavke**]
 <br>
@@ -988,7 +994,6 @@ class: middle, inverse
 layout:true
 # ANOVA vs t-test
 ---
-<br>
 <br>
 ```{r}
 # Provedi ANOVA test

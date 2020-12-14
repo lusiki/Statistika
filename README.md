@@ -16,9 +16,9 @@ U kolegiju se obrađuju osnove statistike organizirane u tri cjeline:
 
 Primjenjeni aspekt kolegija odnosi na provedbu statističkih koncepata u programskom jeziku R. Pri tome je naglasak na osnovnoj `base::` sintaksi programskog jezika R, a manje na korištenju specifičnih paketa.  
 
-Cilj kolegija je dvojak: 1) obrada i utvrđivanje osnovnih statističkih koncepata, 2) osposobljavanje za rad s podatcima i samostalnu provedbu statističke analize u programskom jeziku R. Pri tome je veći naglasak stavljen na praktičnu primjenu statističkih koncepata nego na statističku teoriju. Kolegij ne zahtjeva prethodno poznavanje programskog jezika R, a najveću će korist ostvariti studenti koji materijale (ili dio) probaju izvesti sami u R.
+Cilj kolegija je dvojak: 1) obrada i utvrđivanje osnovnih statističkih koncepata, 2) osposobljavanje za rad s podatcima i samostalnu provedbu statističke analize u programskom jeziku R. Pri tome je veći naglasak stavljen na praktičnu primjenu statističkih koncepata nego na statističku teoriju. Kolegij ne zahtjeva prethodno poznavanje programskog jezika R no najveću će korist ostvariti studenti koji materijale (ili dio) prate u kroz jezik R. Studentima se preporuča instalacija Git-a i doprinos kolegiju kroz GitHub (primjerice kroz ispravke grešaka ili popboljšanje materijala...). Materijali u ovom repozitoriju su u potpunosti napravljeni po *Open Source* principima.
 
-Kolegij će studentima društvenih znanosti omogućiti uključivanje u modernu paradigmu rada sa podatcima i otvoriti perspektivu rada sa *Data Science* i *Big Data* tehnologijama. Na taj način kolegij studentima otvara priliku produbljenja akademskih vještina (*provedba kvantitativne empirijske analize*), povećava mogućnosti zaposlenja (*na strani analitike ili pojektnog IT menadzmenta*) i općenito, smanjenju STEM jaza. Materijali u ovom repozitoriju su u potpunosti napravljeni po *Open Source* principima.
+Kolegij će studentima društvenih znanosti omogućiti uključivanje u modernu paradigmu rada sa podatcima i otvoriti perspektivu rada sa *Data Science* i *Big Data* tehnologijama. Na taj način kolegij studentima otvara priliku produbljenja akademskih vještina (*provedba kvantitativne empirijske analize*), povećava mogućnosti zaposlenja (*na strani analitike ili pojektnog IT menadzmenta*) i općenito, smanjenju STEM jaza. 
 
 # Raspored
 

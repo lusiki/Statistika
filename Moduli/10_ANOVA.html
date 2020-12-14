@@ -225,6 +225,8 @@ H_0 &amp;:&amp; \mbox{točno je } \mu_P = \mu_A = \mu_J
 H_1 &amp;:&amp; \mbox{nije točno } \mu_P = \mu_A = \mu_J
 \end{array}$$`
 
+&lt;br&gt;
+&lt;br&gt;
 .hi[**Izračun varijance kod ANOVA-e**]
 
 `$$\mbox{Var}(Y) = \frac{1}{N} \sum_{k=1}^G \sum_{i=1}^{N_k} \left(Y_{ik} - \bar{Y} \right)^2$$`
@@ -361,11 +363,6 @@ H_1 &amp;:&amp; \mbox{nije točno } \mu_P = \mu_A = \mu_J
 
 
 
-
-```r
-knitr::include_graphics(file.path("../Foto/anova.png"))
-```
-
 &lt;img src="../Foto/anova.png" width="1552" style="display: block; margin: auto;" /&gt;
 
 ---
@@ -408,7 +405,8 @@ knitr::include_graphics(file.path("../Foto/anova.png"))
 ---
 
 - Dodaj grupni prosjek
-
+&lt;br&gt;
+&lt;br&gt;
 &lt;table&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -557,8 +555,6 @@ print( SSw )
 ```
 ---
 &lt;br&gt;
-&lt;br&gt;
-&lt;br&gt;
 
 .hi[**Izračunaj grupna odstupanja od "master" prosjeka**]
 &lt;br&gt;
@@ -601,7 +597,7 @@ print( SSw )
 
 ---
 
-.hi[**Pomnoži sa veličinom uzorka**]
+- Pomnoži sa veličinom uzorka
 
 
 &lt;table&gt;
@@ -635,7 +631,7 @@ print( SSw )
 &lt;/tbody&gt;
 &lt;/table&gt;
 
-.hi[**Zbroji kvadrate odstupanja između grupa**]
+- Zbroji kvadrate odstupanja između grupa
 
 `$$\begin{array}{rcl}
 \mbox{SS}_{b} &amp;=&amp; 1.11 + 0.16 + 2.18 \\
@@ -644,8 +640,7 @@ print( SSw )
 
 ---
 &lt;br&gt;
-&lt;br&gt;
-&lt;br&gt;
+
 .hi[**Provedi proceduru u R**]
 &lt;br&gt;
 
@@ -694,7 +689,7 @@ print( SSb )
 ---
 
 .hi[**Izračunaj stupnjeve slobode**]
-
+&lt;br&gt;
 `$$\begin{array}{lclcl}
 \mbox{df}_b &amp;=&amp; G - 1 &amp;=&amp; 2 \\
 \mbox{df}_w &amp;=&amp; N - G &amp;=&amp; 15 
@@ -702,7 +697,8 @@ print( SSb )
 
 
 .hi[**Izračunaj MS statistike**]
-
+&lt;br&gt;
+&lt;br&gt;
 `$$\begin{array}{lclclcl}
 \mbox{MS}_b &amp;=&amp; \displaystyle\frac{\mbox{SS}_b }{  \mbox{df}_b } &amp;=&amp; \displaystyle\frac{3.45}{ 2}  &amp;=&amp; 1.73
 \end{array}$$`
@@ -712,9 +708,9 @@ print( SSb )
 \end{array}$$`
 ---
 &lt;br&gt;
-&lt;br&gt;
-.hi[**Izračunaj F-statistiku**]
 
+.hi[**Izračunaj F-statistiku**]
+&lt;br&gt;
 `$$F \ = \ \frac{\mbox{MS}_b }{ \mbox{MS}_w } \ = \ \frac{1.73}{0.09} \ = \ 18.6$$`
 
 &lt;br&gt;
@@ -731,8 +727,9 @@ pf( 18.6, df1 = 2, df2 = 15, lower.tail = FALSE)
 
 ---
 &lt;br&gt;
-&lt;br&gt;
 .hi[**Prikaži rezultate u tablici**]
+&lt;br&gt;
+&lt;br&gt;
 &lt;br&gt;
 &lt;table&gt;
  &lt;thead&gt;
@@ -790,6 +787,10 @@ aov( mood.gain ~ drug, clin.trial )                  # Skraćeno;definirani df
 ```
 
 
+```r
+# Spremi rezultate testa u objekt
+my.anova &lt;- aov( mood.gain ~ drug, clin.trial ) 
+```
 
 ---
 

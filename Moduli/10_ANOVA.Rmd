@@ -284,6 +284,8 @@ $$\begin{array}{rcl}
 H_1 &:& \mbox{nije točno } \mu_P = \mu_A = \mu_J
 \end{array}$$
 
+<br>
+<br>
 .hi[**Izračun varijance kod ANOVA-e**]
 
 $$\mbox{Var}(Y) = \frac{1}{N} \sum_{k=1}^G \sum_{i=1}^{N_k} \left(Y_{ik} - \bar{Y} \right)^2$$
@@ -475,7 +477,7 @@ knitr::kable(data.frame(stringsAsFactors=FALSE,
 ```
 
 
-```{r}
+```{r echo=F}
 knitr::include_graphics(file.path("../Foto/anova.png"))
 ```
 
@@ -499,7 +501,8 @@ knitr::kable(tibble::tribble(
 ---
 
 - Dodaj grupni prosjek
-
+<br>
+<br>
 ```{r echo=FALSE}
 knitr::kable(tibble::tribble(
          ~V1,        ~V2,               ~V3,
@@ -566,8 +569,6 @@ print( SSw )
 ```
 ---
 <br>
-<br>
-<br>
 
 .hi[**Izračunaj grupna odstupanja od "master" prosjeka**]
 <br>
@@ -584,7 +585,7 @@ knitr::kable(tibble::tribble(
 
 ---
 
-.hi[**Pomnoži sa veličinom uzorka**]
+- Pomnoži sa veličinom uzorka
 
 
 ```{r echo=FALSE}
@@ -596,7 +597,7 @@ knitr::kable(tibble::tribble(
   ), col.names = c(     "Grupa (k)",            "Kvadrirane devijacije (Y_k - Y)^2", "Veličina uzorka (N_k)",              "Ponderirani kv. odst. N_k*(Y_k - Y)^2"))
 ```
 
-.hi[**Zbroji kvadrate odstupanja između grupa**]
+- Zbroji kvadrate odstupanja između grupa
 
 $$\begin{array}{rcl}
 \mbox{SS}_{b} &=& 1.11 + 0.16 + 2.18 \\
@@ -605,8 +606,7 @@ $$\begin{array}{rcl}
 
 ---
 <br>
-<br>
-<br>
+
 .hi[**Provedi proceduru u R**]
 <br>
 
@@ -637,7 +637,7 @@ print( SSb )
 ---
 
 .hi[**Izračunaj stupnjeve slobode**]
-
+<br>
 $$\begin{array}{lclcl}
 \mbox{df}_b &=& G - 1 &=& 2 \\
 \mbox{df}_w &=& N - G &=& 15 
@@ -645,7 +645,8 @@ $$\begin{array}{lclcl}
 
 
 .hi[**Izračunaj MS statistike**]
-
+<br>
+<br>
 $$\begin{array}{lclclcl}
 \mbox{MS}_b &=& \displaystyle\frac{\mbox{SS}_b }{  \mbox{df}_b } &=& \displaystyle\frac{3.45}{ 2}  &=& 1.73
 \end{array}$$
@@ -655,9 +656,9 @@ $$\begin{array}{lclclcl}
 \end{array}$$
 ---
 <br>
-<br>
-.hi[**Izračunaj F-statistiku**]
 
+.hi[**Izračunaj F-statistiku**]
+<br>
 $$F \ = \ \frac{\mbox{MS}_b }{ \mbox{MS}_w } \ = \ \frac{1.73}{0.09} \ = \ 18.6$$
 
 <br>
@@ -669,8 +670,9 @@ pf( 18.6, df1 = 2, df2 = 15, lower.tail = FALSE)
 
 ---
 <br>
-<br>
 .hi[**Prikaži rezultate u tablici**]
+<br>
+<br>
 <br>
 ```{r echo=FALSE}
 knitr::kable(tibble::tribble(
@@ -703,7 +705,7 @@ aov( clin.trial$mood.gain ~ clin.trial$drug )        # Definiranje varijabli
 aov( mood.gain ~ drug, clin.trial )                  # Skraćeno;definirani df
 ```
 
-```{r echo=FALSE}
+```{r echo=T}
 # Spremi rezultate testa u objekt
 my.anova <- aov( mood.gain ~ drug, clin.trial ) 
 ```

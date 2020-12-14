@@ -129,9 +129,11 @@ summary(clin.trial)
 #&gt;                              Max.   :1.8000
 ```
 
+.pull-left[
+
 ```r
 # Tabuliraj podatke
-xtabs( ~drug, clin.trial )
+xtabs( ~ drug, clin.trial )
 ```
 
 ```
@@ -139,6 +141,21 @@ xtabs( ~drug, clin.trial )
 #&gt;  placebo anxifree joyzepam 
 #&gt;        6        6        6
 ```
+]
+
+.pull-right[
+
+```r
+# Tabuliraj podatke
+xtabs( ~ therapy, clin.trial )
+```
+
+```
+#&gt; therapy
+#&gt; no.therapy        CBT 
+#&gt;          9          9
+```
+]
 
 ---
 
@@ -182,7 +199,7 @@ plotmeans(  formula = mood.gain ~ drug,   # Porast raspoloženja vs. ljek
  )
 ```
 
-&lt;img src="10_ANOVA_files/figure-html/unnamed-chunk-5-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="10_ANOVA_files/figure-html/unnamed-chunk-7-1.svg" style="display: block; margin: auto;" /&gt;
 
 
 
@@ -341,36 +358,15 @@ H_1 &amp;:&amp; \mbox{nije točno } \mu_P = \mu_A = \mu_J
 
 .hi[**Sažeti prikaz u tablici**]
 
-&lt;table&gt;
- &lt;thead&gt;
-  &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt;  &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; df &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; suma kvadrata &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; kvadrati odstpanja od prosjeka &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; F statistika &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; p vrijednost &lt;/th&gt;
-  &lt;/tr&gt;
- &lt;/thead&gt;
-&lt;tbody&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; izmedju grupa &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; df_b = G-1 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; SS_b = \displaystyle\sum_{k=1}^G N_k (\bar{Y}_k - \bar{Y})^2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; MS_b = SS_bdf_b} &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; F = MS_b /MS_w } &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; [komplicirano] &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; unutar grupa &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; f_w = N-G &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; SS_w = \sum_{k=1}^G \sum_{i = 1}^{N_k} ( {Y}_{ik} - \bar{Y}_k)^2 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; MS_w =  SS_w df_w} &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; - &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; - &lt;/td&gt;
-  &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
+
+
+
+
+```r
+knitr::include_graphics(file.path("../Foto/anova.png"))
+```
+
+&lt;img src="../Foto/anova.png" width="1552" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -461,7 +457,7 @@ H_1 &amp;:&amp; \mbox{nije točno } \mu_P = \mu_A = \mu_J
    &lt;th style="text-align:left;"&gt; Ishod (Y_ik) &lt;/th&gt;
    &lt;th style="text-align:left;"&gt; Grupni prosjek (Y_k) &lt;/th&gt;
    &lt;th style="text-align:left;"&gt; dodstupanje od gr. prosjeka (Y_ik - Y_k) &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; Kvadrat odstupanja (Y_ik - Y_k)^2) &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; Kvadrat odstupanja (Y_ik - Y_k)^2 &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
@@ -514,6 +510,8 @@ H_1 &amp;:&amp; \mbox{nije točno } \mu_P = \mu_A = \mu_J
 ---
 
 .hi[**Izračun u R-u korak po korak**]
+&lt;br&gt;
+&lt;br&gt;
 
 
 ```r
@@ -533,6 +531,7 @@ Y &lt;- data.frame( group, outcome, gp.means,
 
 
 ```r
+# Pregled podataka
 print(head(Y,6), digits = 2)
 ```
 
@@ -557,9 +556,13 @@ print( SSw )
 #&gt; [1] 1.391667
 ```
 ---
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
 
 .hi[**Izračunaj grupna odstupanja od "master" prosjeka**]
-
+&lt;br&gt;
+&lt;br&gt;
 
 &lt;table&gt;
  &lt;thead&gt;
@@ -640,8 +643,11 @@ print( SSw )
 \end{array}$$`
 
 ---
-
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
 .hi[**Provedi proceduru u R**]
+&lt;br&gt;
 
 
 ```r
@@ -659,8 +665,8 @@ Y &lt;- data.frame( gp.means, grand.mean, dev.from.grand.mean,
 
 ---
 
-
 ```r
+# Prikaži podatke
 print(head(Y,6), digits = 2)
 ```
 
@@ -674,8 +680,6 @@ print(head(Y,6), digits = 2)
 #&gt; anxifree            0.17
 #&gt; joyzepam            2.16
 ```
-
----
 
 
 ```r
@@ -707,14 +711,15 @@ print( SSb )
 \mbox{MS}_w &amp;=&amp; \displaystyle\frac{\mbox{SS}_w }{  \mbox{df}_w } &amp;=&amp; \displaystyle\frac{1.39}{15} &amp;=&amp; 0.09
 \end{array}$$`
 ---
-
+&lt;br&gt;
+&lt;br&gt;
 .hi[**Izračunaj F-statistiku**]
 
 `$$F \ = \ \frac{\mbox{MS}_b }{ \mbox{MS}_w } \ = \ \frac{1.73}{0.09} \ = \ 18.6$$`
 
-
+&lt;br&gt;
 .hi[**Provjeri p-vrijednost**]
-
+&lt;br&gt;
 
 ```r
 pf( 18.6, df1 = 2, df2 = 15, lower.tail = FALSE)
@@ -725,9 +730,10 @@ pf( 18.6, df1 = 2, df2 = 15, lower.tail = FALSE)
 ```
 
 ---
-
+&lt;br&gt;
+&lt;br&gt;
 .hi[**Prikaži rezultate u tablici**]
-
+&lt;br&gt;
 &lt;table&gt;
  &lt;thead&gt;
   &lt;tr&gt;
@@ -746,7 +752,7 @@ pf( 18.6, df1 = 2, df2 = 15, lower.tail = FALSE)
    &lt;td style="text-align:left;"&gt; 3.45 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; 1.73 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; 18.6 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; 8.67 * 10^{-5} &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 8.67 * 10^-5 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; within groups &lt;/td&gt;
@@ -771,15 +777,18 @@ layout:true
 # ANOVA U R
 ---
 
+&lt;br&gt;
 .hi[**Opcije**]
-
+&lt;br&gt;
+&lt;br&gt;
 
 ```r
 # Različiti načini za provođenje ANOVA postupka
 aov( formula = mood.gain ~ drug, data = clin.trial ) # Puna specifikacija
 aov( clin.trial$mood.gain ~ clin.trial$drug )        # Definiranje varijabli
-aov( mood.gain ~ drug, clin.trial )                  # Skarćeno;definirani df
+aov( mood.gain ~ drug, clin.trial )                  # Skraćeno;definirani df
 ```
+
 
 
 ---
@@ -810,7 +819,7 @@ names( my.anova )
 
 
 ```r
-# Prikaži objekt
+# Prikaži procjenjeni objekt
 print( my.anova )
 ```
 
@@ -827,9 +836,10 @@ print( my.anova )
 #&gt; Estimated effects may be unbalanced
 ```
 ---
-
+&lt;br&gt;
 .hi[**Testiranje ANOVA hipoteza**]
-
+&lt;br&gt;
+&lt;br&gt;
 
 ```r
 # Prikaži deskriptivnu statistiku
@@ -864,14 +874,15 @@ layout:true
 
 `$$\eta^2 = \frac{3.45}{4.84} = 0.71$$`
 
-.hi[**Makni korjen**]
+.hi[**Makni kvadrat**]
 
 
 `$$\eta= \sqrt{\frac{\mbox{SS}_b}{\mbox{SS}_{tot}}}$$`
 ---
 
 .hi[**Napravi procjenitelj u R**]
-
+&lt;br&gt;
+&lt;br&gt;
 
 ```r
 SStot &lt;- SSb + SSw          # Ukupna suma kvadrata
@@ -888,7 +899,7 @@ print( eta.squared )        # Prikaži rezultate
 ```r
 library(lsr)
 # Izračunaj pomoću funkcije
-etaSquared( x = my.anova )
+lsr::etaSquared( x = my.anova )
 ```
 
 ```
@@ -907,20 +918,23 @@ class: middle, inverse
 layout:true
 # PRETPOSTAVKE JEDNOSTRANE ANOVA-e
 ---
-
+.pull-left[
 .hi[**Statistički model ANOVA-e**]
-
+&lt;br&gt;
 `$$\begin{array}{lrcl}
 H_0: &amp; Y_{ik} &amp;=&amp; \mu + \epsilon_{ik} \\
 H_1: &amp; Y_{ik} &amp;=&amp; \mu_k + \epsilon_{ik} 
 \end{array}$$`
+]
 
+.pull-right[
 .hi[**Pretpostavka o rezidualnoj strukturi**]
-
+&lt;br&gt;
 `$$\epsilon_{ik} \sim \mbox{Normal}(0, \sigma^2)$$`
-
+]
+&lt;br&gt;
 .hi[**Pretpostavke**]
-
+&lt;br&gt;
 - Normalnost distribucije
 - Homogenost varijance
 - Nezavisnost
@@ -938,14 +952,16 @@ layout:true
 # HOMOGENOST VARIJANCE
 ---
 
-
-
+&lt;br&gt;
+&lt;br&gt;
 .hi[**Provjera homogenosti Leven-ovim testom**]
-
+&lt;br&gt;
 `$$Z_{ik} = \left| Y_{ik} - \bar{Y}_k \right|$$`
 
+&lt;br&gt;
+&lt;br&gt;
 .hi[**Provjera homogenosti Brown-Forsythe testom**]
-
+&lt;br&gt;
 `$$Z_{ik} = \left| Y_{ik} - \mbox{median}_k(Y) \right|$$`
 ---
 
@@ -954,7 +970,7 @@ layout:true
 
 ```r
 library( car )  # Učitaj paket
-leveneTest( my.anova ) # Provedi Levene test
+car::leveneTest( my.anova ) # Provedi Levene test
 ```
 
 ```
@@ -965,7 +981,7 @@ leveneTest( my.anova ) # Provedi Levene test
 ```
 
 ```r
-leveneTest( y = my.anova, center = mean ) # Provedi B-F test 
+car::leveneTest( y = my.anova, center = mean ) # Provedi B-F test 
 ```
 
 ```
@@ -978,7 +994,7 @@ leveneTest( y = my.anova, center = mean ) # Provedi B-F test
 
 
 ```r
-# Provedi test korak po korak
+# Provedi (Levene) test korak po korak
 Y &lt;- clin.trial $ mood.gain    # Ishod
 G &lt;- clin.trial $ drug         # Grupa
 gp.mean &lt;- tapply(Y, G, mean)  # Izračunaj grupne prosjeke
@@ -995,7 +1011,7 @@ summary( aov(Z ~ G) )          # Izvrši ANOVA-u
 
 ---
 
-.hi[**Ukoliko su varijance heterogene**] 
+.hi[**Ukoliko su varijance heterogene:**] 
 
 
 ```r
@@ -1051,7 +1067,7 @@ my.anova.residuals &lt;- residuals( object = my.anova )   # Izvadi reziduale
 hist( x = my.anova.residuals )           # Napravi histogram reziduala
 ```
 
-&lt;img src="10_ANOVA_files/figure-html/unnamed-chunk-33-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="10_ANOVA_files/figure-html/unnamed-chunk-36-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -1060,7 +1076,7 @@ hist( x = my.anova.residuals )           # Napravi histogram reziduala
 qqnorm( y = my.anova.residuals )         # Napravi QQ plot
 ```
 
-&lt;img src="10_ANOVA_files/figure-html/unnamed-chunk-34-1.svg" style="display: block; margin: auto;" /&gt;
+&lt;img src="10_ANOVA_files/figure-html/unnamed-chunk-37-1.svg" style="display: block; margin: auto;" /&gt;
 
 
 ```r
@@ -1080,14 +1096,15 @@ shapiro.test( x = my.anova.residuals )   # Provedi Shapiro-Wilk test
 .hi[**Kruskal-Wallis test**]
 
 - Izračunaj prosječni rank vezan uz svaku grupu
-
+&lt;br&gt;
 `$$\bar{R}_k = \frac{1}{N_K} \sum_{i} R_{ik}$$`
 
 - Izračunaj rank grand prosjeka
-
+&lt;br&gt;
 `$$\bar{R} = \frac{1}{N} \sum_{i} \sum_{k} R_{ik}$$`
 
 - Izračunaj sumu kvadrata ukupnih rank-odstupanja
+&lt;br&gt;
 
 `$$\mbox{RSS}_{tot} = \sum_k \sum_i ( R_{ik} - \bar{R} )^2$$`
 
@@ -1162,7 +1179,7 @@ kruskal.test(x = clin.trial$mood.gain, g = clin.trial$drug)
 #&gt; data:  clin.trial$mood.gain and clin.trial$drug
 #&gt; Kruskal-Wallis chi-squared = 12.076, df = 2, p-value = 0.002386
 ```
-
+&lt;br&gt;
 
 ```r
 # Treći način
@@ -1181,9 +1198,10 @@ class: middle, inverse
 ---
 
 layout:true
-# ANOVA vs STUDENTOV t-test
+# ANOVA vs t-test
 ---
-
+&lt;br&gt;
+&lt;br&gt;
 
 ```r
 # Provedi ANOVA test
@@ -1235,7 +1253,7 @@ layout:false
 class: middle, inverse
 # Hvala na pažnji!
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
-(Sljedeće predavanje: Linearna regresija.)
+(Sljedeće predavanje: Linearna regresija)
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

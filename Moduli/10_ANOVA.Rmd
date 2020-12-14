@@ -220,9 +220,21 @@ head(clin.trial, 8)   # Pregledaj podatke
 
 ```{r}
 summary(clin.trial)
-# Tabuliraj podatke
-xtabs( ~drug, clin.trial )
 ```
+
+.pull-left[
+```{r}
+# Tabuliraj podatke
+xtabs( ~ drug, clin.trial )
+```
+]
+
+.pull-right[
+```{r}
+# Tabuliraj podatke
+xtabs( ~ therapy, clin.trial )
+```
+]
 
 ---
 
@@ -443,7 +455,7 @@ $$F = \frac{\mbox{MS}_b }{ \mbox{MS}_w }$$
 
 .hi[**Sažeti prikaz u tablici**]
 
-```{r anovatable, echo=FALSE}
+```{r anovatable, echo=FALSE, eval=F}
 knitr::kable(data.frame(stringsAsFactors=FALSE,
              type = c("izmedju grupa", "unutar grupa"),
                df = c("df_b = G-1", "f_w = N-G"),
@@ -460,6 +472,11 @@ knitr::kable(data.frame(stringsAsFactors=FALSE,
 )
 
 
+```
+
+
+```{r}
+knitr::include_graphics(file.path("../Foto/anova.png"))
 ```
 
 ---
@@ -505,7 +522,7 @@ knitr::kable(tibble::tribble(
    "placebo",      "0.3",         "0.45",                  "-0.15",                 "0.0225",
    "placebo",      "0.1",         "0.45",                  "-0.35",                 "0.1225",
   "anxifree",      "0.6",         "0.72",                  "-0.12",                 "0.0136",
-  "anxifree",      "0.4",         "0.72",                  "-0.32",                 "0.1003"), col.names = c("Grupa (k)",  "Ishod (Y_ik)",   "Grupni prosjek (Y_k)", "dodstupanje od gr. prosjeka (Y_ik - Y_k)",      "Kvadrat odstupanja (Y_ik - Y_k)^2)"))
+  "anxifree",      "0.4",         "0.72",                  "-0.32",                 "0.1003"), col.names = c("Grupa (k)",  "Ishod (Y_ik)",   "Grupni prosjek (Y_k)", "dodstupanje od gr. prosjeka (Y_ik - Y_k)",      "Kvadrat odstupanja (Y_ik - Y_k)^2"))
 ```
 
 
@@ -519,6 +536,8 @@ $$\begin{array}{rcl}
 ---
 
 .hi[**Izračun u R-u korak po korak**]
+<br>
+<br>
 
 ```{r}
 # Definiraj varijable
@@ -536,6 +555,7 @@ Y <- data.frame( group, outcome, gp.means,
 ---
 
 ```{r}
+# Pregled podataka
 print(head(Y,6), digits = 2)
 ```
 
@@ -545,9 +565,13 @@ SSw <- sum( squared.devs )
 print( SSw )
 ```
 ---
+<br>
+<br>
+<br>
 
 .hi[**Izračunaj grupna odstupanja od "master" prosjeka**]
-
+<br>
+<br>
 
 ```{r echo=FALSE}
 knitr::kable(tibble::tribble(
@@ -580,8 +604,11 @@ $$\begin{array}{rcl}
 \end{array}$$
 
 ---
-
+<br>
+<br>
+<br>
 .hi[**Provedi proceduru u R**]
+<br>
 
 ```{r}
 # Definiraj varijable
@@ -597,12 +624,10 @@ Y <- data.frame( gp.means, grand.mean, dev.from.grand.mean,
 ```
 
 ---
-
 ```{r}
+# Prikaži podatke
 print(head(Y,6), digits = 2)
 ```
-
----
 
 ```{r}
 # Izračunaj sumu kvadrata odstupanja
@@ -629,26 +654,28 @@ $$\begin{array}{lclclcl}
 \mbox{MS}_w &=& \displaystyle\frac{\mbox{SS}_w }{  \mbox{df}_w } &=& \displaystyle\frac{1.39}{15} &=& 0.09
 \end{array}$$
 ---
-
+<br>
+<br>
 .hi[**Izračunaj F-statistiku**]
 
 $$F \ = \ \frac{\mbox{MS}_b }{ \mbox{MS}_w } \ = \ \frac{1.73}{0.09} \ = \ 18.6$$
 
-
+<br>
 .hi[**Provjeri p-vrijednost**]
-
+<br>
 ```{r}
 pf( 18.6, df1 = 2, df2 = 15, lower.tail = FALSE)
 ```
 
 ---
-
+<br>
+<br>
 .hi[**Prikaži rezultate u tablici**]
-
+<br>
 ```{r echo=FALSE}
 knitr::kable(tibble::tribble(
                ~V1,  ~V2,              ~V3,            ~V4,             ~V5,                      ~V6,
-  "between groups",  "2",           "3.45",         "1.73",          "18.6", "8.67 * 10^{-5}",
+  "between groups",  "2",           "3.45",         "1.73",          "18.6", "8.67 * 10^-5",
    "within groups", "15",           "1.39",         "0.09",             "-",                      "-"
   ), col.names = c("", "df", "suma kvadrata", "srednji kvadrati", "F-statistika", "p-vrijednost"))
 ```
@@ -665,14 +692,17 @@ layout:true
 # ANOVA U R
 ---
 
+<br>
 .hi[**Opcije**]
-
+<br>
+<br>
 ```{r eval=FALSE}
 # Različiti načini za provođenje ANOVA postupka
 aov( formula = mood.gain ~ drug, data = clin.trial ) # Puna specifikacija
 aov( clin.trial$mood.gain ~ clin.trial$drug )        # Definiranje varijabli
-aov( mood.gain ~ drug, clin.trial )                  # Skarćeno;definirani df
+aov( mood.gain ~ drug, clin.trial )                  # Skraćeno;definirani df
 ```
+
 ```{r echo=FALSE}
 # Spremi rezultate testa u objekt
 my.anova <- aov( mood.gain ~ drug, clin.trial ) 
@@ -692,13 +722,14 @@ names( my.anova )
 ---
 
 ```{r}
-# Prikaži objekt
+# Prikaži procjenjeni objekt
 print( my.anova )
 ```
 ---
-
+<br>
 .hi[**Testiranje ANOVA hipoteza**]
-
+<br>
+<br>
 ```{r}
 # Prikaži deskriptivnu statistiku
 summary( my.anova )
@@ -724,14 +755,15 @@ $$\eta^2 = \frac{\mbox{SS}_b}{\mbox{SS}_{tot}}$$
 
 $$\eta^2 = \frac{3.45}{4.84} = 0.71$$
 
-.hi[**Makni korjen**]
+.hi[**Makni kvadrat**]
 
 
 $$\eta= \sqrt{\frac{\mbox{SS}_b}{\mbox{SS}_{tot}}}$$
 ---
 
 .hi[**Napravi procjenitelj u R**]
-
+<br>
+<br>
 ```{r}
 SStot <- SSb + SSw          # Ukupna suma kvadrata
 eta.squared <- SSb / SStot  # Eta kvadrat
@@ -742,7 +774,7 @@ print( eta.squared )        # Prikaži rezultate
 ```{r}
 library(lsr)
 # Izračunaj pomoću funkcije
-etaSquared( x = my.anova )
+lsr::etaSquared( x = my.anova )
 ```
 
 ---
@@ -756,20 +788,23 @@ class: middle, inverse
 layout:true
 # PRETPOSTAVKE JEDNOSTRANE ANOVA-e
 ---
-
+.pull-left[
 .hi[**Statistički model ANOVA-e**]
-
+<br>
 $$\begin{array}{lrcl}
 H_0: & Y_{ik} &=& \mu + \epsilon_{ik} \\
 H_1: & Y_{ik} &=& \mu_k + \epsilon_{ik} 
 \end{array}$$
+]
 
+.pull-right[
 .hi[**Pretpostavka o rezidualnoj strukturi**]
-
+<br>
 $$\epsilon_{ik} \sim \mbox{Normal}(0, \sigma^2)$$
-
+]
+<br>
 .hi[**Pretpostavke**]
-
+<br>
 - Normalnost distribucije
 - Homogenost varijance
 - Nezavisnost
@@ -787,14 +822,16 @@ layout:true
 # HOMOGENOST VARIJANCE
 ---
 
-
-
+<br>
+<br>
 .hi[**Provjera homogenosti Leven-ovim testom**]
-
+<br>
 $$Z_{ik} = \left| Y_{ik} - \bar{Y}_k \right|$$
 
+<br>
+<br>
 .hi[**Provjera homogenosti Brown-Forsythe testom**]
-
+<br>
 $$Z_{ik} = \left| Y_{ik} - \mbox{median}_k(Y) \right|$$
 ---
 
@@ -802,14 +839,14 @@ $$Z_{ik} = \left| Y_{ik} - \mbox{median}_k(Y) \right|$$
 
 ```{r}
 library( car )  # Učitaj paket
-leveneTest( my.anova ) # Provedi Levene test
-leveneTest( y = my.anova, center = mean ) # Provedi B-F test 
+car::leveneTest( my.anova ) # Provedi Levene test
+car::leveneTest( y = my.anova, center = mean ) # Provedi B-F test 
 
 ```
 ---
 
 ```{r}
-# Provedi test korak po korak
+# Provedi (Levene) test korak po korak
 Y <- clin.trial $ mood.gain    # Ishod
 G <- clin.trial $ drug         # Grupa
 gp.mean <- tapply(Y, G, mean)  # Izračunaj grupne prosjeke
@@ -820,7 +857,7 @@ summary( aov(Z ~ G) )          # Izvrši ANOVA-u
 
 ---
 
-.hi[**Ukoliko su varijance heterogene**] 
+.hi[**Ukoliko su varijance heterogene:**] 
 
 ```{r}
 # Welch-ev test za ANOVA-u
@@ -858,7 +895,7 @@ hist( x = my.anova.residuals )           # Napravi histogram reziduala
 
 ---
 
-```{r, fig.height=4}
+```{r, fig.height=3}
 qqnorm( y = my.anova.residuals )         # Napravi QQ plot
 ```
 
@@ -871,14 +908,15 @@ shapiro.test( x = my.anova.residuals )   # Provedi Shapiro-Wilk test
 .hi[**Kruskal-Wallis test**]
 
 - Izračunaj prosječni rank vezan uz svaku grupu
-
+<br>
 $$\bar{R}_k = \frac{1}{N_K} \sum_{i} R_{ik}$$
 
 - Izračunaj rank grand prosjeka
-
+<br>
 $$\bar{R} = \frac{1}{N} \sum_{i} \sum_{k} R_{ik}$$
 
 - Izračunaj sumu kvadrata ukupnih rank-odstupanja
+<br>
 
 $$\mbox{RSS}_{tot} = \sum_k \sum_i ( R_{ik} - \bar{R} )^2$$
 
@@ -928,7 +966,7 @@ kruskal.test(mood.gain ~ drug, data = clin.trial)
 # Drugi način
 kruskal.test(x = clin.trial$mood.gain, g = clin.trial$drug)
 ```
-
+<br>
 ```{r eval=FALSE}
 # Treći način
 mood.gain <- list( placebo, joyzepam, anxifree ) # Spremi serije u listu
@@ -946,9 +984,10 @@ class: middle, inverse
 ---
 
 layout:true
-# ANOVA vs STUDENTOV t-test
+# ANOVA vs t-test
 ---
-
+<br>
+<br>
 ```{r}
 # Provedi ANOVA test
 summary( aov( mood.gain ~ therapy, data = clin.trial ))
@@ -973,7 +1012,7 @@ layout:false
 class: middle, inverse
 # Hvala na pažnji!
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
-(Sljedeće predavanje: Linearna regresija.)
+(Sljedeće predavanje: Linearna regresija)
 
 
 

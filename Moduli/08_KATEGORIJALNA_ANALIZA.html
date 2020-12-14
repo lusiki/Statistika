@@ -25,30 +25,6 @@ class: center, middle, inverse, title-slide
 
 
 
-&lt;style type="text/css"&gt;
-@media print {
-  .has-continuation {
-    display: block !important;
-  }
-}
-remark-slide-content {
-  font-size: 22px;
-  padding: 20px 80px 20px 80px;
-}
-.remark-code, .remark-inline-code {
-  background: #f0f0f0;
-}
-.remark-code {
-  font-size: 16px;
-}
-.huge .remark-code { /*Change made here*/
-  font-size: 200% !important;
-}
-.tiny .remark-code { /*Change made here*/
-  font-size: 50% !important;
-}
-&lt;/style&gt;
-
 ---
 class: inverse, middle
 # PREGLED PREDAVANJA
@@ -84,6 +60,30 @@ layout:true
 # GOF TEST
 
 ---
+
+&lt;style type="text/css"&gt;
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+remark-slide-content {
+  font-size: 22px;
+  padding: 20px 80px 20px 80px;
+}
+.remark-code, .remark-inline-code {
+  background: #f0f0f0;
+}
+.remark-code {
+  font-size: 16px;
+}
+.huge .remark-code { /*Change made here*/
+  font-size: 200% !important;
+}
+.tiny .remark-code { /*Change made here*/
+  font-size: 50% !important;
+}
+&lt;/style&gt;
 
 .hi[**Pregled podataka za analizu**]
 
@@ -144,7 +144,7 @@ $$
  &lt;thead&gt;
   &lt;tr&gt;
    &lt;th style="text-align:left;"&gt; naziv &lt;/th&gt;
-   &lt;th style="text-align:center;"&gt; indeks `\(i\)` &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; indeks i &lt;/th&gt;
    &lt;th style="text-align:center;"&gt; simbol &lt;/th&gt;
    &lt;th style="text-align:center;"&gt; R naredba &lt;/th&gt;
    &lt;th style="text-align:center;"&gt; vrijednost &lt;/th&gt;
@@ -154,29 +154,29 @@ $$
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; clubs `\(\clubsuit\)` &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 1 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; `\(O_1\)` &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; `observed[1]` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; O_1 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; observed[1] &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 35 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; diamonds `\(\diamondsuit\)` &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 2 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; `\(O_2\)` &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; `observed[2]` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; O_2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; observed[2] &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 51 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; hearts `\(\heartsuit\)` &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 3 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; `\(O_3\)` &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; `observed[3]` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; O_3 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; observed[3] &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 64 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; spades `\(\spadesuit\)` &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 4 &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; `\(O_4\)` &lt;/td&gt;
-   &lt;td style="text-align:center;"&gt; `observed[4]` &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; O_4 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; observed[4] &lt;/td&gt;
    &lt;td style="text-align:center;"&gt; 50 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
@@ -198,7 +198,7 @@ $$
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; `\(H_0\)` : Sve četiri karte su izabrane sa jednakom vjerojatnošću &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(H_0: {P} = (.25, .25, .25, .25)\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; H_0: P = (.25, .25, .25, .25) &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -214,8 +214,8 @@ $$
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; `\(H_0\)` : Sve četiri karte su izabrane sa jednakom vjerojatnošću &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(H_1\)` : Barem jedan izbor nije sa vjerojatnošću 0.25 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; H_0 : Sve četiri karte su izabrane sa jednakom vjerojatnošću &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; H_1 : Barem jedan izbor nije sa vjerojatnošću 0.25 &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -225,14 +225,14 @@ $$
 &lt;table&gt;
  &lt;thead&gt;
   &lt;tr&gt;
-   &lt;th style="text-align:left;"&gt; `\(H_0\)` &lt;/th&gt;
-   &lt;th style="text-align:left;"&gt; `\(H_1\)` &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; H_0 &lt;/th&gt;
+   &lt;th style="text-align:left;"&gt; H_1 &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; `\(P = (.25, .25, .25, .25)\)` &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(P \neq (.25,.25,.25,.25)\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; P = (.25, .25, .25, .25) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; P(.25,.25,.25,.25) &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -256,9 +256,7 @@ vjerojatnosti # Pogledaj varijablu
 
 .hi[**Testna statistika**]
 
-$$
-E_i = N \times P_i
-$$
+`$$E_i = N \times P_i$$`
 .hi[**Formiraj očekivane vjerojatnosti u R**]
 
 
@@ -375,18 +373,14 @@ sum( (podatci - ocekivano)^2 / ocekivano )
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
-$$
-X^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}
-$$ 
+`$$X^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$` 
 
 
 .hi[Sampling distribucija GOF statistike]
 &lt;br&gt;
 &lt;br&gt;
 &lt;br&gt;
-$$
-O_i \sim \mbox{Binomial}(P_i, N)
-$$
+`$$O_i \sim \mbox{Binomial}(P_i, N)$$`
 
 ---
 
@@ -674,27 +668,27 @@ chapekFrequencies # Pregledaj tabulirane podatke
 &lt;tbody&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Puppy &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(O_{11}\)` &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(O_{12}\)` &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(R_{1}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; O_11 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; O_12 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; R_1 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Flower &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(O_{21}\)` &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(O_{22}\)` &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(R_{2}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; O_21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; O_22 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; R_2 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Data file &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(O_{31}\)` &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(O_{32}\)` &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(R_{3}\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; O_31 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; O_32 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; R_3 &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; Ukupno &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(C_{1}\)` &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(C_{2}\)` &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(N\)` &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; C_1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; C_2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; N &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -715,20 +709,20 @@ chapekFrequencies # Pregledaj tabulirane podatke
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; `\(H_0\)`: &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; H_0: &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; Sve od sljedećeg je točno: &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(P_{11} = P_{12}\)` (jednaka vjerojatnost izbora puppy) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; P_11 = P_12 (jednaka vjerojatnost izbora puppy) &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(P_{21} = P_{22}\)` (jednaka vjerojatnost izbora flower) i &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; P_21 = P_22 (jednaka vjerojatnost izbora flower) i &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
    &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; `\(P_{31} = P_{32}\)` (jednaka vjerojatnost izbora data). &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; P_31 = P_32 (jednaka vjerojatnost izbora data). &lt;/td&gt;
   &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -738,53 +732,39 @@ chapekFrequencies # Pregledaj tabulirane podatke
 .hi[**Formuliraj testnu statistiku**]
 
 
-$$
-E_{ij} = C_j \times P_i
-$$
+`$$E_{ij} = C_j \times P_i$$`
 &lt;br&gt;
 
-$$
-\hat{P}_i = \frac{R_i}{N}
-$$ 
+`$$\hat{P}_i = \frac{R_i}{N}$$` 
 &lt;br&gt;
 
-$$
-E_{ij} = \frac{R_i \times C_j}{N}
-$$
+`$$E_{ij} = \frac{R_i \times C_j}{N}$$`
 &lt;br&gt;
 
-$$ 
-X^2 = \sum_{i=1}^r\sum_{j=1}^c\frac{({E}_{ij} - O_{ij})^2}{{E}_{ij}}
-$$
+`$$X^2 = \sum_{i=1}^r\sum_{j=1}^c\frac{({E}_{ij} - O_{ij})^2}{{E}_{ij}}$$`
 
 ---
 .hi[**Stupnjevi slobode kod testa nezavisnosti**]
 &lt;br&gt;
 
-$$
-df = (r-1)(c-1)
-$$
+`$$df = (r-1)(c-1)$$`
 &lt;br&gt;
 
-$$
-\begin{array}{rcl}
+`$$\begin{array}{rcl}
 df &amp;=&amp; \mbox{(broj opservacija)} - \mbox{(broj ograničenja)} \\
 &amp;=&amp; (rc) - (c + (r-1)) \\
 &amp;=&amp; rc - c - r + 1 \\
 &amp;=&amp; (r - 1)(c - 1)
-\end{array}`
-$$
+\end{array}$$`
 
 &lt;br&gt;
 
-$$
-\begin{array}{rcl}
+`$$\begin{array}{rcl}
 df &amp;=&amp; \mbox{(broj opservacija)} - \mbox{(broj ograničenja)} \\
 &amp;=&amp; rc - ( (c-1) + (r-1) + 1) \\
 &amp;=&amp; rc - c - r + 1 \\
 &amp;=&amp; (r - 1)(c - 1)
-\end{array}`
-$$
+\end{array}$$`
 ---
 
 .hi[**Izvođenje testa u R**]
@@ -855,26 +835,20 @@ associationTest( formula = ~ choice + species, data = chapek9 )
 &lt;br&gt;
 &lt;br&gt;
 
-$$
-X^2 = \sum_{i} \frac{(|E_i - O_i| - 0.5)^2}{E_i}
-$$
+`$$X^2 = \sum_{i} \frac{(|E_i - O_i| - 0.5)^2}{E_i}$$`
 
 
 .hi[**Efekt veličine**]
 &lt;br&gt;
 &lt;br&gt;
 
-$$ 
-\phi = \sqrt{\frac{X^2}{N}}
-$$
+`$$\phi = \sqrt{\frac{X^2}{N}}$$`
 ---
 
 .hi[**Cramer V**]
 &lt;br&gt;
 &lt;br&gt;
-$$
-V = \sqrt{\frac{X^2}{N(k-1)}}
-$$
+`$$V = \sqrt{\frac{X^2}{N(k-1)}}$$`
 
 
 .hi[**Izvedi test u R**]
@@ -1124,9 +1098,7 @@ chisq.test( salem.tabs )
 
 .hi[**Formalni zapis vjerojatnosti za test**]
 
-$$
-P(O_{11}, O_{12}, O_{21}, O_{22} \ | \ R_1, R_2, C_1, C_2) 
-$$
+`$$P(O_{11}, O_{12}, O_{21}, O_{22} \ | \ R_1, R_2, C_1, C_2)$$`
 ---
 
 .hi[**Provedi Fisherov test**]
@@ -1246,15 +1218,11 @@ layout:true
 .hi[**Formalni zapis testa**]
 
 &lt;br&gt;
-$$
-X^2 = \frac{(|b-c| - 0.5)^2}{b+c}
-$$
+`$$X^2 = \frac{(|b-c| - 0.5)^2}{b+c}$$`
 
 &lt;br&gt;
 &lt;br&gt;
-$$
-X^2 = \frac{(|O_{12}-O_{21}| - 0.5)^2}{O_{12} + O_{21}}
-$$
+`$$X^2 = \frac{(|O_{12}-O_{21}| - 0.5)^2}{O_{12} + O_{21}}$$`
 ---
 
 .hi[**Pregled podataka**]
@@ -1391,7 +1359,6 @@ class: middle, inverse
 # HVALA NA PAŽNJI!
 &lt;html&gt;&lt;div style='float:left'&gt;&lt;/div&gt;&lt;hr color='#EB811B' size=1px width=796px&gt;&lt;/html&gt;
 (Sljedeće predavanje: Usporedba prosjeka.)
----
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>

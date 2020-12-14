@@ -152,30 +152,6 @@ tidy_table <- function(x, terms, highlight_row = 1, highlight_color = "black", h
 }
 ```
 
-```{css, echo = F, eval = T}
-@media print {
-  .has-continuation {
-    display: block !important;
-  }
-}
-remark-slide-content {
-  font-size: 22px;
-  padding: 20px 80px 20px 80px;
-}
-.remark-code, .remark-inline-code {
-  background: #f0f0f0;
-}
-.remark-code {
-  font-size: 16px;
-}
-.huge .remark-code { /*Change made here*/
-  font-size: 200% !important;
-}
-.tiny .remark-code { /*Change made here*/
-  font-size: 50% !important;
-}
-```
-
 ---
 class: inverse, middle
 # PREGLED PREDAVANJA
@@ -211,6 +187,30 @@ layout:true
 # GOF TEST
 
 ---
+
+```{css, echo = F, eval = T}
+@media print {
+  .has-continuation {
+    display: block !important;
+  }
+}
+remark-slide-content {
+  font-size: 22px;
+  padding: 20px 80px 20px 80px;
+}
+.remark-code, .remark-inline-code {
+  background: #f0f0f0;
+}
+.remark-code {
+  font-size: 16px;
+}
+.huge .remark-code { /*Change made here*/
+  font-size: 200% !important;
+}
+.tiny .remark-code { /*Change made here*/
+  font-size: 50% !important;
+}
+```
 
 .hi[**Pregled podataka za analizu**]
 
@@ -258,17 +258,17 @@ knitr::kable(data.frame(stringsAsFactors=FALSE,
                                           "hearts $\\heartsuit$\t", 
                                           "spades $\\spadesuit$"), 
                                 indeks = c(1:4),
-                                simbol = c("$O_1$", 
-                                                "$O_2$", 
-                                                "$O_3$", 
-                                                "$O_4$"),
-                                naredba = c("`observed[1]`", 
-                                            "`observed[2]`", 
-                                            "`observed[3]`", 
-                                            "`observed[4]`"),
+                                simbol = c("O_1", 
+                                                "O_2", 
+                                                "O_3", 
+                                                "O_4"),
+                                naredba = c("observed[1]", 
+                                            "observed[2]", 
+                                            "observed[3]", 
+                                            "observed[4]"),
                                 vrijednost = c(35, 51, 64, 50)), 
              col.names = c("naziv", 
-                           "indeks $i$", 
+                           "indeks i", 
                            "simbol", 
                            "R naredba", 
                            "vrijednost"), align = 'lcccc')
@@ -284,7 +284,7 @@ knitr::kable(data.frame(stringsAsFactors=FALSE,
 
 knitr::kable(data.frame(stringsAsFactors=FALSE,
                         Hipoteza = c("$H_0$ : Sve četiri karte su izabrane sa jednakom vjerojatnošću"),
-                        Formalni.Zapis = c("$H_0: {P} = (.25, .25, .25, .25)$")))
+                        Formalni.Zapis = c("H_0: P = (.25, .25, .25, .25)")))
 
 
 ```
@@ -294,8 +294,8 @@ knitr::kable(data.frame(stringsAsFactors=FALSE,
 ```{r, echo = FALSE}
 
 knitr::kable(data.frame(stringsAsFactors=FALSE,
-                        Nulta.Hipoteza = c("$H_0$ : Sve četiri karte su izabrane sa jednakom vjerojatnošću"),
-                        Alternativna.Hipoteza = c("$H_1$ : Barem jedan izbor nije sa vjerojatnošću 0.25")))
+                        Nulta.Hipoteza = c("H_0 : Sve četiri karte su izabrane sa jednakom vjerojatnošću"),
+                        Alternativna.Hipoteza = c("H_1 : Barem jedan izbor nije sa vjerojatnošću 0.25")))
 
 ```
 
@@ -303,9 +303,9 @@ knitr::kable(data.frame(stringsAsFactors=FALSE,
 
 ```{r echo=FALSE}
 knitr::kable(data.frame(stringsAsFactors=FALSE,
-       NANA = c("$P = (.25, .25, .25, .25)$"),
-       NANA = c("$P \\neq (.25,.25,.25,.25)$")),
-       col.names = c("$H_0$", "$H_1$")) 
+       NANA = c("P = (.25, .25, .25, .25)"),
+       NANA = c("P(.25,.25,.25,.25)")),
+       col.names = c("H_0", "H_1")) 
 ```
 
 ---
@@ -322,9 +322,7 @@ vjerojatnosti # Pogledaj varijablu
 
 .hi[**Testna statistika**]
 
-$$
-E_i = N \times P_i
-$$
+$$E_i = N \times P_i$$
 .hi[**Formiraj očekivane vjerojatnosti u R**]
 
 ```{r}
@@ -393,18 +391,14 @@ sum( (podatci - ocekivano)^2 / ocekivano )
 <br>
 <br>
 <br>
-$$
-X^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}
-$$ 
+$$X^2 = \sum_{i=1}^k \frac{(O_i - E_i)^2}{E_i}$$ 
 
 
 .hi[Sampling distribucija GOF statistike]
 <br>
 <br>
 <br>
-$$
-O_i \sim \mbox{Binomial}(P_i, N)
-$$
+$$O_i \sim \mbox{Binomial}(P_i, N)$$
 
 ---
 
@@ -612,9 +606,9 @@ Total = c(28, 43, 109, 180)
 ```{r echo=FALSE}
 knitr::kable(data.frame(stringsAsFactors=FALSE,
 NANA = c("Puppy", "Flower", "Data file", "Ukupno"),
-Robot = c("$O_{11}$", "$O_{21}$", "$O_{31}$", "$C_{1}$"),
-Human = c("$O_{12}$", "$O_{22}$", "$O_{32}$", "$C_{2}$"),
-Total = c("$R_{1}$", "$R_{2}$", "$R_{3}$", "$N$")
+Robot = c("O_11", "O_21", "O_31", "C_1"),
+Human = c("O_12", "O_22", "O_32", "C_2"),
+Total = c("R_1", "R_2", "R_3", "N")
 ), col.names = c(" ", "Robot", "Human", "Ukupno"))
 ```
 
@@ -628,10 +622,10 @@ Total = c("$R_{1}$", "$R_{2}$", "$R_{3}$", "$N$")
 ```{r echo=FALSE}
 knitr::kable(tibble::tribble(
                       ~V1, ~V2,    
-                      "$H_0$:", " Sve od sljedećeg je točno: ",     
-                      "    ",  " $P_{11} = P_{12}$ (jednaka vjerojatnost izbora puppy)",   
-                      "\t", " $P_{21} = P_{22}$ (jednaka vjerojatnost izbora flower) i", 
-                      "\t",  " $P_{31} = P_{32}$ (jednaka vjerojatnost izbora data)."),
+                      "H_0:", " Sve od sljedećeg je točno: ",     
+                      "    ",  " P_11 = P_12 (jednaka vjerojatnost izbora puppy)",   
+                      "\t", " P_21 = P_22 (jednaka vjerojatnost izbora flower) i", 
+                      "\t",  " P_31 = P_32 (jednaka vjerojatnost izbora data)."),
              col.names = c("", ""))
 ```
 
@@ -640,53 +634,39 @@ knitr::kable(tibble::tribble(
 .hi[**Formuliraj testnu statistiku**]
 
 
-$$
-E_{ij} = C_j \times P_i
-$$
+$$E_{ij} = C_j \times P_i$$
 <br>
 
-$$
-\hat{P}_i = \frac{R_i}{N}
-$$ 
+$$\hat{P}_i = \frac{R_i}{N}$$ 
 <br>
 
-$$
-E_{ij} = \frac{R_i \times C_j}{N}
-$$
+$$E_{ij} = \frac{R_i \times C_j}{N}$$
 <br>
 
-$$ 
-X^2 = \sum_{i=1}^r\sum_{j=1}^c\frac{({E}_{ij} - O_{ij})^2}{{E}_{ij}}
-$$
+$$X^2 = \sum_{i=1}^r\sum_{j=1}^c\frac{({E}_{ij} - O_{ij})^2}{{E}_{ij}}$$
 
 ---
 .hi[**Stupnjevi slobode kod testa nezavisnosti**]
 <br>
 
-$$
-df = (r-1)(c-1)
-$$
+$$df = (r-1)(c-1)$$
 <br>
 
-$$
-\begin{array}{rcl}
+$$\begin{array}{rcl}
 df &=& \mbox{(broj opservacija)} - \mbox{(broj ograničenja)} \\
 &=& (rc) - (c + (r-1)) \\
 &=& rc - c - r + 1 \\
 &=& (r - 1)(c - 1)
-\end{array}
-$$
+\end{array}$$
 
 <br>
 
-$$
-\begin{array}{rcl}
+$$\begin{array}{rcl}
 df &=& \mbox{(broj opservacija)} - \mbox{(broj ograničenja)} \\
 &=& rc - ( (c-1) + (r-1) + 1) \\
 &=& rc - c - r + 1 \\
 &=& (r - 1)(c - 1)
-\end{array}
-$$
+\end{array}$$
 ---
 
 .hi[**Izvođenje testa u R**]
@@ -714,26 +694,20 @@ associationTest( formula = ~ choice + species, data = chapek9 )
 <br>
 <br>
 
-$$
-X^2 = \sum_{i} \frac{(|E_i - O_i| - 0.5)^2}{E_i}
-$$
+$$X^2 = \sum_{i} \frac{(|E_i - O_i| - 0.5)^2}{E_i}$$
 
 
 .hi[**Efekt veličine**]
 <br>
 <br>
 
-$$ 
-\phi = \sqrt{\frac{X^2}{N}}
-$$
+$$\phi = \sqrt{\frac{X^2}{N}}$$
 ---
 
 .hi[**Cramer V**]
 <br>
 <br>
-$$
-V = \sqrt{\frac{X^2}{N(k-1)}}
-$$
+$$V = \sqrt{\frac{X^2}{N(k-1)}}$$
 
 
 .hi[**Izvedi test u R**]
@@ -879,9 +853,7 @@ knitr::kable(tibble::tribble(
 
 .hi[**Formalni zapis vjerojatnosti za test**]
 
-$$
-P(O_{11}, O_{12}, O_{21}, O_{22} \ | \ R_1, R_2, C_1, C_2) 
-$$
+$$P(O_{11}, O_{12}, O_{21}, O_{22} \ | \ R_1, R_2, C_1, C_2)$$
 ---
 
 .hi[**Provedi Fisherov test**]
@@ -942,15 +914,11 @@ knitr::kable(tibble::tribble(
 .hi[**Formalni zapis testa**]
 
 <br>
-$$
-X^2 = \frac{(|b-c| - 0.5)^2}{b+c}
-$$
+$$X^2 = \frac{(|b-c| - 0.5)^2}{b+c}$$
 
 <br>
 <br>
-$$
-X^2 = \frac{(|O_{12}-O_{21}| - 0.5)^2}{O_{12} + O_{21}}
-$$
+$$X^2 = \frac{(|O_{12}-O_{21}| - 0.5)^2}{O_{12} + O_{21}}$$
 ---
 
 .hi[**Pregled podataka**]
@@ -1008,7 +976,7 @@ class: middle, inverse
 # HVALA NA PAŽNJI!
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
 (Sljedeće predavanje: Usporedba prosjeka.)
----
+
 
 
 

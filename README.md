@@ -7,7 +7,7 @@
 
 # Primjena statistike u društvenim istraživanjima
 
-Dobrodošli na stranice kolegija <b>Primjena statistike u društvenim istraživanjima</b> koji u zimskom semestru, 2020/21 izvodi Luka Šikić, PhD na Fakultetu hrvatskih studija u Zagrebu. Kolegij je prvenstveno namijenjen studentima sociologije na preddiplomskoj razini, a može koristiti svim studentima društvenih i humanističkih smjerova koji su upoznati sa osnovama statistike.
+Dobrodošli na stranice kolegija <b>Primjena statistike u društvenim istraživanjima</b> koji u zimskom semestru, 2020/21 izvodi [Luka Šikić](https://www.lukasikic.info/), PhD na Fakultetu hrvatskih studija u Zagrebu. Kolegij je prvenstveno namijenjen studentima sociologije na preddiplomskoj razini, a može koristiti svim studentima društvenih i humanističkih smjerova koji su upoznati sa osnovama statistike.
 
 U kolegiju se obrađuju osnove statistike organizirane u tri cjeline:
 1. deskriptivna statistika i vizualizacija
@@ -279,7 +279,8 @@ Svi studenti tijekom semestra moraju održati jednu prezentaciju prema zadanoj l
 <ul>
 <li><a href="https://education.rstudio.com/learn/">RStudio: Finding Your Way To R</a></li>
 <li><a href="https://www.datacamp.com/courses/free-introduction-to-r">DataCamp's Introduction to R</a></li>
-<li><a href="https://r4ds.had.co.nz/">R for Data Science</a></li>
+<li>
+<a href="https://r4ds.had.co.nz/">R for Data Science</a></li>
 <li><a href="https://swirlstats.com/">Učenje R u Swirl-u</a></li>
 <li><a href="https://www.r-bloggers.com/">R bloggers</a></li>
 <li><a href="http://adv-r.had.co.nz/">Advanced R</a></li>
@@ -309,8 +310,6 @@ Svi studenti tijekom semestra moraju održati jednu prezentaciju prema zadanoj l
 
 
 
-
-.ftnote[BGfix]
 
 
 

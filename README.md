@@ -215,14 +215,11 @@ Koristiti ćemo tri knjige.
 
 </div>
 
-
-
-
 <b>Format predavanja:</b> <a href="/Moduli/10_ANOVA.html">.html</a> | <a href="/Moduli/10_ANOVA.Rmd">.Rmd</a>
 <br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 14.</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="/Predavanja/11_.pdf">Predavanje 11: Linearna regresija</a>
+<a href="">Predavanje 11: Linearna regresija</a>
 
 <ul>
 <li> Linearna regresija</li>
@@ -235,6 +232,14 @@ Koristiti ćemo tri knjige.
 <ul>
 
 </div>
+
+
+<b>Format predavanja:</b> <a href="/Moduli/11_REG.html">.html</a> | <a href="/Moduli/11_REG.Rmd">.Rmd</a>
+<br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 15.</a>
+
+
+
+
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
 <a href="/Predavanja/12_.pdf">Predavanje 12: Faktorska ANOVA</a>

@@ -776,7 +776,11 @@ $$\mbox{AIC} = \displaystyle\frac{\mbox{SS}_{res}}{\hat{\sigma}}^2+ 2K$$
 # Specificiraj puni model
 full.model <- lm(formula = dan.grump ~ dan.sleep + baby.sleep + day,
                  data = parenthood)
+```
 
+- Selekcija unaprijed (forward selection)
+
+```{r}
 # Specificiraj osnovni model
 nul.model <- lm(dan.grump ~ 1, parenthood)
 ```

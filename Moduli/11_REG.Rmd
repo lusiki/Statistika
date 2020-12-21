@@ -604,7 +604,7 @@ layout:true
 
 - Outlier-i
 
-```{r, echo=FALSE,  out.width = "65"}
+```{r, echo=FALSE,  out.width = "40"}
 knitr::include_graphics(file.path("../Foto/outlier.png"))
 ```
 
@@ -615,17 +615,17 @@ knitr::include_graphics(file.path("../Foto/outlier.png"))
 - utjecaj poluge (leverage)
 
 
-```{r, echo=FALSE, out.width = "65"}
+```{r, echo=FALSE, out.width = "40"}
 knitr::include_graphics(file.path("../Foto/leverage.png"))
 ```
 
 --- 
 
-.hi[**Ekstremni podatci:**]
+.hi[**Ekstremni podatci:**] 
 
 - utjecaj opservacije
 
-```{r, echo=FALSE, , out.width = "65"}
+```{r, echo=FALSE, , out.width = "40"}
 knitr::include_graphics(file.path("../Foto/influence.png"))
 ```
 

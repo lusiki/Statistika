@@ -219,7 +219,7 @@ Koristiti ćemo tri knjige.
 <br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 14.</a>
 
 <div style="width: 25%; margin-left: auto; margin-right: auto;">
-<a href="">Predavanje 11: Linearna regresija</a>
+<a href="https://raw.githack.com/BrbanMiro/Statistika/main/Moduli/11_REG.html">Predavanje 11: Linearna regresija</a>
 
 <ul>
 <li> Linearna regresija</li>

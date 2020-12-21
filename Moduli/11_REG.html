@@ -416,6 +416,7 @@ print( regression.2 )
 
 - Rezultati modela višestruke linearne regresije
 
+.tiny[
 
 ```r
 # Pogkedaj rezultate
@@ -443,7 +444,7 @@ summary(regression.2)
 #&gt; Multiple R-squared:  0.8161,	Adjusted R-squared:  0.8123 
 #&gt; F-statistic: 215.2 on 2 and 97 DF,  p-value: &lt; 2.2e-16
 ```
-
+]
 ---
 layout:false
 class: middle, inverse
@@ -566,6 +567,7 @@ plot(x = regression.2, which = 1 ) # Resid vs. fitted
 &lt;img src="11_REG_files/figure-html/unnamed-chunk-20-1.svg" style="display: block; margin: auto;" /&gt;
 
 ---
+
 .hi[**Provjera normalnosti reziduala**]
 
 
@@ -739,7 +741,7 @@ nul.model &lt;- lm(dan.grump ~ 1, parenthood)
 ```
 
 ---
-
+.tiny[
 
 ```r
 # Selekcija unatrag
@@ -782,11 +784,12 @@ step(object = full.model,
 #&gt; (Intercept)    dan.sleep  
 #&gt;     125.956       -8.937
 ```
-
+]
 ---
 
 - Selekcija unaprijed
 
+.tiny[
 
 ```r
 # Definiraj selekcijsku funkciju (unaprijed)
@@ -823,7 +826,7 @@ step(object = nul.model,
 #&gt; (Intercept)    dan.sleep  
 #&gt;     125.956       -8.937
 ```
-
+]
 ---
 
 - Usporedba dva modela

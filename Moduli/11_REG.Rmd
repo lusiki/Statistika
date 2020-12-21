@@ -218,7 +218,7 @@ remark-slide-content {
 
 .hi[**Pregled podataka**]
 
-```{r regression0, fig.cap="", echo=FALSE, fig.height=7}
+```{r regression0, fig.cap="", echo=FALSE, fig.height=6}
 
 
 regressionImg <- list()
@@ -257,7 +257,7 @@ colour <- TRUE
 
 .hi[**Napravi regresijski pravac**]
 
-```{r regression1a, fig.cap="", echo=FALSE, fig.height=7}
+```{r regression1a, fig.cap="", echo=FALSE, fig.height=6}
   # good regression ine
 	drawBasicScatterplot( emphGrey, "Najbolji regresijski pravac" )
 	good.coef <- lm( dan.grump ~ dan.sleep, parenthood)$coef
@@ -267,7 +267,7 @@ colour <- TRUE
 .footnote[[*]Regresijski pravac koji prikazuje odnos raspolozenja i sati spavanja.]
 
 ---
-```{r regression1b, fig.cap="", echo=FALSE, fig.height=7}
+```{r regression1b, fig.cap="", echo=FALSE, fig.height=6}
 	drawBasicScatterplot( emphGrey, "Loš regresijski pravac!" )
 	bad.coef <- c(80,-3)
 	abline( bad.coef, col=ifelse(colour,emphCol,"black"), lwd=3 )
@@ -299,7 +299,7 @@ $$\sum_i {\epsilon_i}^2$$
 .hi[**Grafički prikaz OLS modela**]   
 
 
-```{r regression3a, fig.cap="", echo=FALSE, fig.height=7}
+```{r regression3a, fig.cap="", echo=FALSE, fig.height=6}
 	drawBasicScatterplot( emphGrey, "Regresijska linija" )
 	abline( good.coef, col=ifelse(colour,emphCol,"black"), lwd=3 )
 	for(i in seq_along(parenthood$dan.sleep)) {
@@ -313,12 +313,12 @@ $$\sum_i {\epsilon_i}^2$$
 
 .hi[**Grafički prikaz OLS modela**]   
 
-```{r regression3b, fig.cap="", echo=FALSE, fig.height=7}
+```{r regression3b, fig.cap="", echo=FALSE, fig.height=6}
 	drawBasicScatterplot( emphGrey, "Loša regresijska linija" )
-	abline( good.coef, col=ifelse(colour,emphCol,"black"), lwd=3 )
+	abline( bad.coef, col=ifelse(colour,emphCol,"black"), lwd=3 )
 	for(i in seq_along(parenthood$dan.sleep)) {
 	  xval <- parenthood$dan.sleep[i]*c(1,1)
-	  yval <- c(parenthood$dan.grump[i],good.coef[1]+good.coef[2]*parenthood$dan.sleep[i])
+	  yval <- c(parenthood$dan.grump[i],bad.coef[1]+bad.coef[2]*parenthood$dan.sleep[i])
 	  lines(xval,yval,type='l', col = emphGrey)
 	}
 ```
@@ -552,12 +552,12 @@ print( regression.2 )
 
 - Rezultati modela višestruke linearne regresije
 
+.tiny[
 ```{r}
 # Pogkedaj rezultate
 summary(regression.2)
-
 ```
-
+]
 ---
 layout:false
 class: middle, inverse
@@ -669,9 +669,10 @@ plot(x = regression.2, which = 1 ) # Resid vs. fitted
 ```
 
 ---
+
 .hi[**Provjera normalnosti reziduala**]
 
-```{r}
+```{r, fig.height=5}
 plot(x = regression.2, which = 2 ) # QQ-plot
 ```
 
@@ -679,7 +680,7 @@ plot(x = regression.2, which = 2 ) # QQ-plot
 
 .hi[**Provjera normalnosti reziduala**]
 
-```{r, fig.height=5}
+```{r, fig.height=4}
 # Prikaži reziduale na histogramu
 hist( x = residuals(regression.2),
       xlab = "Vrijednost reziduala",
@@ -691,7 +692,7 @@ hist( x = residuals(regression.2),
 
 .hi[**Provjera linearnosti**] 
 
-```{r, fig.height=5}
+```{r, fig.height=4}
 # Spremi fit vrijednosti u objekt
 yhat.2 <- fitted.values(object = regression.2)
 # Prikaži grafički
@@ -707,13 +708,11 @@ plot(x = yhat.2,
 ```{r, fig.height=5}
 # Prikaži reyidualne vs. procijenjene fitted vrijednosti
 plot(x = regression.2, which = 1)
-
-
 ```
 
 ---
 
-```{r, fig.height=5}
+```{r, fig.height=4}
 # Prikaži rezidualne vs fitted vrijednosti
 car::residualPlots(model = regression.2)
 
@@ -783,25 +782,25 @@ nul.model <- lm(dan.grump ~ 1, parenthood)
 ```
 
 ---
-
+.tiny[
 ```{r}
 # Selekcija unatrag
 step(object = full.model,
      direction = "backward")
-
 ```
-
+]
 ---
 
 - Selekcija unaprijed
 
+.tiny[
 ```{r}
 # Definiraj selekcijsku funkciju (unaprijed)
 step(object = nul.model,
      direction = "forward",
      scope = dan.grump ~ dan.sleep + baby.sleep + day)
 ```
-
+]
 ---
 
 - Usporedba dva modela

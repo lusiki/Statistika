@@ -218,7 +218,7 @@ remark-slide-content {
 
 .hi[**Pregled podataka**]
 
-```{r regression0, fig.cap="", echo=FALSE}
+```{r regression0, fig.cap="", echo=FALSE, fig.height=7}
 
 
 regressionImg <- list()
@@ -257,7 +257,7 @@ colour <- TRUE
 
 .hi[**Napravi regresijski pravac**]
 
-```{r regression1a, fig.cap="", echo=FALSE}
+```{r regression1a, fig.cap="", echo=FALSE, fig.height=7}
   # good regression ine
 	drawBasicScatterplot( emphGrey, "Najbolji regresijski pravac" )
 	good.coef <- lm( dan.grump ~ dan.sleep, parenthood)$coef
@@ -267,7 +267,7 @@ colour <- TRUE
 .footnote[[*]Regresijski pravac koji prikazuje odnos raspolozenja i sati spavanja.]
 
 ---
-```{r regression1b, fig.cap="", echo=FALSE}
+```{r regression1b, fig.cap="", echo=FALSE, fig.height=7}
 	drawBasicScatterplot( emphGrey, "Loš regresijski pravac!" )
 	bad.coef <- c(80,-3)
 	abline( bad.coef, col=ifelse(colour,emphCol,"black"), lwd=3 )
@@ -299,7 +299,7 @@ $$\sum_i {\epsilon_i}^2$$
 .hi[**Grafički prikaz OLS modela**]   
 
 
-```{r regression3a, fig.cap="", echo=FALSE}
+```{r regression3a, fig.cap="", echo=FALSE, fig.height=7}
 	drawBasicScatterplot( emphGrey, "Regresijska linija" )
 	abline( good.coef, col=ifelse(colour,emphCol,"black"), lwd=3 )
 	for(i in seq_along(parenthood$dan.sleep)) {
@@ -313,7 +313,7 @@ $$\sum_i {\epsilon_i}^2$$
 
 .hi[**Grafički prikaz OLS modela**]   
 
-```{r regression3b, fig.cap="", echo=FALSE}
+```{r regression3b, fig.cap="", echo=FALSE, fig.height=7}
 	drawBasicScatterplot( emphGrey, "Loša regresijska linija" )
 	abline( good.coef, col=ifelse(colour,emphCol,"black"), lwd=3 )
 	for(i in seq_along(parenthood$dan.sleep)) {
@@ -358,13 +358,15 @@ class: middle, inverse
 layout:true
 # VIŠESTRUKA REGRESIJA
 ---
-
+<br>
+<br>
 .hi[**Formula 1**]
 
 $$Y_i = b_2 X_{i2} + b_1 X_{i1} + b_0 + \epsilon_i$$
-
+<br>
+<br>
 .hi[**Sintaksa u R**]
-
+<br>
 ```
       dan.grump ~ dan.sleep + baby.sleep
 ```
@@ -372,7 +374,7 @@ $$Y_i = b_2 X_{i2} + b_1 X_{i1} + b_0 + \epsilon_i$$
 
 .hi[**Grafički prikaz**] 
 
-```{r fig.height=7}
+```{r echo= F,fig.height=7}
 
 knitr::include_graphics(file.path("../Foto/scatter3d.png"))
 
@@ -392,8 +394,6 @@ print(regression.2)
 
 ```
 
----
-
 .hi[**Formula 2**] 
 
 $$Y_i = \left( \sum_{k=1}^K b_{k} X_{ik} \right) + b_0 + \epsilon_i$$
@@ -404,13 +404,12 @@ layout:false
 class: middle, inverse
 # KARAKTERISTIKE PROCIJENJENOG MODELA
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
-(!)
+(Koliko kvalitetena procjena...)
 ---
 
 layout:true
 # KARAKTERISTIKE PROCIJENJENOG MODELA
 ---
-
 
 .hi[**Izračun kvadrata odstupanja**]
 
@@ -437,6 +436,8 @@ Y.pred <- -8.94 * X  +  125.97
 
 ---
 
+.hi[**Izračun kvadrata odstupanja**]
+
 ```{r}
 # Izračunaj sumu rezidualnih odstupanja
 SS.resid <- sum((Y - Y.pred)^2)
@@ -460,7 +461,7 @@ $$R^2 = 1 - \frac{\mbox{SS}_{res}}{\mbox{SS}_{tot}}$$
 - Izračunaj vrijednost
 
 ```{r}
-# Unesi vrijednsoti
+# Unesi vrijednosti
 R.squared <- 1 - (SS.resid / SS.tot)
 print(R.squared) # Prikaži 
 
@@ -477,10 +478,9 @@ print( r^2 )    # Prikaži
 
 .hi[**Prilagodjeni R^2 koeficijent**] 
 
-
+<br>
+<br>
 $$\mbox{adj. } R^2 = 1 - \left(\frac{\mbox{SS}_{res}}{\mbox{SS}_{tot}} \times \frac{N-1}{N-K-1} \right)$$
-
-
 
 ---
 
@@ -488,7 +488,7 @@ layout:false
 class: middle, inverse
 # TESTIRANJE HIPOTEZA
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
-(!)
+(Hipoteze kod regresijskog modela!)
 ---
 
 layout:true
@@ -497,13 +497,15 @@ layout:true
 ---
 
 .hi[**Za cijeli model**] 
-
+<br>
+<br>
 - Nulta hipoteza
+<br>
 $$H_0: Y_i = b_0 + \epsilon_i$$
 
-
+<br>
 - Alternativna hipoteza
-
+<br>
 $$H_1: Y_i = \left( \sum_{k=1}^K b_{k} X_{ik} \right) + b_0 + \epsilon_i$$
 ---
 
@@ -520,24 +522,23 @@ $$\begin{array}{rcl}
 \end{array}$$
 
 
-
 $$F =  \frac{\mbox{MS}_{mod}}{\mbox{MS}_{res}}$$
 
 
 ---
 
 .hi[**Za pojedinačne koeficijente**] 
-
+<br>
 
 - Hipoteze
-
+<br>
 $$\begin{array}{rl}
 H_0: & b = 0 \\
 H_1: & b \neq 0 
 \end{array}$$
-
+<br>
 - t-test
-
+<br>
 $$t = \frac{\hat{b}}{\mbox{SE}({\hat{b})}}$$
 ---
 
@@ -547,6 +548,7 @@ $$t = \frac{\hat{b}}{\mbox{SE}({\hat{b})}}$$
 # Pogledaj rezultate modela
 print( regression.2 ) 
 ```
+---
 
 - Rezultati modela višestruke linearne regresije
 
@@ -568,6 +570,7 @@ layout:true
 # PRETPOSTAVKE REGRESIJSKOG MODELA
 
 ---
+.hi[**Uvjeti:**]
 
 <br>
 <br>
@@ -590,7 +593,7 @@ layout:false
 class: middle, inverse
 # PROVJERA MODELA
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
-(Uvjeti koji moraju biti zadovoljeni!)
+(Da li su pretpostavke zadovoljene!)
 ---
 
 layout:true
@@ -607,7 +610,7 @@ knitr::include_graphics(file.path("../Foto/outlier.png"))
 
 ---
 
-.hi[**Ekstremni podatci:**
+.hi[**Ekstremni podatci:**]
 
 - utjecaj poluge (leverage)
 
@@ -618,7 +621,7 @@ knitr::include_graphics(file.path("../Foto/leverage.png"))
 
 ---
 
-.hi[**Ekstremni podatci:**
+.hi[**Ekstremni podatci:**]
 
 - utjecaj opservacije
 
@@ -628,6 +631,8 @@ knitr::include_graphics(file.path("../Foto/influence.png"))
 
 ---
 
+- Formula
+
 $$D_i = \frac{{\epsilon_i^*}^2 }{K+1} \times \frac{h_i}{1-h_i}$$ 
 
 ```{r, eval = FALSE}
@@ -635,6 +640,7 @@ $$D_i = \frac{{\epsilon_i^*}^2 }{K+1} \times \frac{h_i}{1-h_i}$$
 cooks.distance( model = regression.2 )
 ```
 
+---
 
 ```{r, fig.height=6 }
 # Prikaži Cook-ovu mjeru grafički
@@ -657,7 +663,7 @@ lm(formula = dan.grump ~ dan.sleep + baby.sleep,
 
 .hi[**Provjera normalnosti reziduala**] 
 
-```{r, fig.height=6}
+```{r, fig.height=5}
 # Prikaži grafički
 plot(x = regression.2, which = 1 ) # Resid vs. fitted
 ```
@@ -670,9 +676,10 @@ plot(x = regression.2, which = 2 ) # QQ-plot
 ```
 
 ---
+
 .hi[**Provjera normalnosti reziduala**]
 
-```{r}
+```{r, fig.height=5}
 # Prikaži reziduale na histogramu
 hist( x = residuals(regression.2),
       xlab = "Vrijednost reziduala",
@@ -684,7 +691,7 @@ hist( x = residuals(regression.2),
 
 .hi[**Provjera linearnosti**] 
 
-```{r}
+```{r, fig.height=5}
 # Spremi fit vrijednosti u objekt
 yhat.2 <- fitted.values(object = regression.2)
 # Prikaži grafički
@@ -697,7 +704,7 @@ plot(x = yhat.2,
 
 ---
 
-```{r}
+```{r, fig.height=5}
 # Prikaži reyidualne vs. procijenjene fitted vrijednosti
 plot(x = regression.2, which = 1)
 
@@ -706,7 +713,7 @@ plot(x = regression.2, which = 1)
 
 ---
 
-```{r}
+```{r, fig.height=5}
 # Prikaži rezidualne vs fitted vrijednosti
 car::residualPlots(model = regression.2)
 
@@ -716,9 +723,12 @@ car::residualPlots(model = regression.2)
 
 .hi[**Provjera homogenosti varijance**] 
 
-```{r, fig.height=6}
+```{r, fig.height=5}
 plot(x = regression.2, which = 3)
+```
+---
 
+```{r}
 # Provedi test homogenosti varijance
 car::ncvTest(regression.2)
 
@@ -744,6 +754,8 @@ vif( mod = regression.2 )
 cor( parenthood )
 ```
 
+
+---
 layout:false
 class: middle, inverse
 # IZBOR PARAMETARA MODELA
@@ -758,6 +770,7 @@ layout:true
 - Informacijski kriterij (AIC)
 
 $$\mbox{AIC} = \displaystyle\frac{\mbox{SS}_{res}}{\hat{\sigma}}^2+ 2K$$
+
 - Selekcija unatrag (backward selection)
 
 ```{r}
@@ -765,6 +778,13 @@ $$\mbox{AIC} = \displaystyle\frac{\mbox{SS}_{res}}{\hat{\sigma}}^2+ 2K$$
 full.model <- lm(formula = dan.grump ~ dan.sleep + baby.sleep + day,
                  data = parenthood)
 
+# Specificiraj osnovni model
+nul.model <- lm(dan.grump ~ 1, parenthood)
+```
+
+---
+
+```{r}
 # Selekcija unatrag
 step(object = full.model,
      direction = "backward")
@@ -776,13 +796,10 @@ step(object = full.model,
 - Selekcija unaprijed
 
 ```{r}
-# Procijeni osnovni model
-nul.model <- lm(dan.grump ~ 1, parenthood)
 # Definiraj selekcijsku funkciju (unaprijed)
 step(object = nul.model,
      direction = "forward",
      scope = dan.grump ~ dan.sleep + baby.sleep + day)
-
 ```
 
 ---
@@ -802,10 +819,7 @@ AIC( M0, M1 )
 
 $$F = \frac{(\mbox{SS}_{res}^{(0)} - \mbox{SS}_{res}^{(1)})/k}{(\mbox{SS}_{res}^{(1)})/(N-p-1)}$$
 
-
-
 $$\mbox{SS}_\Delta = \mbox{SS}_{res}^{(0)} - \mbox{SS}_{res}^{(1)}$$
-
 
 $$\mbox{SS}_\Delta  = \sum_{i} \left( \hat{y}_i^{(1)} - \hat{y}_i^{(0)} \right)^2$$
 
@@ -814,14 +828,11 @@ $$\mbox{SS}_\Delta  = \sum_{i} \left( \hat{y}_i^{(1)} - \hat{y}_i^{(0)} \right)^
 anova(M0, M1)
 
 ```
-
-
-
 ---
 layout:false
 class: middle, inverse
 # Hvala na pažnji!
 <html><div style='float:left'></div><hr color='#EB811B' size=1px width=796px></html>
-(Zadnje predavanje u ovom kolegiju :-) )
+Zadnje predavanje u ovom kolegiju :-)
 
 

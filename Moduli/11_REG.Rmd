@@ -782,6 +782,7 @@ nul.model <- lm(dan.grump ~ 1, parenthood)
 ```
 
 ---
+
 .tiny[
 ```{r}
 # Selekcija unatrag
@@ -789,6 +790,7 @@ step(object = full.model,
      direction = "backward")
 ```
 ]
+
 ---
 
 - Selekcija unaprijed

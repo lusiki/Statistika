@@ -374,7 +374,7 @@ $$Y_i = b_2 X_{i2} + b_1 X_{i1} + b_0 + \epsilon_i$$
 
 .hi[**Grafički prikaz**] 
 
-```{r echo= F, out.width = "80"}
+```{r echo= F, out.width = "120"}
 
 knitr::include_graphics(file.path("../Foto/scatter3d.png"))
 
@@ -604,7 +604,7 @@ layout:true
 
 - Outlier-i
 
-```{r, echo=FALSE,  out.width = "80"}
+```{r, echo=FALSE,  out.width = "120"}
 knitr::include_graphics(file.path("../Foto/outlier.png"))
 ```
 
@@ -615,7 +615,7 @@ knitr::include_graphics(file.path("../Foto/outlier.png"))
 - utjecaj poluge (leverage)
 
 
-```{r, echo=FALSE, out.width = "80"}
+```{r, echo=FALSE, out.width = "120"}
 knitr::include_graphics(file.path("../Foto/leverage.png"))
 ```
 
@@ -625,7 +625,7 @@ knitr::include_graphics(file.path("../Foto/leverage.png"))
 
 - utjecaj opservacije
 
-```{r, echo=FALSE, , out.width = "80"}
+```{r, echo=FALSE, , out.width = "120"}
 knitr::include_graphics(file.path("../Foto/influence.png"))
 ```
 

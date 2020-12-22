@@ -625,7 +625,7 @@ knitr::include_graphics(file.path("../Foto/leverage.png"))
 
 - utjecaj opservacije
 
-```{r, echo=FALSE, , out.width = "120"}
+```{r, echo=FALSE, out.width = "120"}
 knitr::include_graphics(file.path("../Foto/influence.png"))
 ```
 

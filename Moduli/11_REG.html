@@ -202,7 +202,7 @@ layout:true
 
 .hi[**Grafički prikaz**] 
 
-&lt;img src="../Foto/scatter3d.png" width="65" style="display: block; margin: auto;" /&gt;
+&lt;img src="../Foto/scatter3d.png" width="80" style="display: block; margin: auto;" /&gt;
 
 
 ---
@@ -491,7 +491,7 @@ layout:true
 
 - Outlier-i
 
-&lt;img src="../Foto/outlier.png" width="40" style="display: block; margin: auto;" /&gt;
+&lt;img src="../Foto/outlier.png" width="80" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -500,7 +500,7 @@ layout:true
 - utjecaj poluge (leverage)
 
 
-&lt;img src="../Foto/leverage.png" width="40" style="display: block; margin: auto;" /&gt;
+&lt;img src="../Foto/leverage.png" width="80" style="display: block; margin: auto;" /&gt;
 
 --- 
 
@@ -508,7 +508,7 @@ layout:true
 
 - utjecaj opservacije
 
-&lt;img src="../Foto/influence.png" width="40" style="display: block; margin: auto;" /&gt;
+&lt;img src="../Foto/influence.png" width="80" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -735,7 +735,12 @@ layout:true
 # Specificiraj puni model
 full.model &lt;- lm(formula = dan.grump ~ dan.sleep + baby.sleep + day,
                  data = parenthood)
+```
 
+- Selekcija unaprijed (forward selection)
+
+
+```r
 # Specificiraj osnovni model
 nul.model &lt;- lm(dan.grump ~ 1, parenthood)
 ```

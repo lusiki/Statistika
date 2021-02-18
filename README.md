@@ -231,8 +231,8 @@ Koristiti ćemo tri knjige.
 <li> Izbor parametara modela</li>
 <ul>
 
-</div>
-
+</div> 
+ 
 
 <b>Format predavanja:</b> <a href="/Moduli/11_REG.html">.html</a> | <a href="/Moduli/11_REG.Rmd">.Rmd</a>
 <br><b>Čitanje: </b><a href="https://learningstatisticswithr.com/lsr-0.6.pdf">LSR,poglavlje 15.</a>
